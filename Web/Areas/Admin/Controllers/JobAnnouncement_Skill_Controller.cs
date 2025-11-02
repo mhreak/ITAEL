@@ -12,15 +12,8 @@ namespace Web.Areas.Admin.Controllers
     [Area("Admin")]
     [Route("Admin/[controller]")]
     [Authorize(Roles = "Manager,Admin")]
-    public class JobAnnouncement_Skill_Controller : BaseController
+    public class JobAnnouncement_Skill_Controller(IJobAnnouncement_Skill_Service ja_skill_service) : BaseController
     {
-        readonly IJobAnnouncement_Skill_Service _ja_skill_service;
-
-        public JobAnnouncement_Skill_Controller(IJobAnnouncement_Skill_Service ja_skill_service)
-        {
-            _ja_skill_service = ja_skill_service;
-        }
-
         [Route("Index/{jobAnnouncementId}")]
         public IActionResult Index(int jobAnnouncementId)
         {
@@ -32,7 +25,7 @@ namespace Web.Areas.Admin.Controllers
         public IActionResult Grid_Data_Read([DataSourceRequest] DataSourceRequest request,
             int jobAnnouncementId)
         {
-            var ja_sf_list = _ja_skill_service.GetAllByJobAnnouncementId(jobAnnouncementId).ToList();
+            var ja_sf_list = ja_skill_service.GetAllByJobAnnouncementId(jobAnnouncementId).ToList();
 
             var result = new DataSourceResult()
             {
@@ -57,9 +50,9 @@ namespace Web.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (!_ja_skill_service.IsDuplicate(model.JobAnnouncementId, model.SkillId))
+                if (!ja_skill_service.IsDuplicate(model.JobAnnouncementId, model.SkillId))
                 {
-                    if (_ja_skill_service.Add(model.JobAnnouncementId, model.SkillId))
+                    if (ja_skill_service.Add(model.JobAnnouncementId, model.SkillId))
                     {
                         ShowSuccessToast("عملیات انجام شد", "اطلاعات با موفقیت ذخیره شد");
 
@@ -91,7 +84,7 @@ namespace Web.Areas.Admin.Controllers
         [Route("Edit/{jobAnnouncementId}/{studyFieldId}")]
         public IActionResult Edit(int jobAnnouncementId, int studyFieldId)
         {
-            var model = _ja_skill_service.Get(jobAnnouncementId, studyFieldId);
+            var model = ja_skill_service.Get(jobAnnouncementId, studyFieldId);
             return View(model);
         }
 
@@ -102,7 +95,7 @@ namespace Web.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (_ja_skill_service.Edit(model))
+                if (ja_skill_service.Edit(model))
                 {
                     ShowSuccessToast("عملیات انجام شد", "اطلاعات با موفقیت ذخیره شد");
 
@@ -128,13 +121,13 @@ namespace Web.Areas.Admin.Controllers
         [Route("Delete")]
         public bool Delete(int jobAnnouncementId, int skillId)
         {
-            return _ja_skill_service.Delete(jobAnnouncementId, skillId);
+            return ja_skill_service.Delete(jobAnnouncementId, skillId);
         }
 
         [Route("Fill_JA_Skill_Combo")]
         public virtual JsonResult Fill_JA_Skill_Combo(int jobAnnouncementId)
         {
-            var DataList = _ja_skill_service.GetAllByJobAnnouncementId(jobAnnouncementId)
+            var DataList = ja_skill_service.GetAllByJobAnnouncementId(jobAnnouncementId)
                 .Select(x =>
                 new SelectListItem
                 {

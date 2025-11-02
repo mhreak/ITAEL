@@ -11,15 +11,8 @@ namespace Web.Areas.Admin.Controllers
     [Area("Admin")]
     [Route("Admin/[controller]")]
     [Authorize(Roles = "Manager,Admin")]
-    public class ReferralCodeController : BaseController
+    public class ReferralCodeController(IReferralCodeService referralCodeService) : BaseController
     {
-        readonly IReferralCodeService _referralCodeService;
-
-        public ReferralCodeController(IReferralCodeService referralCodeService)
-        {
-            _referralCodeService = referralCodeService;
-        }
-
         [Route("Index")]
         public IActionResult Index()
         {
@@ -40,7 +33,7 @@ namespace Web.Areas.Admin.Controllers
 
             var result = new DataSourceResult()
             {
-                Data = _referralCodeService.GetAllFiltered(filterReferralCodeName, filterRefCode, filterActive,
+                Data = referralCodeService.GetAllFiltered(filterReferralCodeName, filterRefCode, filterActive,
                 filterInsertDateFrom, filterInsertDateTo,
                 currentPage, pageSize, out totalRecord),
                 Total = totalRecord // Total number of records
@@ -63,9 +56,9 @@ namespace Web.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (!_referralCodeService.IsDuplicateByRefCode(null, model.RefCode))
+                if (!referralCodeService.IsDuplicateByRefCode(null, model.RefCode))
                 {
-                    if (_referralCodeService.Add(model) != -1)
+                    if (referralCodeService.Add(model) != -1)
                     {
                         ShowSuccessToast("عملیات انجام شد", "اطلاعات با موفقیت ذخیره شد");
 
@@ -97,7 +90,7 @@ namespace Web.Areas.Admin.Controllers
         [Route("Edit/{id}")]
         public IActionResult Edit(int id)
         {
-            var model = _referralCodeService.Get(id);
+            var model = referralCodeService.Get(id);
             return View(model);
         }
 
@@ -108,9 +101,9 @@ namespace Web.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (!_referralCodeService.IsDuplicateByRefCode(model.ReferralCodeId, model.RefCode))
+                if (!referralCodeService.IsDuplicateByRefCode(model.ReferralCodeId, model.RefCode))
                 {
-                    if (_referralCodeService.Edit(model))
+                    if (referralCodeService.Edit(model))
                     {
                         ShowSuccessToast("عملیات انجام شد", "اطلاعات با موفقیت ذخیره شد");
 
@@ -141,7 +134,7 @@ namespace Web.Areas.Admin.Controllers
         [Route("Delete")]
         public bool Delete(int id)
         {
-            return _referralCodeService.Delete(id);
+            return referralCodeService.Delete(id);
         }
     }
 }

@@ -8,25 +8,17 @@ using Web.Model.Identity;
 
 namespace Web.Controllers
 {
-    public class AccountController : BaseController
+    public class AccountController(
+        UserManager<ApplicationUser> userManager,
+        SignInManager<ApplicationUser> signInManager)
+        : BaseController
     {
-        readonly UserManager<ApplicationUser> _userManager;
-        readonly SignInManager<ApplicationUser> _signInManager;
-
-        public AccountController(
-            UserManager<ApplicationUser> userManager,
-            SignInManager<ApplicationUser> signInManager)
-        {
-            _userManager = userManager;
-            _signInManager = signInManager;
-        }
-
         public async Task<IActionResult> Login(string returnURL = null)
         {
-            if (_signInManager.IsSignedIn(User))
+            if (signInManager.IsSignedIn(User))
             {
-                var user = await _userManager.FindByNameAsync(User.Identity.Name);
-                var roles = await _userManager.GetRolesAsync(user);
+                var user = await userManager.FindByNameAsync(User.Identity.Name);
+                var roles = await userManager.GetRolesAsync(user);
 
                 if (roles.Contains("Manager") || roles.Contains("Admin"))
                 {
@@ -51,16 +43,16 @@ namespace Web.Controllers
 
             if (ModelState.IsValid)
             {
-                var user = await _userManager.FindByNameAsync(model.UserName);
+                var user = await userManager.FindByNameAsync(model.UserName);
 
                 var result =
                 await
-                    _signInManager.PasswordSignInAsync(model.UserName, model.Password,
+                    signInManager.PasswordSignInAsync(model.UserName, model.Password,
                     model.RememberMe, false).ConfigureAwait(false);
 
                 if (result.Succeeded)
                 {
-                    var roles = await _userManager.GetRolesAsync(user);
+                    var roles = await userManager.GetRolesAsync(user);
 
                     if (roles.Contains("Manager") || roles.Contains("Admin"))
                     {
@@ -96,7 +88,7 @@ namespace Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> LogOut()
         {
-            await _signInManager.SignOutAsync();
+            await signInManager.SignOutAsync();
             return RedirectToAction("Login");
         }
     }

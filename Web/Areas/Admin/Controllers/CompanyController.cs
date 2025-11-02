@@ -12,16 +12,8 @@ namespace Web.Areas.Admin.Controllers
     [Area("Admin")]
     [Route("Admin/[controller]")]
     [Authorize(Roles = "Manager,Admin")]
-    public class CompanyController : BaseController
+    public class CompanyController(ICompanyService companyService) : BaseController
     {
-        readonly ICompanyService _companyService;
-
-        public CompanyController(ICompanyService companyService)
-        {
-            _companyService = companyService;
-        }
-
-
         [Route("Index")]
         public IActionResult Index()
         {
@@ -42,7 +34,7 @@ namespace Web.Areas.Admin.Controllers
 
             var result = new DataSourceResult()
             {
-                Data = _companyService.GetAllFiltered(filterCompanyName, filterInsertDateFrom, filterInsertDateTo, currentPage, pageSize, out totalRecord),
+                Data = companyService.GetAllFiltered(filterCompanyName, filterInsertDateFrom, filterInsertDateTo, currentPage, pageSize, out totalRecord),
                 Total = totalRecord // Total number of records
             };
 
@@ -63,9 +55,9 @@ namespace Web.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (!_companyService.IsDuplicateByCompanyName(null, model.CompanyName))
+                if (!companyService.IsDuplicateByCompanyName(null, model.CompanyName))
                 {
-                    if (_companyService.Add(model) != -1)
+                    if (companyService.Add(model) != -1)
                     {
                         ShowSuccessToast("عملیات انجام شد", "اطلاعات با موفقیت ذخیره شد");
 
@@ -97,7 +89,7 @@ namespace Web.Areas.Admin.Controllers
         [Route("Edit/{id}")]
         public IActionResult Edit(int id)
         {
-            var model = _companyService.Get(id);
+            var model = companyService.Get(id);
             return View(model);
         }
 
@@ -108,9 +100,9 @@ namespace Web.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (!_companyService.IsDuplicateByCompanyName(model.CompanyId, model.CompanyName))
+                if (!companyService.IsDuplicateByCompanyName(model.CompanyId, model.CompanyName))
                 {
-                    if (_companyService.Edit(model))
+                    if (companyService.Edit(model))
                     {
                         ShowSuccessToast("عملیات انجام شد", "اطلاعات با موفقیت ذخیره شد");
 
@@ -141,13 +133,13 @@ namespace Web.Areas.Admin.Controllers
         [Route("Delete")]
         public bool Delete(int id)
         {
-            return _companyService.Delete(id);
+            return companyService.Delete(id);
         }
 
         [Route("Fill_Company_Combo")]
         public virtual JsonResult Fill_Company_Combo()
         {
-            var DataList = _companyService.GetAll()
+            var DataList = companyService.GetAll()
                 .Select(x =>
                 new SelectListItem
                 {

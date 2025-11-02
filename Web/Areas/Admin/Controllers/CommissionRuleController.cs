@@ -11,15 +11,8 @@ namespace Web.Areas.Admin.Controllers
     [Area("Admin")]
     [Route("Admin/[controller]")]
     [Authorize(Roles = "Manager,Admin")]
-    public class CommissionRuleController : BaseController
+    public class CommissionRuleController(ICommissionRuleService commissionRuleService) : BaseController
     {
-        readonly ICommissionRuleService _commissionRuleService;
-
-        public CommissionRuleController(ICommissionRuleService commissionRuleService)
-        {
-            _commissionRuleService = commissionRuleService;
-        }
-
         [Route("Index")]
         public IActionResult Index()
         {
@@ -39,7 +32,7 @@ namespace Web.Areas.Admin.Controllers
 
             var result = new DataSourceResult()
             {
-                Data = _commissionRuleService.GetAllFiltered(filterCommissionBasedOn, filterCommissionType,
+                Data = commissionRuleService.GetAllFiltered(filterCommissionBasedOn, filterCommissionType,
                 filterActive, currentPage, pageSize, "CommissionRuleId" , "ASC", out totalRecord),
                 Total = totalRecord // Total number of records
             };
@@ -61,7 +54,7 @@ namespace Web.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (_commissionRuleService.Add(model) != -1)
+                if (commissionRuleService.Add(model) != -1)
                 {
                     ShowSuccessToast("عملیات انجام شد", "اطلاعات با موفقیت ذخیره شد");
 
@@ -88,7 +81,7 @@ namespace Web.Areas.Admin.Controllers
         [Route("Edit/{id}")]
         public IActionResult Edit(int id)
         {
-            var model = _commissionRuleService.Get(id);
+            var model = commissionRuleService.Get(id);
             return View(model);
         }
 
@@ -99,7 +92,7 @@ namespace Web.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (_commissionRuleService.Edit(model))
+                if (commissionRuleService.Edit(model))
                 {
                     ShowSuccessToast("عملیات انجام شد", "اطلاعات با موفقیت ذخیره شد");
 
@@ -125,7 +118,7 @@ namespace Web.Areas.Admin.Controllers
         [Route("Delete")]
         public bool Delete(int id)
         {
-            return _commissionRuleService.Delete(id);
+            return commissionRuleService.Delete(id);
         }
     }
 }

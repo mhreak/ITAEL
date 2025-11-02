@@ -8,14 +8,9 @@ namespace Web.Areas.Admin.Controllers
     [Area("Admin")]
     [Route("Admin/[controller]")]
     [Authorize(Roles = "Manager,Admin")]
-    public class SystemSMSController : BaseController
+    public class SystemSMSController(ISystemSMSService systemSMSService) : BaseController
     {
-        readonly ISystemSMSService _systemSMSService;
-
-        public SystemSMSController(ISystemSMSService systemSMSService)
-        {
-            _systemSMSService = systemSMSService;
-        }
+        readonly ISystemSMSService _systemSMSService = systemSMSService;
 
         [Route("Index")]
         public IActionResult Index()

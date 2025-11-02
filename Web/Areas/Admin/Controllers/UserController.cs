@@ -18,25 +18,13 @@ namespace Web.Areas.Admin.Controllers
     [Area("Admin")]
     [Route("Admin/[controller]")]
     [Authorize(Roles = "Manager,Admin")]
-    public class UserController : BaseController
+    public class UserController(
+        IRoleManagerService roleManager,
+        IUserRoleService userRoleService,
+        UserManager<ApplicationUser> userManager,
+        IApplicationUserManagerService userManagerService)
+        : BaseController
     {
-        readonly IRoleManagerService _roleManager;
-        readonly IUserRoleService _userRoleService;
-        readonly UserManager<ApplicationUser> _userManager;
-        readonly IApplicationUserManagerService _userManagerService;
-
-        public UserController(
-            IRoleManagerService roleManager,
-            IUserRoleService userRoleService,
-            UserManager<ApplicationUser> userManager,
-            IApplicationUserManagerService userManagerService)
-        {
-            _roleManager = roleManager;
-            _userManager = userManager;
-            _userRoleService = userRoleService;
-            _userManagerService = userManagerService;
-        }
-
         [Route("Index")]
         public IActionResult Index()
         {
@@ -62,7 +50,7 @@ namespace Web.Areas.Admin.Controllers
 
             var result = new DataSourceResult()
             {
-                Data = _userManagerService.GetAllFiltered(filterUserName, filterName, filterRoleId,
+                Data = userManagerService.GetAllFiltered(filterUserName, filterName, filterRoleId,
                 currentPage: request.Page, pageSize: request.PageSize, sortField: sortField, sortDirection: sortDirection,
                 currentUserIsManager: User.IsInRole("Manager"),
                 totalRecord: out totalRecord),
@@ -96,13 +84,13 @@ namespace Web.Areas.Admin.Controllers
                         EmailConfirmed = true,
                         PhoneNumberConfirmed = true
                     };
-                    var createResult = await _userManager.CreateAsync(user, userViewModel.Password).ConfigureAwait(false);
+                    var createResult = await userManager.CreateAsync(user, userViewModel.Password).ConfigureAwait(false);
 
                     if (createResult.Succeeded)
                     {
                         //Add User to the selected Roles
-                        string roleName = _roleManager.Get(userViewModel.RoleId).Name;
-                        var addToRoleResult = await _userManager.AddToRoleAsync(user, roleName).ConfigureAwait(false);
+                        string roleName = roleManager.Get(userViewModel.RoleId).Name;
+                        var addToRoleResult = await userManager.AddToRoleAsync(user, roleName).ConfigureAwait(false);
                         if (!addToRoleResult.Succeeded)
                         {
                             ShowDangerToast(null, addToRoleResult.Errors.First().Description);
@@ -129,9 +117,9 @@ namespace Web.Areas.Admin.Controllers
         [Route("Edit/{id}")]
         public virtual async Task<ActionResult> Edit(int id)
         {
-            var user = await _userManager.FindByIdAsync(id.ToString()).ConfigureAwait(false);
+            var user = await userManager.FindByIdAsync(id.ToString()).ConfigureAwait(false);
 
-            var userRoles = _userRoleService.GetAllByUserId(id);
+            var userRoles = userRoleService.GetAllByUserId(id);
 
             return View(new EditUserViewModel
             {
@@ -151,7 +139,7 @@ namespace Web.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = await _userManager.FindByIdAsync(model.Id.ToString()).ConfigureAwait(false);
+                var user = await userManager.FindByIdAsync(model.Id.ToString()).ConfigureAwait(false);
 
                 user.Name = model.Name;
                 user.UserName = model.Username;
@@ -160,23 +148,23 @@ namespace Web.Areas.Admin.Controllers
 
                 if (model.Password != null)
                 {
-                    user.PasswordHash = _userManager.PasswordHasher.HashPassword(user, model.Password);
+                    user.PasswordHash = userManager.PasswordHasher.HashPassword(user, model.Password);
                 }
 
-                var userRoles = await _userManager.GetRolesAsync(user).ConfigureAwait(false);
+                var userRoles = await userManager.GetRolesAsync(user).ConfigureAwait(false);
 
-                var result = await _userManager.RemoveFromRolesAsync(user, userRoles.ToArray()).ConfigureAwait(false);
+                var result = await userManager.RemoveFromRolesAsync(user, userRoles.ToArray()).ConfigureAwait(false);
 
                 if (!result.Succeeded)
                 {
                     ShowDangerToast(null, result.Errors.First().Description);
                 }
-                await _userManager.UpdateSecurityStampAsync(user).ConfigureAwait(false);
+                await userManager.UpdateSecurityStampAsync(user).ConfigureAwait(false);
 
                 if (User.IsInRole("Manager"))
                 {
-                    string[] myRoles = new string[] { _roleManager.Get(model.RoleId).Name };
-                    result = await _userManager.AddToRolesAsync(user, myRoles).ConfigureAwait(false);
+                    string[] myRoles = new string[] { roleManager.Get(model.RoleId).Name };
+                    result = await userManager.AddToRolesAsync(user, myRoles).ConfigureAwait(false);
 
                     if (!result.Succeeded)
                     {
@@ -184,7 +172,7 @@ namespace Web.Areas.Admin.Controllers
                     }
                 }
 
-                await _userManager.UpdateSecurityStampAsync(user).ConfigureAwait(false);
+                await userManager.UpdateSecurityStampAsync(user).ConfigureAwait(false);
 
                 return RedirectToAction("Index", "User", new { area = "Admin" });
             }
@@ -204,12 +192,12 @@ namespace Web.Areas.Admin.Controllers
         [Route("Delete")]
         public short Delete(int userId)
         {
-            if (userId == Convert.ToInt32(_userManagerService.GetCurrentUserId()))
+            if (userId == Convert.ToInt32(userManagerService.GetCurrentUserId()))
             {
                 return -1;
             }
 
-            var user = _userManagerService.Get(userId);
+            var user = userManagerService.Get(userId);
 
             if (user == null) { return -2; }
 
@@ -218,7 +206,7 @@ namespace Web.Areas.Admin.Controllers
                 return -3;
             }
 
-            if (_userManagerService.DeleteUser(userId))
+            if (userManagerService.DeleteUser(userId))
             {
                 return 1;
             }

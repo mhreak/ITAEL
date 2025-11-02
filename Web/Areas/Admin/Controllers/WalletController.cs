@@ -12,15 +12,8 @@ namespace Web.Areas.Admin.Controllers
     [Area("Admin")]
     [Route("Admin/[controller]")]
     [Authorize(Roles = "Manager,Admin")]
-    public class WalletController : BaseController
+    public class WalletController(IWalletService walletService) : BaseController
     {
-        readonly IWalletService _walletService;
-
-        public WalletController(IWalletService walletService)
-        {
-            _walletService = walletService;
-        }
-
         [Route("Index")]
         public IActionResult Index()
         {
@@ -41,7 +34,7 @@ namespace Web.Areas.Admin.Controllers
 
             var result = new DataSourceResult()
             {
-                Data = _walletService.GetAllFiltered(filterWalletName,
+                Data = walletService.GetAllFiltered(filterWalletName,
                 filterActive, filterInsertDateFrom, filterInsertDateTo, currentPage, pageSize, out totalRecord),
                 Total = totalRecord // Total number of records
             };
@@ -63,9 +56,9 @@ namespace Web.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (!_walletService.IsDuplicateByWalletName(null, model.WalletName))
+                if (!walletService.IsDuplicateByWalletName(null, model.WalletName))
                 {
-                    if (_walletService.Add(model) != -1)
+                    if (walletService.Add(model) != -1)
                     {
                         ShowSuccessToast("عملیات انجام شد", "اطلاعات با موفقیت ذخیره شد");
 
@@ -97,7 +90,7 @@ namespace Web.Areas.Admin.Controllers
         [Route("Edit/{id}")]
         public IActionResult Edit(int id)
         {
-            var model = _walletService.Get(id);
+            var model = walletService.Get(id);
             return View(model);
         }
 
@@ -108,9 +101,9 @@ namespace Web.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (!_walletService.IsDuplicateByWalletName(model.WalletId, model.WalletName))
+                if (!walletService.IsDuplicateByWalletName(model.WalletId, model.WalletName))
                 {
-                    if (_walletService.Edit(model))
+                    if (walletService.Edit(model))
                     {
                         ShowSuccessToast("عملیات انجام شد", "اطلاعات با موفقیت ذخیره شد");
 
@@ -141,13 +134,13 @@ namespace Web.Areas.Admin.Controllers
         [Route("Delete")]
         public bool Delete(int id)
         {
-            return _walletService.Delete(id);
+            return walletService.Delete(id);
         }
 
         [Route("Fill_Wallet_Combo")]
         public virtual JsonResult Fill_Wallet_Combo()
         {
-            var DataList = _walletService.GetAll()
+            var DataList = walletService.GetAll()
                 .Select(x =>
                 new SelectListItem
                 {

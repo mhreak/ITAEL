@@ -12,15 +12,8 @@ namespace Web.Areas.Admin.Controllers
     [Area("Admin")]
     [Route("Admin/[controller]")]
     [Authorize(Roles = "Manager,Admin")]
-    public class StudyFieldController : BaseController
+    public class StudyFieldController(IStudyFieldService studyFieldService) : BaseController
     {
-        readonly IStudyFieldService _studyFieldService;
-
-        public StudyFieldController(IStudyFieldService studyFieldService)
-        {
-            _studyFieldService = studyFieldService;
-        }
-
         [Route("Index")]
         public IActionResult Index()
         {
@@ -40,7 +33,7 @@ namespace Web.Areas.Admin.Controllers
             
             var result = new DataSourceResult()
             {
-                Data = _studyFieldService.GetAllFiltered(filterStudyFieldName, filterActive, currentPage, pageSize, out totalRecord),
+                Data = studyFieldService.GetAllFiltered(filterStudyFieldName, filterActive, currentPage, pageSize, out totalRecord),
                 Total = totalRecord // Total number of records
             };
 
@@ -61,9 +54,9 @@ namespace Web.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (!_studyFieldService.IsDuplicateByName(null, model.StudyFieldName))
+                if (!studyFieldService.IsDuplicateByName(null, model.StudyFieldName))
                 {
-                    if (_studyFieldService.Add(model) != -1)
+                    if (studyFieldService.Add(model) != -1)
                     {
                         ShowSuccessToast("عملیات انجام شد", "اطلاعات با موفقیت ذخیره شد");
 
@@ -95,7 +88,7 @@ namespace Web.Areas.Admin.Controllers
         [Route("Edit/{id}")]
         public IActionResult Edit(int id)
         {
-            var model = _studyFieldService.Get(id);
+            var model = studyFieldService.Get(id);
             return View(model);
         }
 
@@ -106,9 +99,9 @@ namespace Web.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (!_studyFieldService.IsDuplicateByName(model.StudyFieldId, model.StudyFieldName))
+                if (!studyFieldService.IsDuplicateByName(model.StudyFieldId, model.StudyFieldName))
                 {
-                    if (_studyFieldService.Edit(model))
+                    if (studyFieldService.Edit(model))
                     {
                         ShowSuccessToast("عملیات انجام شد", "اطلاعات با موفقیت ذخیره شد");
 
@@ -139,13 +132,13 @@ namespace Web.Areas.Admin.Controllers
         [Route("Delete")]
         public bool Delete(int id)
         {
-            return _studyFieldService.Delete(id);
+            return studyFieldService.Delete(id);
         }
 
         [Route("Fill_StudyField_Combo")]
         public virtual JsonResult Fill_StudyField_Combo(bool? active)
         {
-            var DataList = _studyFieldService.GetAll(active)
+            var DataList = studyFieldService.GetAll(active)
                 .Select(x =>
                 new SelectListItem
                 {

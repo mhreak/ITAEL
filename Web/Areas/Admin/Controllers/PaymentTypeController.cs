@@ -10,19 +10,12 @@ namespace Web.Areas.Admin.Controllers
     [Area("Admin")]
     [Route("Admin/[controller]")]
     [Authorize(Roles = "Manager,Admin")]
-    public class PaymentTypeController : BaseController
+    public class PaymentTypeController(IPaymentTypeService paymentTypeService) : BaseController
     {
-        readonly IPaymentTypeService _paymentTypeService;
-
-        public PaymentTypeController(IPaymentTypeService paymentTypeService)
-        {
-            _paymentTypeService = paymentTypeService;
-        }
-
         [Route("Fill_PaymentType_Combo")]
         public virtual JsonResult Fill_PaymentType_Combo()
         {
-            var DataList = _paymentTypeService.GetAll().ToList()
+            var DataList = paymentTypeService.GetAll().ToList()
                 .Select(x =>
                 new SelectListItem
                 {

@@ -19,24 +19,13 @@ namespace Web.Areas.Admin.Controllers
     [Area("Admin")]
     [Route("Admin/[controller]")]
     [Authorize(Roles = "Manager,Admin")]
-    public class ApplicantController : BaseController
+    public class ApplicantController(
+        IUtilService utilService,
+        IApplicantService applicantService,
+        IWebHostEnvironment webHostEnvironment,
+        IApplicationUserManagerService userManagerService)
+        : BaseController
     {
-        readonly IUtilService _utilService;
-        readonly IApplicantService _applicantService;
-        readonly IWebHostEnvironment _webHostEnvironment;
-        readonly IApplicationUserManagerService _userManagerService;
-
-        public ApplicantController(
-            IUtilService utilService,
-            IApplicantService applicantService,
-            IWebHostEnvironment webHostEnvironment,
-            IApplicationUserManagerService userManagerService)
-        {
-            _utilService = utilService;
-            _applicantService = applicantService;
-            _webHostEnvironment = webHostEnvironment;
-            _userManagerService = userManagerService;
-        }
 
         [Route("Index")]
         public IActionResult Index()
@@ -59,7 +48,7 @@ namespace Web.Areas.Admin.Controllers
 
             var result = new DataSourceResult()
             {
-                Data = _applicantService.GetAllFiltered(null, null, filterFullName, filterGender, filterNationalCode,
+                Data = applicantService.GetAllFiltered(null, null, filterFullName, filterGender, filterNationalCode,
                 filterMobile, filterBirthDateFrom, filterBirthDateTo,
                 filterProvinceId, filterCityId, filterStudyFieldId,
                 filterInsertDateFrom, filterInsertDateTo,
@@ -88,14 +77,14 @@ namespace Web.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (!_applicantService.IsDuplicateByNationalCode(null, model.NationalCode))
+                if (!applicantService.IsDuplicateByNationalCode(null, model.NationalCode))
                 {
-                    if (!_applicantService.IsDuplicateByMobile(null, model.Mobile))
+                    if (!applicantService.IsDuplicateByMobile(null, model.Mobile))
                     {
-                        int applicantId = _applicantService.Add(model);
+                        int applicantId = applicantService.Add(model);
                         if (applicantId != -1)
                         {
-                            string directoryPath = _webHostEnvironment.WebRootPath + "\\Upload\\ApplicantDocument\\" + applicantId.ToString();
+                            string directoryPath = webHostEnvironment.WebRootPath + "\\Upload\\ApplicantDocument\\" + applicantId.ToString();
 
                             if (Directory.Exists(directoryPath))
                             {
@@ -109,13 +98,13 @@ namespace Web.Areas.Admin.Controllers
                                 string uploadedFileName = PersonalImageFile.FileName;
                                 string[] splittedFileName = uploadedFileName.Split('.').ToArray();
                                 string uploadedFileExtention = PersonalImageFile.FileName.Split('.')[splittedFileName.Length - 1];
-                                string generatedFileName = _utilService.GenerateRandomString(15) + "." + uploadedFileExtention;
+                                string generatedFileName = utilService.GenerateRandomString(15) + "." + uploadedFileExtention;
 
                                 string filePath = directoryPath + "\\" + generatedFileName;
 
                                 while (System.IO.File.Exists(filePath))
                                 {
-                                    generatedFileName = _utilService.GenerateRandomString(15) + "." + uploadedFileExtention;
+                                    generatedFileName = utilService.GenerateRandomString(15) + "." + uploadedFileExtention;
                                     filePath = directoryPath + "\\" + generatedFileName;
                                 }
 
@@ -123,7 +112,7 @@ namespace Web.Areas.Admin.Controllers
                                 {
                                     PersonalImageFile.CopyTo(stream);
 
-                                    _applicantService.SetPersonalImageFileName(applicantId, generatedFileName);
+                                    applicantService.SetPersonalImageFileName(applicantId, generatedFileName);
 
                                     stream.Close();
                                 }
@@ -134,13 +123,13 @@ namespace Web.Areas.Admin.Controllers
                                 string uploadedFileName = EducationalCertificateFile.FileName;
                                 string[] splittedFileName = uploadedFileName.Split('.').ToArray();
                                 string uploadedFileExtention = EducationalCertificateFile.FileName.Split('.')[splittedFileName.Length - 1];
-                                string generatedFileName = _utilService.GenerateRandomString(15) + "." + uploadedFileExtention;
+                                string generatedFileName = utilService.GenerateRandomString(15) + "." + uploadedFileExtention;
 
                                 string filePath = directoryPath + "\\" + generatedFileName;
 
                                 while (System.IO.File.Exists(filePath))
                                 {
-                                    generatedFileName = _utilService.GenerateRandomString(15) + "." + uploadedFileExtention;
+                                    generatedFileName = utilService.GenerateRandomString(15) + "." + uploadedFileExtention;
                                     filePath = directoryPath + "\\" + generatedFileName;
                                 }
 
@@ -148,7 +137,7 @@ namespace Web.Areas.Admin.Controllers
                                 {
                                     PersonalImageFile.CopyTo(stream);
 
-                                    _applicantService.SetEducationalCertificateFileName(applicantId, generatedFileName);
+                                    applicantService.SetEducationalCertificateFileName(applicantId, generatedFileName);
 
                                     stream.Close();
                                 }
@@ -159,13 +148,13 @@ namespace Web.Areas.Admin.Controllers
                                 string uploadedFileName = NationalCardFrontFile.FileName;
                                 string[] splittedFileName = uploadedFileName.Split('.').ToArray();
                                 string uploadedFileExtention = NationalCardFrontFile.FileName.Split('.')[splittedFileName.Length - 1];
-                                string generatedFileName = _utilService.GenerateRandomString(15) + "." + uploadedFileExtention;
+                                string generatedFileName = utilService.GenerateRandomString(15) + "." + uploadedFileExtention;
 
                                 string filePath = directoryPath + "\\" + generatedFileName;
 
                                 while (System.IO.File.Exists(filePath))
                                 {
-                                    generatedFileName = _utilService.GenerateRandomString(15) + "." + uploadedFileExtention;
+                                    generatedFileName = utilService.GenerateRandomString(15) + "." + uploadedFileExtention;
                                     filePath = directoryPath + "\\" + generatedFileName;
                                 }
 
@@ -173,7 +162,7 @@ namespace Web.Areas.Admin.Controllers
                                 {
                                     PersonalImageFile.CopyTo(stream);
 
-                                    _applicantService.SetNationalCardFrontFileName(applicantId, generatedFileName);
+                                    applicantService.SetNationalCardFrontFileName(applicantId, generatedFileName);
 
                                     stream.Close();
                                 }
@@ -184,13 +173,13 @@ namespace Web.Areas.Admin.Controllers
                                 string uploadedFileName = NationalCardBackFile.FileName;
                                 string[] splittedFileName = uploadedFileName.Split('.').ToArray();
                                 string uploadedFileExtention = NationalCardBackFile.FileName.Split('.')[splittedFileName.Length - 1];
-                                string generatedFileName = _utilService.GenerateRandomString(15) + "." + uploadedFileExtention;
+                                string generatedFileName = utilService.GenerateRandomString(15) + "." + uploadedFileExtention;
 
                                 string filePath = directoryPath + "\\" + generatedFileName;
 
                                 while (System.IO.File.Exists(filePath))
                                 {
-                                    generatedFileName = _utilService.GenerateRandomString(15) + "." + uploadedFileExtention;
+                                    generatedFileName = utilService.GenerateRandomString(15) + "." + uploadedFileExtention;
                                     filePath = directoryPath + "\\" + generatedFileName;
                                 }
 
@@ -198,7 +187,7 @@ namespace Web.Areas.Admin.Controllers
                                 {
                                     PersonalImageFile.CopyTo(stream);
 
-                                    _applicantService.SetNationalCardBackFileName(applicantId, generatedFileName);
+                                    applicantService.SetNationalCardBackFileName(applicantId, generatedFileName);
 
                                     stream.Close();
                                 }
@@ -209,13 +198,13 @@ namespace Web.Areas.Admin.Controllers
                                 string uploadedFileName = IdentityCertificateFirstPageFile.FileName;
                                 string[] splittedFileName = uploadedFileName.Split('.').ToArray();
                                 string uploadedFileExtention = IdentityCertificateFirstPageFile.FileName.Split('.')[splittedFileName.Length - 1];
-                                string generatedFileName = _utilService.GenerateRandomString(15) + "." + uploadedFileExtention;
+                                string generatedFileName = utilService.GenerateRandomString(15) + "." + uploadedFileExtention;
 
                                 string filePath = directoryPath + "\\" + generatedFileName;
 
                                 while (System.IO.File.Exists(filePath))
                                 {
-                                    generatedFileName = _utilService.GenerateRandomString(15) + "." + uploadedFileExtention;
+                                    generatedFileName = utilService.GenerateRandomString(15) + "." + uploadedFileExtention;
                                     filePath = directoryPath + "\\" + generatedFileName;
                                 }
 
@@ -223,7 +212,7 @@ namespace Web.Areas.Admin.Controllers
                                 {
                                     PersonalImageFile.CopyTo(stream);
 
-                                    _applicantService.SetIdentityCertificateFirstPageFileName(applicantId, generatedFileName);
+                                    applicantService.SetIdentityCertificateFirstPageFileName(applicantId, generatedFileName);
 
                                     stream.Close();
                                 }
@@ -234,13 +223,13 @@ namespace Web.Areas.Admin.Controllers
                                 string uploadedFileName = IdentityCertificateSecondPageFile.FileName;
                                 string[] splittedFileName = uploadedFileName.Split('.').ToArray();
                                 string uploadedFileExtention = IdentityCertificateSecondPageFile.FileName.Split('.')[splittedFileName.Length - 1];
-                                string generatedFileName = _utilService.GenerateRandomString(15) + "." + uploadedFileExtention;
+                                string generatedFileName = utilService.GenerateRandomString(15) + "." + uploadedFileExtention;
 
                                 string filePath = directoryPath + "\\" + generatedFileName;
 
                                 while (System.IO.File.Exists(filePath))
                                 {
-                                    generatedFileName = _utilService.GenerateRandomString(15) + "." + uploadedFileExtention;
+                                    generatedFileName = utilService.GenerateRandomString(15) + "." + uploadedFileExtention;
                                     filePath = directoryPath + "\\" + generatedFileName;
                                 }
 
@@ -248,7 +237,7 @@ namespace Web.Areas.Admin.Controllers
                                 {
                                     PersonalImageFile.CopyTo(stream);
 
-                                    _applicantService.SetIdentityCertificateSecondPageFileName(applicantId, generatedFileName);
+                                    applicantService.SetIdentityCertificateSecondPageFileName(applicantId, generatedFileName);
 
                                     stream.Close();
                                 }
@@ -289,7 +278,7 @@ namespace Web.Areas.Admin.Controllers
         [Route("Edit/{id}")]
         public IActionResult Edit(int id)
         {
-            var model = _applicantService.Get(id);
+            var model = applicantService.Get(id);
 
             return View(model);
         }
@@ -304,13 +293,13 @@ namespace Web.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (!_applicantService.IsDuplicateByNationalCode(model.ApplicantId, model.NationalCode))
+                if (!applicantService.IsDuplicateByNationalCode(model.ApplicantId, model.NationalCode))
                 {
-                    if (!_applicantService.IsDuplicateByMobile(model.ApplicantId, model.Mobile))
+                    if (!applicantService.IsDuplicateByMobile(model.ApplicantId, model.Mobile))
                     {
-                        if (_applicantService.Edit(model))
+                        if (applicantService.Edit(model))
                         {
-                            string directoryPath = _webHostEnvironment.WebRootPath + "\\Upload\\ApplicantDocument\\" + model.ApplicantId.ToString();
+                            string directoryPath = webHostEnvironment.WebRootPath + "\\Upload\\ApplicantDocument\\" + model.ApplicantId.ToString();
 
                             if (Directory.Exists(directoryPath))
                             {
@@ -324,13 +313,13 @@ namespace Web.Areas.Admin.Controllers
                                 string uploadedFileName = PersonalImageFile.FileName;
                                 string[] splittedFileName = uploadedFileName.Split('.').ToArray();
                                 string uploadedFileExtention = PersonalImageFile.FileName.Split('.')[splittedFileName.Length - 1];
-                                string generatedFileName = _utilService.GenerateRandomString(15) + "." + uploadedFileExtention;
+                                string generatedFileName = utilService.GenerateRandomString(15) + "." + uploadedFileExtention;
 
                                 string filePath = directoryPath + "\\" + generatedFileName;
 
                                 while (System.IO.File.Exists(filePath))
                                 {
-                                    generatedFileName = _utilService.GenerateRandomString(15) + "." + uploadedFileExtention;
+                                    generatedFileName = utilService.GenerateRandomString(15) + "." + uploadedFileExtention;
                                     filePath = directoryPath + "\\" + generatedFileName;
                                 }
 
@@ -338,7 +327,7 @@ namespace Web.Areas.Admin.Controllers
                                 {
                                     PersonalImageFile.CopyTo(stream);
 
-                                    _applicantService.SetPersonalImageFileName(model.ApplicantId, generatedFileName);
+                                    applicantService.SetPersonalImageFileName(model.ApplicantId, generatedFileName);
 
                                     stream.Close();
                                 }
@@ -349,13 +338,13 @@ namespace Web.Areas.Admin.Controllers
                                 string uploadedFileName = EducationalCertificateFile.FileName;
                                 string[] splittedFileName = uploadedFileName.Split('.').ToArray();
                                 string uploadedFileExtention = EducationalCertificateFile.FileName.Split('.')[splittedFileName.Length - 1];
-                                string generatedFileName = _utilService.GenerateRandomString(15) + "." + uploadedFileExtention;
+                                string generatedFileName = utilService.GenerateRandomString(15) + "." + uploadedFileExtention;
 
                                 string filePath = directoryPath + "\\" + generatedFileName;
 
                                 while (System.IO.File.Exists(filePath))
                                 {
-                                    generatedFileName = _utilService.GenerateRandomString(15) + "." + uploadedFileExtention;
+                                    generatedFileName = utilService.GenerateRandomString(15) + "." + uploadedFileExtention;
                                     filePath = directoryPath + "\\" + generatedFileName;
                                 }
 
@@ -363,7 +352,7 @@ namespace Web.Areas.Admin.Controllers
                                 {
                                     PersonalImageFile.CopyTo(stream);
 
-                                    _applicantService.SetEducationalCertificateFileName(model.ApplicantId, generatedFileName);
+                                    applicantService.SetEducationalCertificateFileName(model.ApplicantId, generatedFileName);
 
                                     stream.Close();
                                 }
@@ -374,13 +363,13 @@ namespace Web.Areas.Admin.Controllers
                                 string uploadedFileName = NationalCardFrontFile.FileName;
                                 string[] splittedFileName = uploadedFileName.Split('.').ToArray();
                                 string uploadedFileExtention = NationalCardFrontFile.FileName.Split('.')[splittedFileName.Length - 1];
-                                string generatedFileName = _utilService.GenerateRandomString(15) + "." + uploadedFileExtention;
+                                string generatedFileName = utilService.GenerateRandomString(15) + "." + uploadedFileExtention;
 
                                 string filePath = directoryPath + "\\" + generatedFileName;
 
                                 while (System.IO.File.Exists(filePath))
                                 {
-                                    generatedFileName = _utilService.GenerateRandomString(15) + "." + uploadedFileExtention;
+                                    generatedFileName = utilService.GenerateRandomString(15) + "." + uploadedFileExtention;
                                     filePath = directoryPath + "\\" + generatedFileName;
                                 }
 
@@ -388,7 +377,7 @@ namespace Web.Areas.Admin.Controllers
                                 {
                                     PersonalImageFile.CopyTo(stream);
 
-                                    _applicantService.SetNationalCardFrontFileName(model.ApplicantId, generatedFileName);
+                                    applicantService.SetNationalCardFrontFileName(model.ApplicantId, generatedFileName);
 
                                     stream.Close();
                                 }
@@ -399,13 +388,13 @@ namespace Web.Areas.Admin.Controllers
                                 string uploadedFileName = NationalCardBackFile.FileName;
                                 string[] splittedFileName = uploadedFileName.Split('.').ToArray();
                                 string uploadedFileExtention = NationalCardBackFile.FileName.Split('.')[splittedFileName.Length - 1];
-                                string generatedFileName = _utilService.GenerateRandomString(15) + "." + uploadedFileExtention;
+                                string generatedFileName = utilService.GenerateRandomString(15) + "." + uploadedFileExtention;
 
                                 string filePath = directoryPath + "\\" + generatedFileName;
 
                                 while (System.IO.File.Exists(filePath))
                                 {
-                                    generatedFileName = _utilService.GenerateRandomString(15) + "." + uploadedFileExtention;
+                                    generatedFileName = utilService.GenerateRandomString(15) + "." + uploadedFileExtention;
                                     filePath = directoryPath + "\\" + generatedFileName;
                                 }
 
@@ -413,7 +402,7 @@ namespace Web.Areas.Admin.Controllers
                                 {
                                     PersonalImageFile.CopyTo(stream);
 
-                                    _applicantService.SetNationalCardBackFileName(model.ApplicantId, generatedFileName);
+                                    applicantService.SetNationalCardBackFileName(model.ApplicantId, generatedFileName);
 
                                     stream.Close();
                                 }
@@ -424,13 +413,13 @@ namespace Web.Areas.Admin.Controllers
                                 string uploadedFileName = IdentityCertificateFirstPageFile.FileName;
                                 string[] splittedFileName = uploadedFileName.Split('.').ToArray();
                                 string uploadedFileExtention = IdentityCertificateFirstPageFile.FileName.Split('.')[splittedFileName.Length - 1];
-                                string generatedFileName = _utilService.GenerateRandomString(15) + "." + uploadedFileExtention;
+                                string generatedFileName = utilService.GenerateRandomString(15) + "." + uploadedFileExtention;
 
                                 string filePath = directoryPath + "\\" + generatedFileName;
 
                                 while (System.IO.File.Exists(filePath))
                                 {
-                                    generatedFileName = _utilService.GenerateRandomString(15) + "." + uploadedFileExtention;
+                                    generatedFileName = utilService.GenerateRandomString(15) + "." + uploadedFileExtention;
                                     filePath = directoryPath + "\\" + generatedFileName;
                                 }
 
@@ -438,7 +427,7 @@ namespace Web.Areas.Admin.Controllers
                                 {
                                     PersonalImageFile.CopyTo(stream);
 
-                                    _applicantService.SetIdentityCertificateFirstPageFileName(model.ApplicantId, generatedFileName);
+                                    applicantService.SetIdentityCertificateFirstPageFileName(model.ApplicantId, generatedFileName);
 
                                     stream.Close();
                                 }
@@ -449,13 +438,13 @@ namespace Web.Areas.Admin.Controllers
                                 string uploadedFileName = IdentityCertificateSecondPageFile.FileName;
                                 string[] splittedFileName = uploadedFileName.Split('.').ToArray();
                                 string uploadedFileExtention = IdentityCertificateSecondPageFile.FileName.Split('.')[splittedFileName.Length - 1];
-                                string generatedFileName = _utilService.GenerateRandomString(15) + "." + uploadedFileExtention;
+                                string generatedFileName = utilService.GenerateRandomString(15) + "." + uploadedFileExtention;
 
                                 string filePath = directoryPath + "\\" + generatedFileName;
 
                                 while (System.IO.File.Exists(filePath))
                                 {
-                                    generatedFileName = _utilService.GenerateRandomString(15) + "." + uploadedFileExtention;
+                                    generatedFileName = utilService.GenerateRandomString(15) + "." + uploadedFileExtention;
                                     filePath = directoryPath + "\\" + generatedFileName;
                                 }
 
@@ -463,7 +452,7 @@ namespace Web.Areas.Admin.Controllers
                                 {
                                     PersonalImageFile.CopyTo(stream);
 
-                                    _applicantService.SetIdentityCertificateSecondPageFileName(model.ApplicantId, generatedFileName);
+                                    applicantService.SetIdentityCertificateSecondPageFileName(model.ApplicantId, generatedFileName);
 
                                     stream.Close();
                                 }
@@ -503,7 +492,7 @@ namespace Web.Areas.Admin.Controllers
         [Route("Delete")]
         public bool Delete(int id)
         {
-            return _applicantService.Delete(id);
+            return applicantService.Delete(id);
         }
     }
 }

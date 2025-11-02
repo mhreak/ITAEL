@@ -4,23 +4,16 @@ using Web.Service.Interface;
 
 namespace Web.Controllers
 {
-    public class JobAnnouncementController : Controller
+    public class JobAnnouncementController(IJobAnnouncementService jobAnnouncementService, 
+                                           IJobAnnouncement_StudyField_Service studyFieldService, 
+                                           IJobAnnouncement_Skill_Service skillService)
+        : Controller
     {
-        private readonly IJobAnnouncementService _jobAnnouncementService;
-        private readonly IJobAnnouncement_StudyField_Service _studyFieldService;
-        private readonly IJobAnnouncement_Skill_Service _skillService;
-
-        public JobAnnouncementController(IJobAnnouncementService jobAnnouncementService, IJobAnnouncement_StudyField_Service studyFieldService, IJobAnnouncement_Skill_Service skillService)
-        {
-            _jobAnnouncementService = jobAnnouncementService;
-            _studyFieldService = studyFieldService;
-            _skillService = skillService;
-        }
         public IActionResult Details(int id)
         {
-            JobAnnouncementViewModel jobAnnouncement = _jobAnnouncementService.Get(id);
-            ViewBag.JonAnnouncement_SkillList = _skillService.GetAllByJobAnnouncementId(id);
-            ViewBag.JonAnnouncement_StudyFieldList = _studyFieldService.GetAllByJobAnnouncementId(id);
+            JobAnnouncementViewModel jobAnnouncement = jobAnnouncementService.Get(id);
+            ViewBag.JonAnnouncement_SkillList = skillService.GetAllByJobAnnouncementId(id);
+            ViewBag.JonAnnouncement_StudyFieldList = studyFieldService.GetAllByJobAnnouncementId(id);
             return View(jobAnnouncement);
         }
 

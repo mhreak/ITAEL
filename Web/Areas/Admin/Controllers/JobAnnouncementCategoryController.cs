@@ -12,16 +12,8 @@ namespace Web.Areas.Admin.Controllers
     [Area("Admin")]
     [Route("Admin/[controller]")]
     [Authorize(Roles = "Manager,Admin")]
-    public class JobAnnouncementCategoryController : BaseController
+    public class JobAnnouncementCategoryController(IJobAnnouncementCategoryService jobAnnouncementCategoryService) : BaseController
     {
-        readonly IJobAnnouncementCategoryService _jobAnnouncementCategoryService;
-
-        public JobAnnouncementCategoryController(
-            IJobAnnouncementCategoryService jobAnnouncementCategoryService)
-        {
-            _jobAnnouncementCategoryService = jobAnnouncementCategoryService;
-        }
-
         [Route("Index")]
         public IActionResult Index()
         {
@@ -42,7 +34,7 @@ namespace Web.Areas.Admin.Controllers
 
             var result = new DataSourceResult()
             {
-                Data = _jobAnnouncementCategoryService.GetAllFiltered(filterCategoryName, filterActive,
+                Data = jobAnnouncementCategoryService.GetAllFiltered(filterCategoryName, filterActive,
                 currentPage, pageSize, out totalRecord),
                 Total = totalRecord // Total number of records
             };
@@ -64,9 +56,9 @@ namespace Web.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (!_jobAnnouncementCategoryService.IsDuplicateByName(null, model.CategoryName))
+                if (!jobAnnouncementCategoryService.IsDuplicateByName(null, model.CategoryName))
                 {
-                    if (_jobAnnouncementCategoryService.Add(model) != -1)
+                    if (jobAnnouncementCategoryService.Add(model) != -1)
                     {
                         ShowSuccessToast("عملیات انجام شد", "اطلاعات با موفقیت ذخیره شد");
 
@@ -98,7 +90,7 @@ namespace Web.Areas.Admin.Controllers
         [Route("Edit/{id}")]
         public IActionResult Edit(int id)
         {
-            var model = _jobAnnouncementCategoryService.Get(id);
+            var model = jobAnnouncementCategoryService.Get(id);
             return View(model);
         }
 
@@ -109,9 +101,9 @@ namespace Web.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (!_jobAnnouncementCategoryService.IsDuplicateByName(model.JobAnnouncementCategoryId, model.CategoryName))
+                if (!jobAnnouncementCategoryService.IsDuplicateByName(model.JobAnnouncementCategoryId, model.CategoryName))
                 {
-                    if (_jobAnnouncementCategoryService.Edit(model))
+                    if (jobAnnouncementCategoryService.Edit(model))
                     {
                         ShowSuccessToast("عملیات انجام شد", "اطلاعات با موفقیت ذخیره شد");
 
@@ -142,13 +134,13 @@ namespace Web.Areas.Admin.Controllers
         [Route("Delete")]
         public bool Delete(int id)
         {
-            return _jobAnnouncementCategoryService.Delete(id);
+            return jobAnnouncementCategoryService.Delete(id);
         }
 
         [Route("Fill_JobAnnouncementCategory_Combo")]
         public virtual JsonResult Fill_JobAnnouncementCategory_Combo(bool? active)
         {
-            var DataList = _jobAnnouncementCategoryService.GetAll(active)
+            var DataList = jobAnnouncementCategoryService.GetAll(active)
                 .Select(x =>
                 new SelectListItem
                 {

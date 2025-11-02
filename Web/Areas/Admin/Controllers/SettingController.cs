@@ -11,24 +11,17 @@ namespace Web.Areas.Admin.Controllers
     [Area("Admin")]
     [Route("Admin/[controller]")]
     [Authorize(Roles = "Manager,Admin")]
-    public class SettingController : BaseController
+    public class SettingController(ISettingService settingService) : BaseController
     {
-        readonly ISettingService _settingService;
-
-        public SettingController(ISettingService settingService)
-        {
-            _settingService = settingService;
-        }
-
         [Route("SMSSetting")]
         public IActionResult SMSSetting()
         {
             var model = new SMSSettingViewModel()
             {
-                SMSPanelUsername = _settingService.GetValueByKey("SMSPanelUsername"),
-                SMSPanelPassword = _settingService.GetValueByKey("SMSPanelPassword"),
-                SMSSenderNumber = _settingService.GetValueByKey("SMSSenderNumber"),
-                ServiceSMSSenderNumber = _settingService.GetValueByKey("SMSSenderNumber")
+                SMSPanelUsername = settingService.GetValueByKey("SMSPanelUsername"),
+                SMSPanelPassword = settingService.GetValueByKey("SMSPanelPassword"),
+                SMSSenderNumber = settingService.GetValueByKey("SMSSenderNumber"),
+                ServiceSMSSenderNumber = settingService.GetValueByKey("SMSSenderNumber")
             };
 
             return View(model);
@@ -41,10 +34,10 @@ namespace Web.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-                _settingService.SetSettingValue("SMSPanelUsername", model.SMSPanelUsername);
-                _settingService.SetSettingValue("SMSPanelPassword", model.SMSPanelPassword);
-                _settingService.SetSettingValue("SMSSenderNumber", model.SMSSenderNumber);
-                _settingService.SetSettingValue("SMSSenderNumber", model.ServiceSMSSenderNumber);
+                settingService.SetSettingValue("SMSPanelUsername", model.SMSPanelUsername);
+                settingService.SetSettingValue("SMSPanelPassword", model.SMSPanelPassword);
+                settingService.SetSettingValue("SMSSenderNumber", model.SMSSenderNumber);
+                settingService.SetSettingValue("SMSSenderNumber", model.ServiceSMSSenderNumber);
 
                 ShowSuccessToast(null, "تنظیمات ذخیره شد");
                 return View();
@@ -68,9 +61,9 @@ namespace Web.Areas.Admin.Controllers
         {
             var model = new MessagingSettingViewModel()
             {
-                SendSMSOnSuccessfulRegisterInWebsite = Convert.ToBoolean(_settingService.GetValueByKey("SendSMSOnSuccessfulRegisterInWebsite")),
-                SendSMSOnSuccessfulPayment = Convert.ToBoolean(_settingService.GetValueByKey("SendSMSOnSuccessfulPayment")),
-                SendSMSOnSuccessfulAnnouncementApply = Convert.ToBoolean(_settingService.GetValueByKey("SendSMSOnSuccessfulAnnouncementApply"))
+                SendSMSOnSuccessfulRegisterInWebsite = Convert.ToBoolean(settingService.GetValueByKey("SendSMSOnSuccessfulRegisterInWebsite")),
+                SendSMSOnSuccessfulPayment = Convert.ToBoolean(settingService.GetValueByKey("SendSMSOnSuccessfulPayment")),
+                SendSMSOnSuccessfulAnnouncementApply = Convert.ToBoolean(settingService.GetValueByKey("SendSMSOnSuccessfulAnnouncementApply"))
             };
 
             return View(model);
@@ -83,9 +76,9 @@ namespace Web.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-                _settingService.SetSettingValue("SendSMSOnSuccessfulRegisterInWebsite", model.SendSMSOnSuccessfulRegisterInWebsite.ToString());
-                _settingService.SetSettingValue("SendSMSOnSuccessfulPayment", model.SendSMSOnSuccessfulPayment.ToString());
-                _settingService.SetSettingValue("SendSMSOnSuccessfulAnnouncementApply", model.SendSMSOnSuccessfulAnnouncementApply.ToString());
+                settingService.SetSettingValue("SendSMSOnSuccessfulRegisterInWebsite", model.SendSMSOnSuccessfulRegisterInWebsite.ToString());
+                settingService.SetSettingValue("SendSMSOnSuccessfulPayment", model.SendSMSOnSuccessfulPayment.ToString());
+                settingService.SetSettingValue("SendSMSOnSuccessfulAnnouncementApply", model.SendSMSOnSuccessfulAnnouncementApply.ToString());
 
                 ShowSuccessToast(null, "تنظیمات ذخیره شد");
                 return View();

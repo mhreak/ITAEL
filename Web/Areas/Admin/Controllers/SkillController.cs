@@ -12,15 +12,8 @@ namespace Web.Areas.Admin.Controllers
     [Area("Admin")]
     [Route("Admin/[controller]")]
     [Authorize(Roles = "Manager,Admin")]
-    public class SkillController : BaseController
+    public class SkillController(ISkillService skillService) : BaseController
     {
-        readonly ISkillService _skillService;
-
-        public SkillController(ISkillService skillService)
-        {
-            _skillService = skillService;
-        }
-
         [Route("Index")]
         public IActionResult Index()
         {
@@ -40,7 +33,7 @@ namespace Web.Areas.Admin.Controllers
 
             var result = new DataSourceResult()
             {
-                Data = _skillService.GetAllFiltered(filterSkillName, filterActive, currentPage, pageSize, out totalRecord),
+                Data = skillService.GetAllFiltered(filterSkillName, filterActive, currentPage, pageSize, out totalRecord),
                 Total = totalRecord // Total number of records
             };
 
@@ -61,9 +54,9 @@ namespace Web.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (!_skillService.IsDuplicateByName(null, model.SkillName))
+                if (!skillService.IsDuplicateByName(null, model.SkillName))
                 {
-                    if (_skillService.Add(model) != -1)
+                    if (skillService.Add(model) != -1)
                     {
                         ShowSuccessToast("عملیات انجام شد", "اطلاعات با موفقیت ذخیره شد");
 
@@ -95,7 +88,7 @@ namespace Web.Areas.Admin.Controllers
         [Route("Edit/{id}")]
         public IActionResult Edit(int id)
         {
-            var model = _skillService.Get(id);
+            var model = skillService.Get(id);
             return View(model);
         }
 
@@ -106,9 +99,9 @@ namespace Web.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (!_skillService.IsDuplicateByName(model.SkillId, model.SkillName))
+                if (!skillService.IsDuplicateByName(model.SkillId, model.SkillName))
                 {
-                    if (_skillService.Edit(model))
+                    if (skillService.Edit(model))
                     {
                         ShowSuccessToast("عملیات انجام شد", "اطلاعات با موفقیت ذخیره شد");
 
@@ -139,13 +132,13 @@ namespace Web.Areas.Admin.Controllers
         [Route("Delete")]
         public bool Delete(int id)
         {
-            return _skillService.Delete(id);
+            return skillService.Delete(id);
         }
 
         [Route("Fill_Skill_Combo")]
         public virtual JsonResult Fill_Skill_Combo(bool? active)
         {
-            var DataList = _skillService.GetAll(active)
+            var DataList = skillService.GetAll(active)
                 .Select(x =>
                 new SelectListItem
                 {

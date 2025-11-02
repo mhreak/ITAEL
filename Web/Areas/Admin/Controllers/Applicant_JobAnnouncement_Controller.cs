@@ -11,16 +11,8 @@ namespace Web.Areas.Admin.Controllers
     [Area("Admin")]
     [Route("Admin/[controller]")]
     [Authorize(Roles = "Manager,Admin")]
-    public class Applicant_JobAnnouncement_Controller : BaseController
+    public class Applicant_JobAnnouncement_Controller(IApplicant_JobAnnouncement_Service a_ja_service) : BaseController
     {
-        readonly IApplicant_JobAnnouncement_Service _a_ja_service;
-
-        public Applicant_JobAnnouncement_Controller(
-            IApplicant_JobAnnouncement_Service a_ja_service)
-        {
-            _a_ja_service = a_ja_service;
-        }
-
         [Route("ApplicantIndex/{applicantId}")]
         public IActionResult ApplicantIndex(int applicantId)
         {
@@ -32,7 +24,7 @@ namespace Web.Areas.Admin.Controllers
         public IActionResult ApplicantIndex_Grid_Data_Read([DataSourceRequest] DataSourceRequest request,
             int applicantId)
         {
-            var ja_sf_list = _a_ja_service.GetAllByApplicantId(applicantId).ToList();
+            var ja_sf_list = a_ja_service.GetAllByApplicantId(applicantId).ToList();
 
             var result = new DataSourceResult()
             {
@@ -54,7 +46,7 @@ namespace Web.Areas.Admin.Controllers
         public IActionResult JAIndex_Grid_Data_Read([DataSourceRequest] DataSourceRequest request,
             int jobAnnouncementId)
         {
-            var ja_sf_list = _a_ja_service.GetAllByJobAnnouncementId(jobAnnouncementId).ToList();
+            var ja_sf_list = a_ja_service.GetAllByJobAnnouncementId(jobAnnouncementId).ToList();
 
             var result = new DataSourceResult()
             {
@@ -81,9 +73,9 @@ namespace Web.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (!_a_ja_service.IsDuplicate(model.ApplicantId, model.JobAnnouncementId))
+                if (!a_ja_service.IsDuplicate(model.ApplicantId, model.JobAnnouncementId))
                 {
-                    if (_a_ja_service.Add(model.ApplicantId, model.JobAnnouncementId))
+                    if (a_ja_service.Add(model.ApplicantId, model.JobAnnouncementId))
                     {
                         ShowSuccessToast("عملیات انجام شد", "اطلاعات با موفقیت ذخیره شد");
 
@@ -115,7 +107,7 @@ namespace Web.Areas.Admin.Controllers
         [Route("Edit/{jobAnnouncementId}/{applicantId}")]
         public IActionResult Edit(int jobAnnouncementId, int applicantId)
         {
-            var model = _a_ja_service.Get(applicantId, jobAnnouncementId);
+            var model = a_ja_service.Get(applicantId, jobAnnouncementId);
             return View(model);
         }
 
@@ -126,7 +118,7 @@ namespace Web.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (_a_ja_service.Edit(model))
+                if (a_ja_service.Edit(model))
                 {
                     ShowSuccessToast("عملیات انجام شد", "اطلاعات با موفقیت ذخیره شد");
 
@@ -152,7 +144,7 @@ namespace Web.Areas.Admin.Controllers
         [Route("Delete")]
         public bool Delete(int applicantId, int jobAnnouncementId)
         {
-            return _a_ja_service.Delete(applicantId, jobAnnouncementId);
+            return a_ja_service.Delete(applicantId, jobAnnouncementId);
         }
     }
 }

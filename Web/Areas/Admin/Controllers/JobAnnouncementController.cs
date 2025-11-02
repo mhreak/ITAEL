@@ -14,25 +14,13 @@ namespace Web.Areas.Admin.Controllers
     [Area("Admin")]
     [Route("Admin/[controller]")]
     [Authorize(Roles = "Manager,Admin")]
-    public class JobAnnouncementController : BaseController
+    public class JobAnnouncementController(
+        IJobAnnouncementService jobAnnouncementService,
+        IJobAnnouncement_Skill_Service ja_skill_serivce,
+        IJobAnnouncement_StudyField_Service ja_studyField_service,
+        IJobAnnouncement_JobAnnouncementCategory_Service ja_jac_service)
+        : BaseController
     {
-        readonly IJobAnnouncementService _jobAnnouncementService;
-        readonly IJobAnnouncement_Skill_Service _ja_skill_service;
-        readonly IJobAnnouncement_StudyField_Service _ja_studyField_service;
-        readonly IJobAnnouncement_JobAnnouncementCategory_Service _ja_jac_service;
-
-        public JobAnnouncementController(
-            IJobAnnouncementService jobAnnouncementService,
-            IJobAnnouncement_Skill_Service ja_skill_serivce,
-            IJobAnnouncement_StudyField_Service ja_studyField_service,
-            IJobAnnouncement_JobAnnouncementCategory_Service ja_jac_service)
-        {
-            _ja_jac_service = ja_jac_service;
-            _ja_skill_service = ja_skill_serivce;
-            _ja_studyField_service = ja_studyField_service;
-            _jobAnnouncementService = jobAnnouncementService;
-        }
-
         [Route("Index")]
         public IActionResult Index()
         {
@@ -54,7 +42,7 @@ namespace Web.Areas.Admin.Controllers
 
             var result = new DataSourceResult()
             {
-                Data = _jobAnnouncementService.GetAllFiltered(filterTitle, filterGender, filterHasEmploymentExam,
+                Data = jobAnnouncementService.GetAllFiltered(filterTitle, filterGender, filterHasEmploymentExam,
                 filterPublishDateFrom, filterPublishDateTo, filterExamDateFrom, filterExamDateTo,
                 filterCapacityFrom, filterCapacityTo, filterActive,null, null, currentPage, pageSize, out totalRecord),
                 Total = totalRecord // Total number of records
@@ -95,14 +83,14 @@ namespace Web.Areas.Admin.Controllers
                     studyFieldIdList.Add(Convert.ToInt32(studyFieldId));
                 }
 
-                int jobAnnouncementId = _jobAnnouncementService.Add(model);
+                int jobAnnouncementId = jobAnnouncementService.Add(model);
                 if (jobAnnouncementId != -1)
                 {
                     if (jaCategoryIdList.Any())
                     {
                         foreach (var jaCategoryId in jaCategoryIdList)
                         {
-                            _ja_jac_service.Add(jobAnnouncementId, jaCategoryId);
+                            ja_jac_service.Add(jobAnnouncementId, jaCategoryId);
                         }
                     }
 
@@ -110,7 +98,7 @@ namespace Web.Areas.Admin.Controllers
                     {
                         foreach (var skillId in skillIdList)
                         {
-                            _ja_skill_service.Add(jobAnnouncementId, skillId);
+                            ja_skill_serivce.Add(jobAnnouncementId, skillId);
                         }
                     }
 
@@ -118,7 +106,7 @@ namespace Web.Areas.Admin.Controllers
                     {
                         foreach (var studyFiledId in studyFieldIdList)
                         {
-                            _ja_studyField_service.Add(jobAnnouncementId, studyFiledId);
+                            ja_studyField_service.Add(jobAnnouncementId, studyFiledId);
                         }
                     }
 
@@ -147,23 +135,23 @@ namespace Web.Areas.Admin.Controllers
         [Route("Edit/{id}")]
         public IActionResult Edit(int id)
         {
-            var model = _jobAnnouncementService.Get(id);
+            var model = jobAnnouncementService.Get(id);
 
             List<string> jaCategoryIdList = new List<string>();
             List<string> skillIdList = new List<string>();
             List<string> studyFiledIdList = new List<string>();
 
-            foreach (var ja_jac in _ja_jac_service.GetAllByJobAnnouncementId(id))
+            foreach (var ja_jac in ja_jac_service.GetAllByJobAnnouncementId(id))
             {
                 jaCategoryIdList.Add(ja_jac.JobAnnouncementCategoryId.ToString());
             }
 
-            foreach (var ja_skill in _ja_skill_service.GetAllByJobAnnouncementId(id))
+            foreach (var ja_skill in ja_skill_serivce.GetAllByJobAnnouncementId(id))
             {
                 skillIdList.Add(ja_skill.SkillId.ToString());
             }
 
-            foreach (var ja_studyField in _ja_studyField_service.GetAllByJobAnnouncementId(id))
+            foreach (var ja_studyField in ja_studyField_service.GetAllByJobAnnouncementId(id))
             {
                 studyFiledIdList.Add(ja_studyField.StudyFieldId.ToString());
             }
@@ -223,28 +211,28 @@ namespace Web.Areas.Admin.Controllers
                     studyFieldIdList.Add(Convert.ToInt32(studyFieldId));
                 }
 
-                if (_jobAnnouncementService.Edit(model))
+                if (jobAnnouncementService.Edit(model))
                 {
-                    foreach(var ja_jac in _ja_jac_service.GetAllByJobAnnouncementId(model.JobAnnouncementId))
+                    foreach(var ja_jac in ja_jac_service.GetAllByJobAnnouncementId(model.JobAnnouncementId))
                     {
-                        _ja_jac_service.Delete(model.JobAnnouncementId, ja_jac.JobAnnouncementCategoryId);
+                        ja_jac_service.Delete(model.JobAnnouncementId, ja_jac.JobAnnouncementCategoryId);
                     }
 
-                    foreach (var ja_skill in _ja_skill_service.GetAllByJobAnnouncementId(model.JobAnnouncementId))
+                    foreach (var ja_skill in ja_skill_serivce.GetAllByJobAnnouncementId(model.JobAnnouncementId))
                     {
-                        _ja_skill_service.Delete(model.JobAnnouncementId, ja_skill.SkillId);
+                        ja_skill_serivce.Delete(model.JobAnnouncementId, ja_skill.SkillId);
                     }
 
-                    foreach (var ja_studyField in _ja_studyField_service.GetAllByJobAnnouncementId(model.JobAnnouncementId))
+                    foreach (var ja_studyField in ja_studyField_service.GetAllByJobAnnouncementId(model.JobAnnouncementId))
                     {
-                        _ja_studyField_service.Delete(model.JobAnnouncementId, ja_studyField.StudyFieldId);
+                        ja_studyField_service.Delete(model.JobAnnouncementId, ja_studyField.StudyFieldId);
                     }
 
                     if (jaCategoryIdList.Any())
                     {
                         foreach (var jaCategoryId in jaCategoryIdList)
                         {
-                            _ja_jac_service.Add(model.JobAnnouncementId, jaCategoryId);
+                            ja_jac_service.Add(model.JobAnnouncementId, jaCategoryId);
                         }
                     }
 
@@ -252,7 +240,7 @@ namespace Web.Areas.Admin.Controllers
                     {
                         foreach (var skillId in skillIdList)
                         {
-                            _ja_skill_service.Add(model.JobAnnouncementId, skillId);
+                            ja_skill_serivce.Add(model.JobAnnouncementId, skillId);
                         }
                     }
 
@@ -260,7 +248,7 @@ namespace Web.Areas.Admin.Controllers
                     {
                         foreach (var studyFiledId in studyFieldIdList)
                         {
-                            _ja_studyField_service.Add(model.JobAnnouncementId, studyFiledId);
+                            ja_studyField_service.Add(model.JobAnnouncementId, studyFiledId);
                         }
                     }
 
@@ -288,7 +276,7 @@ namespace Web.Areas.Admin.Controllers
         [Route("Delete")]
         public bool Delete(int id)
         {
-            return _jobAnnouncementService.Delete(id);
+            return jobAnnouncementService.Delete(id);
         }
     }
 }
