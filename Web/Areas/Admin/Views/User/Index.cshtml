@@ -1,0 +1,177 @@
+﻿
+@model IEnumerable<Web.Model.Identity.ApplicationUserViewModel>
+
+@{
+    ViewData["PageTitle"] = "لیست کاربران";
+}
+
+<div class="accordion" id="custom-accordion-one" style="margin-top:-14px;">
+    <div class="card mb-0">
+        <div class="card-header" id="headingOne" style="max-height:40px;padding-top:0px;border-radius:4px;">
+            <h5 class="m-0">
+                <a class="custom-accordion-title d-block pt-2 pb-2 collapsed"
+                   data-bs-toggle="collapse" href="#collapseOne"
+                   aria-expanded="true" aria-controls="collapseOne">
+                    <i class="uil uil-filter" style="color:orangered;"></i>
+                    <b style="font-size:16px;margin-right:5px;">فیلتر اطلاعات</b>
+                    <i class="mdi mdi-chevron-up accordion-arrow" style="float:left;color:orangered;"></i>
+                </a>
+            </h5>
+        </div>
+
+        <div id="collapseOne" class="collapse"
+             aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+            <div class="card-body">
+                <div class="row" style="margin-top:10px;">
+                    <div class="col-md-6 col-sm-12">
+                        <div class="row form-group">
+                            @Html.Label(null, "نام کاربری", htmlAttributes: new { @class = "form-input-label col-md-3 col-sm-12", style = "float:right;text-align:right;margin-top:8px;" })
+                            <div class="col-md-6 col-sm-12">
+                                @Html.Editor("FilterUserName")
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-sm-12">
+                        <div class="row form-group">
+                            @Html.Label(null, "نام و نام خانوادگی", htmlAttributes: new { @class = "form-input-label col-md-3 col-sm-12", style = "float:right;text-align:right;margin-top:8px;" })
+                            <div class="col-md-6 col-sm-12">
+                                @Html.Editor("FilterName")
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" style="margin-top:22px;">
+                    <div class="col-md-6 col-sm-12">
+                        <div class="row form-group">
+                            @Html.Label(null, "نقش", htmlAttributes: new { @class = "form-input-label col-md-3 col-sm-12", style = "float:right;text-align:right;margin-top:8px;" })
+                            <div class="col-md-6 col-sm-12">
+                                @(Html.Kendo().DropDownList()
+                                    .OptionLabel("همه")
+                                    .Name("FilterRoleId")
+                                    .DataTextField("Text")
+                                    .DataValueField("Value")
+                                    .HtmlAttributes(new { style = "width: 100%" })
+                                    .DataSource(source =>
+                                    {
+                                        source.Read(read =>
+                                        {
+                                            read.Action("Fill_Role_Combo", "User", new { Area = "Admin", includeApplicantRole = true });
+                                        });
+                                    }))
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-sm-12">
+                    </div>
+                </div>
+                <hr />
+                <a class="btn btn-info" style="float:left;margin-bottom:10px;" onclick="filterUserData()">فیلتر اطلاعات</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="k-rtl" style="margin-top:20px;">
+    <div style="height:100%;">
+        @(Html.Kendo().Grid<Web.Model.Identity.ApplicationUserViewModel>().Name("Grid").Columns(columns =>
+            {
+                columns.Bound(c => c.Name).Width(250);
+                columns.Bound(c => c.UserName).Width(250);
+                columns.Bound(c => c.RoleName);
+                columns.Bound(c => c.PhoneNumber);
+
+                columns.Command(command =>
+                {
+                    command.Custom("ویرایش").Click("showEdit").HtmlAttributes(new { @class = "command-btn-yellow" });
+                    command.Custom("حذف").Click("deleteUser").HtmlAttributes(new { @class = "command-btn-red" });
+                });
+            })
+            .HtmlAttributes(new { style = "height: 550px;border-radius:0.25rem;" })
+            .Filterable(ftb => ftb.Mode(GridFilterMode.Menu))
+            .Scrollable(scrollable => scrollable.Virtual(true))
+            .Sortable()
+            .Pageable(pageable => pageable
+            .Refresh(true)
+            .PageSizes(true)
+            .ButtonCount(5))
+            .DataSource(dataSource => dataSource
+            .Ajax()
+            .Events(events => events.Error("error_handler"))
+            .Model(model =>
+            {
+                model.Id(x => x.PassengerId);
+            })
+            .Read(read => read.Action("Grid_Data_Read", "User", new { Area = "Admin" })
+            .Data("getUserFilterDataParams"))
+            .PageSize(20)
+            ))
+    </div>
+</div>
+<div class="row" style="margin-top:20px;">
+    <div class="col-xs-6 col-sm-6 col-md-6">
+        <a href="@Url.Action("Create", "User", new { Area = "Admin" })" class="btn btn-success form-command-btn" style="display:inline-block;float:right;">
+            <span><i class="fa fa-plus"></i><span>&nbsp;</span>ثبت جدید</span>
+        </a>
+        <a class="btn btn-light form-command-btn" onclick="ExportGridExcelData()" style="display:inline-block;margin-right:20px;width:auto;background-color:orange;color:white;">
+            <span><i class="fa fa-file-excel-o"></i><span>&nbsp;</span>دانلود فایل اکسل</span>
+        </a>
+    </div>
+    <div class="col-xs-6 col-sm-6 col-md-6 text-left">
+       @*  <a href="@Url.Action("Index", "Dashboard")" class="btn btn-info form-command-btn" style="float:left;">
+            <span class="btn-label"><i class="fa fa-reply"></i><span>&nbsp;</span>بازگشت</span>
+        </a> *@
+    </div>
+</div>
+
+<script type="text/javascript">
+    function showEdit(e) {
+        e.preventDefault();
+        var dataItem = this.dataItem(jQuery(e.currentTarget).closest("tr"));
+        window.location.href = "/Admin/User/Edit/" + dataItem.Id;
+    }
+
+    var getUserFilterDataParams = function (e) {
+        var result = {
+            filterUserName: $('#FilterUserName').val(),
+            filterName: $('#FilterName').val(),
+            filterRoleId: $('#FilterRoleId').val()
+        }
+        return result;
+    };
+
+    function filterUserData() {
+        $("#Grid").data("kendoGrid").dataSource.read();
+    }
+
+    function deleteUser(e) {
+        var dataItem = this.dataItem(jQuery(e.currentTarget).closest("tr"));
+        $.ajax({
+            url: '/Admin/User/Delete',
+            type: "GET",
+            data: {
+                userId: dataItem.Id
+            }
+        }).done(function (dresult) {
+            if (dresult == 1) {
+                var reqGrid = $("#Grid").data("kendoGrid");
+                reqGrid.dataSource.read();
+                showSimpleModalMessage('success', 'عملیات انجام شد', 'کاربر موردنظر حذف شد', '');
+            }
+            else if (dresult == -1) {
+                showSimpleModalMessage('danger', 'خطا', 'امکان حذف کاربر فعلی وجود ندارد', '');
+            }
+            else if (dresult == -2) {
+                showSimpleModalMessage('danger', 'خطا', 'کاربر موردنظر یافت نشد', '');
+            }
+            else if (dresult == -3) {
+                showSimpleModalMessage('danger', 'خطا', 'جهت حذف کاربر داوطلب، به قسمت داوطلب مراجعه کنید', '');
+            }
+            else if (dresult == -4) {
+                showSimpleModalMessage('danger', 'خطا', 'امکان حذف این کاربر وجود ندارد', '');
+            }
+            else {
+                showSimpleModalMessage('danger', 'خطا', 'امکان حذف این کاربر وجود ندارد', '');
+            }
+        })
+    }
+</script>

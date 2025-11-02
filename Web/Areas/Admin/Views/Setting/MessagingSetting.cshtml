@@ -1,0 +1,54 @@
+﻿@model MessagingSettingViewModel
+
+@{
+    ViewData["PageTitle"] = "تنظیمات اطلاع رسانی";
+}
+
+<div style="margin-top:-14px;">
+    @using (Html.BeginForm(null, null, FormMethod.Post, new { name = "my-form", id = "my-form" }))
+    {
+        @Html.AntiForgeryToken()
+        <div class="form-horizontal">
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            <div class="container-card col-lg-12 col-md-12 col-sm-12 col-sx-12">
+                <div style="border:1px #ccc solid;border-radius:15px;padding: 10px 20px;margin-top:30px;">
+                    <h4 style="color: #0ACF97;">تنظیمات اطلاع رسانی ثبت نام در سامانه</h4>
+                    <hr style="color:#ccc;height:1px;margin-top:20px;" />
+                    <div class="row form-group" style="margin-top:30px;">
+                        @Html.LabelFor(model => model.SendSMSOnSuccessfulRegisterInWebsite, new { @class = "control-label col-md-3 col-sm-3 form-input-label", style = "vertical-align:top;margin-top:3px;" })
+                        <div class="col-md-3 col-sm-4">
+                            <input type="checkbox" asp-for="@Model.SendSMSOnSuccessfulRegisterInWebsite" data-switch="warning" />
+                            <label for="SendSMSOnSuccessfulRegisterInWebsite" data-on-label="بله" data-off-label="خیر"></label>
+                        </div>
+                    </div>
+                </div>
+                <div style="border:1px #ccc solid;border-radius:15px;padding: 10px 20px;margin-top:30px;">
+                    <h4 style="color: #0ACF97;">تنظیمات اطلاع رسانی ثبت نام برای آگهی</h4>
+                    <hr style="color:#ccc;height:1px;margin-top:20px;" />
+                    <div class="row form-group" style="margin-top:30px;">
+                        @Html.LabelFor(model => model.SendSMSOnSuccessfulPayment, new { @class = "control-label col-md-3 col-sm-3 form-input-label", style = "vertical-align:top;margin-top:3px;" })
+                        <div class="col-md-3 col-sm-4">
+                            <input type="checkbox" asp-for="@Model.SendSMSOnSuccessfulPayment" data-switch="warning" />
+                            <label for="SendSMSOnSuccessfulPayment" data-on-label="بله" data-off-label="خیر"></label>
+                        </div>
+                    </div>
+                    <div class="row form-group" style="margin-top:30px;">
+                        @Html.LabelFor(model => model.SendSMSOnSuccessfulAnnouncementApply, new { @class = "control-label col-md-3 col-sm-3 form-input-label", style = "vertical-align:top;margin-top:3px;" })
+                        <div class="col-md-3 col-sm-4">
+                            <input type="checkbox" asp-for="@Model.SendSMSOnSuccessfulAnnouncementApply" data-switch="warning" />
+                            <label for="SendSMSOnSuccessfulAnnouncementApply" data-on-label="بله" data-off-label="خیر"></label>
+                        </div>
+                    </div>
+                </div>
+                <hr style="margin-top:45px;color:orangered;" />
+                <div class="row" style="margin-top:12px;">
+                    <div class="col-md-6 col-sm-12">
+                        <input type="submit" class="btn btn-success form-command-btn" value="ذخیره" style="float:right;" />
+                    </div>
+                    <div class="col-md-6 col-sm-12">
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>

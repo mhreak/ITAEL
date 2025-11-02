@@ -1,0 +1,75 @@
+﻿@model Web.Model.Identity.LoginViewModel
+@{
+    Layout = null;
+}
+
+<!doctype html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- App favicon -->
+    @* <link rel="shortcut icon" href="/img/favicon.png"> *@
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/css/font-farsi.css" />
+
+    <!-- Style -->
+    <link rel="stylesheet" href="/css/login-page-style.css">
+
+    <title>ورود به حساب کاربری</title>
+
+    <style>
+        * {
+            font-family: IranSans;
+        }
+    </style>
+</head>
+<body>
+    <div class="content">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-3"></div>
+                <div class="col-md-6 contents">
+                    <div class="row justify-content-center">
+                        <div class="col-md-1"></div>
+                        <div class="col-md-10">
+                            <div class="form-block">
+                                <div class="mb-4" style="text-align:center;">
+                                    @* <img src="/img/favicon.png" style="width:140px;" /> *@
+                                    <h1 style="text-align:center;margin-top:-22px;"><strong><span style="color:#ffc632;font-size:20px;">ورود به حساب کاربری</span></strong></h1>
+
+                                </div>
+                                @using (Html.BeginForm("Login", "Account", FormMethod.Post, new { @class = "login100-form validate-form", role = "form" }))
+                                {
+                                    @Html.AntiForgeryToken()
+                                    <div class="form-group first" style="margin-top:50px;">
+                                        <input type="text" class="form-control" id="Username" name="Username" required placeholder="نام کاربری" style="text-align:center;">
+                                    </div>
+                                    <div class="form-group last mb-4" style="margin-top:30px;">
+                                        <input type="Password" class="form-control" id="Password" name="Password" required placeholder="رمز عبور" style="text-align:center;">
+                                    </div>
+
+                                    <input type="submit" value="ورود" class="btn btn-pill text-white btn-block btn-primary" style="margin-top: 50px;">
+                                    @Html.ValidationSummary(true, "", new { @class = "text-danger", @style = "width:100%;text-align:center;color:red;font-family:IranSans;margin-top:12px;" })
+                                }
+                            </div>
+                        </div>
+                        <div class="col-md-1"></div>
+                    </div>
+                </div>
+                <div class="col-md-3"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+</body>
+</html>
+
+
+
+

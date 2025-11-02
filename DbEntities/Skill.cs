@@ -1,0 +1,24 @@
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace DbEntities
+{
+    [Table("Skill")]
+    public class Skill
+    {
+        [Key]
+        public int SkillId { get; set; }
+
+        [Required]
+        [MaxLength(50)]
+        public string SkillName { get; set; }
+
+        [Required]
+        public bool Active { get; set; }
+
+
+
+        public virtual ICollection<JobAnnouncement_Skill> JobAnnouncement_Skill_List { get; set; }
+    }
+}

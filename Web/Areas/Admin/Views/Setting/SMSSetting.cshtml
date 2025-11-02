@@ -1,0 +1,67 @@
+﻿@model SMSSettingViewModel
+
+@{
+    ViewData["PageTitle"] = "تنظیمات پنل پیامک";
+}
+
+<div style="margin-top:-14px;">
+    @using (Html.BeginForm(null, null, FormMethod.Post, new { name = "my-form", id = "my-form" }))
+    {
+        @Html.AntiForgeryToken()
+        <div class="form-horizontal">
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            <div class="container-card col-lg-12 col-md-12 col-sm-12 col-sx-12">
+                <div class="row form-group" style="margin-top:30px;">
+                    @Html.LabelFor(model => model.SMSPanelUsername, htmlAttributes: new { @class = "control-label col-md-2 col-sm-3 form-input-label" })
+                    <div class="col-md-3 col-sm-4">
+                        @Html.EditorFor(model => model.SMSPanelUsername)
+                        @Html.ValidationMessageFor(model => model.SMSPanelUsername, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-md-7 col-sm-5">
+                        <span style="color:red;font-size:20px;">*</span>
+                    </div>
+                </div>
+                <div class="row form-group" style="margin-top:30px;">
+                    @Html.LabelFor(model => model.SMSPanelPassword, htmlAttributes: new { @class = "control-label col-md-2 col-sm-3 form-input-label" })
+                    <div class="col-md-3 col-sm-4">
+                        @Html.EditorFor(model => model.SMSPanelPassword)
+                        @Html.ValidationMessageFor(model => model.SMSPanelPassword, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-md-7 col-sm-5">
+                        <span style="color:red;font-size:20px;">*</span>
+                    </div>
+                </div>
+                <div class="row form-group" style="margin-top:30px;">
+                    @Html.LabelFor(model => model.SMSSenderNumber, htmlAttributes: new { @class = "control-label col-md-2 col-sm-3 form-input-label" })
+                    <div class="col-md-3 col-sm-4">
+                        @Html.EditorFor(model => model.SMSSenderNumber)
+                        @Html.ValidationMessageFor(model => model.SMSSenderNumber, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-md-7 col-sm-5">
+                        <span style="color:red;font-size:20px;">*</span>
+                    </div>
+                </div>
+                <div class="row form-group" style="margin-top:30px;">
+                    @Html.LabelFor(model => model.ServiceSMSSenderNumber, htmlAttributes: new { @class = "control-label col-md-2 col-sm-3 form-input-label" })
+                    <div class="col-md-3 col-sm-4">
+                        @Html.EditorFor(model => model.ServiceSMSSenderNumber)
+                        @Html.ValidationMessageFor(model => model.ServiceSMSSenderNumber, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-md-7 col-sm-5">
+                        <span style="color:red;font-size:20px;">*</span>
+                    </div>
+                </div>
+                <hr style="margin-top:45px;color:orangered;" />
+                <div class="row" style="margin-top:12px;">
+                    <div class="col-md-6 col-sm-12">
+                        <input type="submit" class="btn btn-success form-command-btn" value="ذخیره" style="float:right;" />
+                    </div>
+                    <div class="col-md-6 col-sm-12">
+                        @* <a href=@Url.Action("Index", "Dashboard", new { Area = "Admin" })
+                    class="btn btn-danger form-command-btn" style="float: left;">بازگشت</a> *@
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>

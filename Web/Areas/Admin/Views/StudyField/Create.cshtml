@@ -1,0 +1,41 @@
+﻿@model Web.Model.StudyFieldViewModel
+
+@{
+    ViewData["PageTitle"] = "تعریف رشته تحصیلی جدید";
+}
+
+<div style="margin-top:-14px;">
+    @using (Html.BeginForm(null, null, FormMethod.Post, new { name = "my-form", id = "my-form" }))
+    {
+        <div class="container-card padding30" style="padding-top:45px;">
+            <div class="form-horizontal">
+                <div class="row form-group" style="margin-top:30px;">
+                    @Html.LabelFor(model => model.StudyFieldName, htmlAttributes: new { @class = "control-label col-md-2 col-sm-3 form-input-label" })
+                    <div class="col-md-3 col-sm-4">
+                        @Html.EditorFor(model => model.StudyFieldName)
+                        @Html.ValidationMessageFor(model => model.StudyFieldName, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-md-7 col-sm-5">
+                        <span style="color:red;font-size:20px;">*</span>
+                    </div>
+                </div>
+                <div class="row form-group" style="margin-top:30px;">
+                    @Html.Label(null, "فعال", htmlAttributes: new { @class = "control-label col-md-2 col-sm-3 form-input-label" })
+                    <div class="col-md-3 col-sm-4" style="padding-right:6px;">
+                        <input type="checkbox" asp-for="@Model.Active" checked data-switch="success" />
+                        <label for="Active" data-on-label="بله" data-off-label="خیر" style="margin-right:8px;"></label>
+                    </div>
+                </div>
+                <hr style="margin-top:45px;color:orangered;" />
+                <div class="row" style="margin-top:12px;">
+                    <div class="col-md-6 col-sm-12">
+                        <input type="submit" class="btn btn-success form-command-btn" value="ذخیره" style="float:right;" />
+                    </div>
+                    <div class="col-md-6 col-sm-12">
+                        <a href=@Url.Action("Index", "StudyField", new { Area = "Admin" }) class="btn btn-danger form-command-btn" style="float: left;">بازگشت</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>

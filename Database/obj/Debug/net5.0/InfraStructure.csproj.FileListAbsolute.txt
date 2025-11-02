@@ -1,0 +1,15 @@
+K:\Programming\Web\ASP.NET CORE\Toranj\Database\bin\Debug\net5.0\InfraStructure.deps.json
+K:\Programming\Web\ASP.NET CORE\Toranj\Database\bin\Debug\net5.0\InfraStructure.runtimeconfig.json
+K:\Programming\Web\ASP.NET CORE\Toranj\Database\bin\Debug\net5.0\InfraStructure.runtimeconfig.dev.json
+K:\Programming\Web\ASP.NET CORE\Toranj\Database\bin\Debug\net5.0\InfraStructure.dll
+K:\Programming\Web\ASP.NET CORE\Toranj\Database\bin\Debug\net5.0\ref\InfraStructure.dll
+K:\Programming\Web\ASP.NET CORE\Toranj\Database\bin\Debug\net5.0\InfraStructure.pdb
+K:\Programming\Web\ASP.NET CORE\Toranj\Database\obj\Debug\net5.0\InfraStructure.csproj.AssemblyReference.cache
+K:\Programming\Web\ASP.NET CORE\Toranj\Database\obj\Debug\net5.0\InfraStructure.GeneratedMSBuildEditorConfig.editorconfig
+K:\Programming\Web\ASP.NET CORE\Toranj\Database\obj\Debug\net5.0\InfraStructure.AssemblyInfoInputs.cache
+K:\Programming\Web\ASP.NET CORE\Toranj\Database\obj\Debug\net5.0\InfraStructure.AssemblyInfo.cs
+K:\Programming\Web\ASP.NET CORE\Toranj\Database\obj\Debug\net5.0\InfraStructure.csproj.CoreCompileInputs.cache
+K:\Programming\Web\ASP.NET CORE\Toranj\Database\obj\Debug\net5.0\InfraStructure.dll
+K:\Programming\Web\ASP.NET CORE\Toranj\Database\obj\Debug\net5.0\ref\InfraStructure.dll
+K:\Programming\Web\ASP.NET CORE\Toranj\Database\obj\Debug\net5.0\InfraStructure.pdb
+K:\Programming\Web\ASP.NET CORE\Toranj\Database\obj\Debug\net5.0\InfraStructure.genruntimeconfig.cache

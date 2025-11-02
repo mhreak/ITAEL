@@ -1,0 +1,49 @@
+﻿@using System.Globalization
+@model DateTime?
+@*@(Html.Kendo().DateTimePickerFor(m => m))*@
+
+
+
+@{
+    Func<DateTime, string> toPersianDate = date =>
+    {
+        var dateTime = new DateTime(date.Year, date.Month, date.Day, new GregorianCalendar());
+        var persianCalendar = new PersianCalendar();
+        return persianCalendar.GetYear(dateTime) + "/" +
+               persianCalendar.GetMonth(dateTime).ToString("00") + "/" +
+               persianCalendar.GetDayOfMonth(dateTime).ToString("00");
+    };
+    var name = this.ViewContext.ViewData.ModelMetadata.PropertyName;
+    var value = String.Empty;
+    if (Model.HasValue)
+    {
+        value = toPersianDate(Model.Value);
+    }
+
+}
+
+@*<input type="text" dir="rtl"
+    name="@name" id="@name"
+    value="@value"
+    onclick="PersianDatePicker.Show(this,'@today');" />*@
+
+@*@(Html.Kendo().DatePicker()
+                  .Name(name)
+                  .Value(value)
+                  .Format("yyyy/MM/dd")
+                  .HtmlAttributes(new { style = "width: 100%" })
+    )*@
+
+
+
+<div>
+    <div style="display:inline-block;width:100%;">
+        <input type="text" class="form-control" id="@name" name="@name"
+               data-ha-datetimepicker="#@name" data-ha-dp-issolar="true"
+               data-ha-dp-disabletime="true" data-ha-dp-resultinsolar="true"
+               data-ha-dp-resultformat="{year}/{month}/{day}" value="@value" style="display:inline;" />
+    </div>
+    <div style="display:inline-block;margin-right:-30px;">
+        <i class="fa fa-calendar" style="color: #034ea2;"></i>
+    </div>
+</div>

@@ -1,0 +1,89 @@
+﻿@model Web.Model.JobAnnouncementViewModel
+
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "جزئیات آگهی شغلی";
+}
+
+<div class="container mt-4">
+    <div class="position-relative text-white">
+        <img src="~/images/default-companyHeader.jpeg" class="img-fluid w-100 rounded" style="max-height: 250px; object-fit: cover;" alt="">
+        <div class="position-absolute top-50 start-50 translate-middle text-center">
+            <h2 class="fw-bold">@Model.Title</h2>
+            <h5 class="fw-light">@Model.CompanyName</h5>
+            <span class="badge bg-warning text-dark">⭐ 4.1</span>
+        </div>
+    </div>
+    <div class="card shadow-sm mt-3">
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <img src="~/images/9670.jpeg" alt="" />
+                    <h4 class="text-primary">@Model.Title</h4>
+                </div>
+            </div>
+
+            <hr>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <h6><strong>ظرفیت:</strong> @Model.Capacity</h6>
+                    <h6><strong>نوع زمان شغل:</strong> @Model.JobTimeTypeStr</h6>
+                </div>
+                <div class="col-md-6">
+                    <h6><strong>نوع شغل:</strong> @Model.JobTypeStr</h6>
+                    <h6><strong>آزمون استخدامی:</strong> @(Model.HasEmploymentExam ? "دارد" : "ندارد")</h6>
+                    @if (Model.HasEmploymentExam)
+                    {
+                        <h6><strong>تاریخ آزمون:</strong> @Model.ShamsiExamDate</h6>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+    @if (ViewBag.JonAnnouncement_StudyFieldList != null)
+    {
+        <div class="card shadow-sm mt-3">
+            <div class="card-body">
+                <h5 class="text-primary">رشته‌های تحصیلی مورد نیاز</h5>
+                <div>
+
+                    @foreach (var studyField in ViewBag.JonAnnouncement_StudyFieldList)
+                    {
+                        <span class="badge bg-info text-white m-1">@studyField.StudyFieldName</span>
+                    }
+
+                </div>
+            </div>
+        </div>
+    }
+    @if (ViewBag.JonAnnouncement_SkillList != null)
+    {
+        <div class="card shadow-sm mt-3">
+            <div class="card-body">
+                <h5 class="text-primary">مهارت‌های مورد نیاز</h5>
+                <div>
+
+                    @foreach (var skill in ViewBag.JonAnnouncement_SkillList)
+                    {
+                        <span class="badge bg-success text-white m-1">@skill.SkillName</span>
+                    }
+
+                </div>
+            </div>
+        </div>
+    }
+    <div class="card shadow-sm mt-3">
+        <div class="card-body">
+            <h5 class="text-primary">اطلاعات بیشتر</h5>
+            <ul class="list-unstyled">
+                @Html.Raw(Model.Description)
+            </ul>
+        </div>
+    </div>
+
+    <div class="text-center mt-4">
+        <a href="#" class="btn btn-success btn-lg">ارسال درخواست</a>
+        <a href="@Url.Action("Index", "Home")" class="btn btn-secondary btn-lg">بازگشت</a>
+    </div>
+</div>

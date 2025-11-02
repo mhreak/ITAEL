@@ -1,0 +1,199 @@
+﻿@model IEnumerable<CommissionRuleViewModel>
+
+@{
+    ViewData["PageTitle"] = "لیست قوانین محاسبه پورسانت";
+}
+
+<div class="accordion" id="custom-accordion-one" style="margin-top:-14px;">
+    <div class="card mb-0">
+        <div class="card-header" id="headingOne" style="max-height:40px;padding-top:0px;border-radius:4px;">
+            <h5 class="m-0">
+                <a class="custom-accordion-title d-block pt-2 pb-2 collapsed"
+                   data-bs-toggle="collapse" href="#collapseOne"
+                   aria-expanded="true" aria-controls="collapseOne">
+                    <i class="uil uil-filter" style="color:orangered;"></i>
+                    <b style="font-size:16px;margin-right:5px;">فیلتر اطلاعات</b>
+                    <i class="mdi mdi-chevron-up accordion-arrow" style="float:left;color:orangered;"></i>
+                </a>
+            </h5>
+        </div>
+
+        <div id="collapseOne" class="collapse"
+             aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+            <div class="card-body">
+
+                <div class="row" style="margin-top:22px;">
+                    <div class="col-md-6 col-sm-12">
+                        <div class="row form-group">
+                            @Html.Label(null, "محاسبه بر اساس", htmlAttributes: new { @class = "form-input-label col-md-3 col-sm-12", style = "float:right;text-align:right;margin-top:8px;" })
+                            <div class="col-md-6 col-sm-12">
+                                @(Html.Kendo().DropDownList()
+                                    .Name("FilterCommissionBasedOn")
+                                    .DataTextField("Text")
+                                    .DataValueField("Value")
+                                    .OptionLabel("همه")
+                                    .HtmlAttributes(new { style = "width: 100%" })
+                                    .BindTo(new List<SelectListItem>() {
+                                        new SelectListItem() {
+                                Text = "تعداد ثبت نام",
+                                        Value = "1"
+                                        },
+                                        new SelectListItem() {
+                                Text = "مبلغ ثبت نام",
+                                        Value = "2"
+                                        }
+                                        }))
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-sm-12">
+                        <div class="row form-group">
+                            @Html.Label(null, "نحوه محاسبه", htmlAttributes: new { @class = "form-input-label col-md-3 col-sm-12", style = "float:right;text-align:right;margin-top:8px;" })
+                            <div class="col-md-6 col-sm-12">
+                                @(Html.Kendo().DropDownList()
+                                    .Name("FilterCommissionType")
+                                    .DataTextField("Text")
+                                    .DataValueField("Value")
+                                    .OptionLabel("همه")
+                                    .HtmlAttributes(new { style = "width: 100%" })
+                                    .BindTo(new List<SelectListItem>() {
+                                new SelectListItem() {
+                                Text = "پورسانت درصدی",
+                                Value = "1"
+                                },
+                                new SelectListItem() {
+                                Text = "پورسانت به ازای هر ثبت نام",
+                                Value = "2"
+                                }
+                                }))
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" style="margin-top:22px;">
+                    <div class="col-md-6 col-sm-12">
+                        <div class="row form-group">
+                            @Html.Label(null, "وضعیت", htmlAttributes: new { @class = "form-input-label col-md-3 col-sm-12", style = "float:right;text-align:right;margin-top:8px;" })
+                            <div class="col-md-6 col-sm-12">
+                                @(Html.Kendo().DropDownList()
+                                    .Name("FilterActive")
+                                    .DataTextField("Text")
+                                    .DataValueField("Value")
+                                    .OptionLabel("همه")
+                                    .HtmlAttributes(new { style = "width: 100%" })
+                                    .BindTo(new List<SelectListItem>() {
+                                new SelectListItem() {
+                                Text = "فعال",
+                                Value = "True"
+                                },
+                                new SelectListItem() {
+                                Text = "غیرفعال",
+                                Value = "False"
+                                }
+                                }))
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-sm-12">
+                        <div class="row form-group">
+                        </div>
+                    </div>
+                </div>
+                <hr />
+                <a class="btn btn-info" style="float:left;margin-bottom:10px;" onclick="filterData()">فیلتر اطلاعات</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="k-rtl" style="margin-top:20px;">
+        <div style="height:100%;">
+            @(Html.Kendo().Grid<CommissionRuleViewModel>().Name("Grid").Columns(columns =>
+                {
+                    columns.Bound(c => c.CommissionBasedOnStr).Width(200);
+                    columns.Bound(c => c.CommissionTypeStr).Width(200);
+                    columns.Bound(c => c.Min).Width(250);
+                    columns.Bound(c => c.Max).Width(250);
+                    columns.Bound(c => c.Value).Width(200);
+                    columns.Bound(c => c.ActiveStr).Width(200);
+
+                    columns.Command(command =>
+                    {
+                        command.Custom("ویرایش").Click("editRow").HtmlAttributes(new { @class = "command-btn-yellow" });
+                        command.Custom("حذف").Click("deleteRow").HtmlAttributes(new { @class = "command-btn-red" });
+                    }).Width(250);
+                })
+                .HtmlAttributes(new { style = "height: 550px;border-radius:0.25rem;" })
+                .Filterable(ftb => ftb.Mode(GridFilterMode.Menu))
+                .Scrollable(scrollable => scrollable.Virtual(true))
+                .Sortable()
+                .Pageable(pageable => pageable
+                .Refresh(true)
+                .PageSizes(true)
+                .ButtonCount(5))
+                .DataSource(dataSource => dataSource
+                .Ajax()
+                .Events(events => events.Error("error_handler"))
+                .Model(model =>
+                {
+                    model.Id(x => x.CommissionRuleId);
+                })
+                .Read(read => read.Action("Grid_Data_Read", "CommissionRule", new { Area = "Admin" })
+                .Data("getFilterDataParams"))
+                .PageSize(20)
+                ))
+        </div>
+    </div>
+    <div class="row" style="margin-top:20px;">
+        <div class="col-xs-6 col-sm-6 col-md-6">
+            <a href="@Url.Action("Create", "CommissionRule")" class="btn btn-success form-command-btn" style="display:inline-block;float:right;">
+                <span><i class="fa fa-plus"></i><span>&nbsp;</span>ثبت جدید</span>
+            </a>
+        </div>
+        <div class="col-xs-6 col-sm-6 col-md-6 text-left">
+            @* <a href="@Url.Action("Index", "Dashboard")" class="btn btn-info form-command-btn" style="float:left;">
+            <span class="btn-label"><i class="fa fa-reply"></i><span>&nbsp;</span>بازگشت</span>
+            </a> *@
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    function editRow(e) {
+        e.preventDefault();
+        var dataItem = this.dataItem(jQuery(e.currentTarget).closest("tr"));
+        window.location.href = "/Admin/CommissionRule/Edit/" + dataItem.CommissionRuleId;
+    }
+
+    var getFilterDataParams = function (e) {
+        var result = {
+            filterCommissionBasedOn: $('#FilterCommissionBasedOn').val(),
+            filterCommissionType: $('#FilterCommissionType').val(),
+            filterActive: $('#FilterActive').val()
+        }
+        return result;
+    };
+
+    function filterData() {
+        $("#Grid").data("kendoGrid").dataSource.read();
+    }
+
+    function deleteRow(e) {
+        var dataItem = this.dataItem(jQuery(e.currentTarget).closest("tr"));
+        $.ajax({
+            url: '/Admin/CommissionRule/Delete',
+            type: "GET",
+            data: {
+                id: dataItem.CommissionRuleId
+            }
+        }).done(function (dresult) {
+            if (dresult == true) {
+                var reqGrid = $("#Grid").data("kendoGrid");
+                reqGrid.dataSource.read();
+                showSimpleModalMessage('success', 'عملیات انجام شد', 'اطلاعات موردنظر حذف شد', '');
+            }
+            else {
+                showSimpleModalMessage('danger', 'خطا', 'امکان حذف این اطلاعات وجود ندارد', '');
+            }
+        })
+    }
+</script>

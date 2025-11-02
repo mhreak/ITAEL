@@ -1,0 +1,951 @@
+﻿@{
+    var action = (ViewContext.RouteData.Values["action"] ?? "").ToString();
+    var controller = (ViewContext.RouteData.Values["controller"] ?? "").ToString();
+    var area = (ViewContext.RouteData.DataTokens["area"] ?? "").ToString().ToLower();
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>@ViewData["PageTitle"] | ITAEL</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- App favicon -->
+    <link rel="shortcut icon" href="/img/favicon.png">
+
+    <!-- third party css -->
+    @*<link href="/css/vendor/jquery-jvectormap-1.2.2.css" rel="stylesheet" type="text/css" />*@
+    <!-- third party css end -->
+    <!-- App css -->
+    <link href="/css/icons-rtl.min.css" rel="stylesheet" type="text/css" />
+    <link href="/css/hyper/app-rtl.min.css" rel="stylesheet" type="text/css" id="light-style" />
+    <link href="/css/hyper/app-dark-rtl.min.css" rel="stylesheet" type="text/css" id="dark-style" />
+
+    @*<link href="/lib/kendo/css/Site.css" rel="stylesheet" type="text/css" />*@
+    <link href="/lib/kendo/css/2022.R2/kendo.common.min.css" rel="stylesheet" type="text/css" />
+    <link href="/lib/kendo/css/2022.R2/kendo.material-main.min.css" rel="stylesheet" type="text/css" />
+    <link href="/lib/kendo/css/2022.R2/kendo.rtl.min.css" rel="stylesheet" type="text/css" />
+
+
+    <link href="/css/hyper/theme-customize.css" rel="stylesheet" type="text/css" />
+
+    <link href="/lib/ClockPicker/css/bootstrap-clockpicker.min.css" rel="stylesheet" type="text/css" />
+
+    <link href="/lib/bootstrap-daterangepicker/daterangepicker.css" rel="stylesheet" type="text/css" />
+    <link href="/lib/ha-datetimepicker/ha-datetimepicker.css" rel="stylesheet" type="text/css" />
+    <link href="/css/font-farsi.css" rel="stylesheet" type="text/css" />
+    <link href="/font/FontAwesome/font-awesome.min.css" rel="stylesheet" type="text/css" />
+
+    <script src="/lib/jquery/dist/jquery.min.js"></script>
+
+    @*<script src="/lib/kendo/js/2022.R2/jszip.min.js"></script>*@
+
+    <script src="/lib/JSZip/js/jszip.min.js"></script>
+
+    <script src="/lib/kendo/js/2022.R2/kendo.all.min.js"></script>
+    <script src="/lib/kendo/js/2022.R2/kendo.aspnetmvc.min.js"></script>
+    @*<script src="/lib/kendo/js/kendo.modernizr.custom.js"></script>*@
+    <script src="/lib/kendo/js/2022.R2/cultures/kendo.culture.fa-IR.min.js"></script>
+    <script src="/lib/kendo/js/2022.R2/cultures/kendo.culture.fa.min.js"></script>
+    <script src="/lib/kendo/js/2022.R2/messages/kendo.messages.fa-IR.min.js"></script>
+    @*<script src="/lib/kendo/js/moment.js"></script>
+    <script src="/lib/kendo/js/moment-jalaali.js"></script>*@
+
+    <link rel="stylesheet" href="/lib/toastr/css/toastr.min.css" />
+    <script src="/lib/toastr/js/toastr.min.js"></script>
+
+    @*<link rel="stylesheet" href="/lib/MDBootstarpDatetimePicker/css/jquery.Bootstrap-PersianDateTimePicker.css" />*@
+</head>
+
+<body class="loading" data-layout-config='{"leftSideBarTheme":"dark","layoutBoxed":false, "leftSidebarCondensed":false, "leftSidebarScrollable":false,"darkMode":false, "showRightSidebarOnStart": true}'>
+    <!-- Begin page -->
+    <div class="wrapper">
+        <!-- ========== Left Sidebar Start ========== -->
+        <div class="leftside-menu" style="max-width:230px;">
+
+            <!-- LOGO -->
+            <a href="index.html" class="logo text-center logo-light" style="max-width:230px;">
+                @*<span class="logo-lg">
+                <img src="/image/logo/logo-1.png" alt="" height="60">
+                </span>
+                <span class="logo-sm">
+                <img src="assets/images/logo_sm.png" alt="" height="16">
+                </span>*@
+            </a>
+
+            <!-- LOGO -->
+            <a href="index.html" class="logo text-center logo-dark">
+                <span class="logo-lg">
+                    <img src="assets/images/logo-dark.png" alt="" height="16">
+                </span>
+                <span class="logo-sm">
+                    <img src="assets/images/logo_sm_dark.png" alt="" height="16">
+                </span>
+            </a>
+
+            <div class="h-100" id="leftside-menu-container" data-simplebar>
+
+                <!--- Sidemenu -->
+                <ul class="side-nav">
+
+                    @*<li class="side-nav-title side-nav-item">Navigation</li>*@
+
+                    @* <li class="side-nav-item">
+                    <a class="side-nav-link" href=@Url.Action("Index", "Dashboard", new { Area = "Admin" })>
+                    <i class="uil-home-alt" style="color: #0ACF97;"></i>
+                    <span> پیشخوان </span>
+                    </a>
+                    </li> *@
+                    
+                    <li class="side-nav-item">
+                        <a data-bs-toggle="collapse" aria-expanded="false" href="#sidebar-ja"
+                           aria-controls="sidebar-ja" class="side-nav-link">
+                            <i class="uil-user"></i>
+                            <span> آگهی ها </span>
+                        </a>
+                        <div class="collapse" id="sidebar-ja">
+                            <ul class="side-nav-second-level">
+                                <li>
+                                    <a href=@Url.Action("Index", "JobAnnouncement", new { Area = "Admin" })><i class="uil-circle" style="color: #f39c12;"></i> لیست آگهی ها</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+
+                    <li class="side-nav-item">
+                        <a data-bs-toggle="collapse" aria-expanded="false" href="#sidebar-applicants"
+                           aria-controls="sidebar-applicants" class="side-nav-link">
+                            <i class="uil-user"></i>
+                            <span> داوطلبین </span>
+                        </a>
+                        <div class="collapse" id="sidebar-applicants">
+                            <ul class="side-nav-second-level">
+                                <li>
+                                    <a href=@Url.Action("Index", "Applicant", new { Area = "Admin" })><i class="uil-circle" style="color: #f39c12;"></i> لیست داوطلبین</a>
+                                </li>
+                                <li>
+                                    <a href=@Url.Action("Create", "Applicant", new { Area = "Admin" })><i class="uil-circle" style="color: #f39c12;"></i> ثبت جدید</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+
+                    <li class="side-nav-item">
+                            <a data-bs-toggle="collapse" aria-expanded="false" href="#sidebar-sms"
+                               aria-controls="sidebar-sms" class="side-nav-link">
+                                <i class="uil-envelope"></i>
+                                <span> پیامک </span>
+                            </a>
+                            <div class="collapse" id="sidebar-sms">
+                                <ul class="side-nav-second-level">
+                                    <li>
+                                        <a href=@Url.Action("Index", "SystemSMS", new { Area = "Admin" })><i class="uil-circle" style="color: #f39c12;"></i> پیامک های سیستمی</a>
+                                    </li>
+                                </ul>
+                            </div>
+                    </li>
+
+                    <li class="side-nav-item">
+                        <a data-bs-toggle="collapse" aria-expanded="false" href="#sidebar-base-information"
+                           aria-controls="sidebar-base-information" class="side-nav-link">
+                            <i class="fa fa-info"></i>
+                            <span> اطلاعات پایه </span>
+                        </a>
+                        <div class="collapse" id="sidebar-base-information">
+                            <ul class="side-nav-second-level">
+                                <li>
+                                    <a href=@Url.Action("Index", "JobAnnouncementCategory", new { Area = "Admin" })><i class="uil-circle" style="color: #f39c12;"></i> دسته بندی آگهی ها</a>
+                                </li>
+                                <li>
+                                    <a href=@Url.Action("Index", "Company", new { Area = "Admin" })><i class="uil-circle" style="color: #f39c12;"></i> شرکت ها</a>
+                                </li>
+                                <li>
+                                    <a href=@Url.Action("Index", "Skill", new { Area = "Admin" })><i class="uil-circle" style="color: #f39c12;"></i> مهارت ها</a>
+                                </li>
+                                <li>
+                                    <a href=@Url.Action("Index", "StudyField", new { Area = "Admin" })><i class="uil-circle" style="color: #f39c12;"></i> رشته های تحصیلی</a>
+                                </li>
+                                <li>
+                                    <a href=@Url.Action("Index", "Wallet", new { Area = "Admin" })><i class="uil-circle" style="color: #f39c12;"></i> کیف پول ها</a>
+                                </li>
+                                <li>
+                                    <a href=@Url.Action("Index", "ReferralCode", new { Area = "Admin" })><i class="uil-circle" style="color: #f39c12;"></i> کد های رهگیری</a>
+                                </li>
+                                <li>
+                                    <a href=@Url.Action("Index", "CommissionRule", new { Area = "Admin" })><i class="uil-circle" style="color: #f39c12;"></i> قوانین محاسبه پورسانت</a>
+                                </li>                            </ul>
+                        </div>
+                    </li>
+
+                    <li class="side-nav-item">
+                        <a data-bs-toggle="collapse" aria-expanded="false" href="#sidebar-setting"
+                           aria-controls="sidebar-base-information" class="side-nav-link">
+                            <i class="fa fa-gear"></i>
+                            <span> تنظیمات </span>
+                        </a>
+                        <div class="collapse" id="sidebar-setting">
+                            <ul class="side-nav-second-level">
+                                <li>
+                                    <a href=@Url.Action("SMSSetting", "Setting", new { Area = "Admin" })><i class="uil-circle" style="color: #f39c12;"></i> تنظیمات پنل پیامک</a>
+                                </li>
+                                <li>
+                                    <a href=@Url.Action("MessagingSetting", "Setting", new { Area = "Admin" })><i class="uil-circle" style="color: #f39c12;"></i> تنظیمات اطلاع رسانی</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+
+                    <li class="side-nav-item">
+                        <a data-bs-toggle="collapse" aria-expanded="false" href="#sidebar-users"
+                           aria-controls="sidebar-base-information" class="side-nav-link">
+                            <i class="uil-user"></i>
+                            <span> کاربران </span>
+                        </a>
+                        <div class="collapse" id="sidebar-users">
+                            <ul class="side-nav-second-level">
+                                <li>
+                                    <a href=@Url.Action("Index", "User", new { Area = "Admin" })><i class="uil-circle" style="color: #f39c12;"></i> لیست کاربران</a>
+                                </li>
+                                <li>
+                                    <a href=@Url.Action("Create", "User", new { Area = "Admin" })><i class="uil-circle" style="color: #f39c12;"></i> ثبت کاربر جدید</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+
+                <!-- Help Box -->
+                @*<div class="help-box text-white text-center">
+                <a href="javascript: void(0);" class="float-end close-btn text-white">
+                <i class="mdi mdi-close"></i>
+                </a>
+                <img src="assets/images/help-icon.svg" height="90" alt="Helper Icon Image" />
+                <h5 class="mt-3">Unlimited Access</h5>
+                <p class="mb-3">Upgrade to plan to get access to unlimited reports</p>
+                <a href="javascript: void(0);" class="btn btn-outline-light btn-sm">Upgrade</a>
+                </div>*@
+                <!-- end Help Box -->
+                <!-- End Sidebar -->
+
+                <div class="clearfix"></div>
+
+            </div>
+            <!-- Sidebar -left -->
+
+        </div>
+        <!-- Left Sidebar End -->
+        <!-- ============================================================== -->
+        <!-- Start Page Content here -->
+        <!-- ============================================================== -->
+
+        <div class="content-page" style="padding:0;">
+            <div class="content">
+                <!-- Topbar Start -->
+                <div class="row page-title-bar" style="margin-left:0;margin-right:0;">
+                    <div style="width:auto;padding:16px 0;border-left:1px solid #eee;">
+                        <button class="button-menu-mobile open-left" style="width:50px;height:30px !important; line-height: 30px !important;margin-right:0;">
+                            <i class="mdi mdi-menu"></i>
+                        </button>
+                    </div>
+                    <div style="padding: 0; display: inline-block; width: auto; border-left: 1px solid #eee;">
+                        <div class="page-title">@ViewData["PageTitle"]</div>
+                    </div>
+                    <div style="position:absolute;left:0;height:62px;width: auto; padding: 16px 0; background-color: #07af7d; min-width:120px; text-align:center;">
+                        <ul class="list-unstyled topbar-menu" style="display:inline-block;width:60px;text-align:center;">
+                            <li class="dropdown notification-list">
+                                <a class="dropdown-toggle arrow-none me-0" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false"
+                                   aria-expanded="false" style="height:100%; background-color: #07af7d; border: none; color: #034ea2; text-align:center;">
+                                    <span class="account-user-avatar">
+                                        <span class="account-position" style="color: white; font-size: 18px;"><i class="fa fa-user-circle"></i></span>
+                                    </span>
+                                    <span>
+                                        <span class="account-user-name" style="color:white;font-size:18px;">@User.Identity.Name</span>
+                                    </span>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-end dropdown-menu-animated topbar-dropdown-menu profile-dropdown">
+                                    <form name="logoutForm" id="logoutForm" method="post" action="/Account/LogOut">
+                                        @Html.AntiForgeryToken()
+                                        <a href="javascript:document.getElementById('logoutForm').submit()" class="dropdown-item notify-item">
+                                            <i class="mdi mdi-logout me-1"></i>
+                                            <span>خروج از حساب کاربری</span>
+                                        </a>
+                                    </form>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <!-- end Topbar -->
+                <!-- Start Content-->
+                <div class="container-fluid">
+                    <!-- start page title -->
+                    @*<div class="row">
+                    <div class="col-12">
+                    <div class="page-title-box">
+                    <div class="page-title-right">
+                    <form class="d-flex">
+                    <div class="input-group">
+                    <input type="text" class="form-control form-control-light" id="dash-daterange">
+                    <span class="input-group-text bg-primary border-primary text-white">
+                    <i class="mdi mdi-calendar-range font-13"></i>
+                    </span>
+                    </div>
+                    <a href="javascript: void(0);" class="btn btn-primary ms-2">
+                    <i class="mdi mdi-autorenew"></i>
+                    </a>
+                    <a href="javascript: void(0);" class="btn btn-primary ms-1">
+                    <i class="mdi mdi-filter-variant"></i>
+                    </a>
+                    </form>
+                    </div>
+                    <h4 class="page-title">Dashboard</h4>
+                    </div>
+                    </div>
+                    </div>*@
+                    <!-- end page title -->
+                    <div style="margin-top:14px;padding:14px;">
+                        @RenderBody()
+
+                        <div id="msg-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="danger-header-modalLabel" aria-hidden="true">
+                            <div id="msg-modal-dialog" class="modal-dialog">
+                                <div id="msg-modal-content" class="modal-content">
+                                    <div id="msg-modal-header" class="modal-header modal-colored-header">
+                                        <h4 id="msg-modal-title">...</h4>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+                                    </div>
+                                    <div id="msg-modal-message" class="modal-body" style="padding:20px;font-weight:bold;font-size:17px;">
+                                        ...
+                                    </div>
+                                    <div class="modal-footer">
+                                        <div class="row" style="width:100%;">
+                                            <div class="col-6" style="padding:0px;">
+                                                <button id="msg-modal-cancel-button" type="button" class="btn btn-light" style="float:right;box-shadow:none;border-radius:6px;font-weight:bold;" data-bs-dismiss="modal">بستن</button>
+                                            </div>
+                                            <div class="col-6" style="padding:0px;">
+                                                <button id="msg-modal-button" type="button" class="btn" style="display:none; float: left; box-shadow: none; border-radius: 6px;font-weight:bold;">ذخیره</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="msg-simple-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div id="msg-simple-modal-content" class="modal-content" style="max-width:300px;">
+                                    <div class="modal-body p-4">
+                                        <div class="text-center">
+                                            <i id="msg-simple-modal-icon" class="h1" style="font-size:42px;"></i>
+                                            <h4 id="msg-simple-modal-title" class="mt-2"></h4>
+                                            <p id="msg-simple-modal-message" class="mt-3"></p>
+                                            <button type="button" id="msg-simple-modal-button" class="btn my-2" style="box-shadow:none;border-radius:6px;font-weight:bold;" data-bs-dismiss="modal">بستن</button>
+                                        </div>
+                                    </div>
+                                </div><!-- /.modal-content -->
+                            </div><!-- /.modal-dialog -->
+                        </div>
+
+                        <div id="confirm-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="danger-header-modalLabel" aria-hidden="true">
+                            <div id="confirm-modal-dialog" class="modal-dialog">
+                                <div id="confirm-modal-content" class="modal-content">
+                                    <div id="confirm-modal-header" class="modal-header modal-colored-header">
+                                        <h4 id="confirm-modal-title">...</h4>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+                                    </div>
+                                    <div id="confirm-modal-message" class="modal-body" style="padding: 20px; font-weight: bold; font-size: 17px;">
+                                        ...
+                                    </div>
+                                    <div class="modal-footer">
+                                        <div class="row" style="width:100%;">
+                                            <div class="col-6" style="padding:0px;">
+                                                <button id="confirm-modal-cancel-button" type="button" class="btn btn-light" style="float:right;box-shadow:none;border-radius:6px;font-weight:bold;">بستن</button>
+                                            </div>
+                                            <div class="col-6" style="padding:0px;">
+                                                <button id="confirm-modal-button" type="button" class="btn" style="float: left; box-shadow: none; border-radius: 6px;font-weight:bold;">ذخیره</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <!-- container -->
+
+            </div>
+            <!-- content -->
+            <!-- Footer Start -->
+            @*<footer class="footer">
+            <div class="container-fluid">
+            <div class="row">
+            <div class="col-md-6">
+            <script>document.write(new Date().getFullYear())</script> © Hyper - Coderthemes.com
+            </div>
+            <div class="col-md-6">
+            <div class="text-md-end footer-links d-none d-md-block">
+            <a href="javascript: void(0);">About</a>
+            <a href="javascript: void(0);">Support</a>
+            <a href="javascript: void(0);">Contact Us</a>
+            </div>
+            </div>
+            </div>
+            </div>
+            </footer>*@
+            <!-- end Footer -->
+
+        </div>
+
+        <!-- ============================================================== -->
+        <!-- End Page content -->
+        <!-- ============================================================== -->
+        <div id="modal-container" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-body">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END wrapper -->
+    <!-- Right Sidebar -->
+    <!--<div class="end-bar">
+
+        <div class="rightbar-title">
+            <a href="javascript:void(0);" class="end-bar-toggle float-end">
+                <i class="dripicons-cross noti-icon"></i>
+            </a>
+            <h5 class="m-0">Settings</h5>
+        </div>
+
+        <div class="rightbar-content h-100" data-simplebar>
+
+            <div class="p-3">-->
+    <!-- Settings -->
+    <!--<h5 class="mt-3">Color Scheme</h5>
+    <hr class="mt-1" />
+
+    <div class="form-check form-switch mb-1">
+        <input class="form-check-input" type="checkbox" name="color-scheme-mode" value="light" id="light-mode-check" checked>
+        <label class="form-check-label" for="light-mode-check">Light Mode</label>
+    </div>
+
+    <div class="form-check form-switch mb-1">
+        <input class="form-check-input" type="checkbox" name="color-scheme-mode" value="dark" id="dark-mode-check">
+        <label class="form-check-label" for="dark-mode-check">Dark Mode</label>
+    </div>-->
+    <!-- Width -->
+    <!--<h5 class="mt-4">Width</h5>
+    <hr class="mt-1" />
+    <div class="form-check form-switch mb-1">
+        <input class="form-check-input" type="checkbox" name="width" value="fluid" id="fluid-check" checked>
+        <label class="form-check-label" for="fluid-check">Fluid</label>
+    </div>
+
+    <div class="form-check form-switch mb-1">
+        <input class="form-check-input" type="checkbox" name="width" value="boxed" id="boxed-check">
+        <label class="form-check-label" for="boxed-check">Boxed</label>
+    </div>-->
+    <!-- Left Sidebar-->
+    <!--<h5 class="mt-4">Left Sidebar</h5>
+        <hr class="mt-1" />
+        <div class="form-check form-switch mb-1">
+            <input class="form-check-input" type="checkbox" name="theme" value="default" id="default-check">
+            <label class="form-check-label" for="default-check">Default</label>
+        </div>
+
+        <div class="form-check form-switch mb-1">
+            <input class="form-check-input" type="checkbox" name="theme" value="light" id="light-check" checked>
+            <label class="form-check-label" for="light-check">Light</label>
+        </div>
+
+        <div class="form-check form-switch mb-3">
+            <input class="form-check-input" type="checkbox" name="theme" value="dark" id="dark-check">
+            <label class="form-check-label" for="dark-check">Dark</label>
+        </div>
+
+        <div class="form-check form-switch mb-1">
+            <input class="form-check-input" type="checkbox" name="compact" value="fixed" id="fixed-check" checked>
+            <label class="form-check-label" for="fixed-check">Fixed</label>
+        </div>
+
+        <div class="form-check form-switch mb-1">
+            <input class="form-check-input" type="checkbox" name="compact" value="condensed" id="condensed-check">
+            <label class="form-check-label" for="condensed-check">Condensed</label>
+        </div>
+
+        <div class="form-check form-switch mb-1">
+            <input class="form-check-input" type="checkbox" name="compact" value="scrollable" id="scrollable-check">
+            <label class="form-check-label" for="scrollable-check">Scrollable</label>
+        </div>
+
+        <div class="d-grid mt-4">
+            <button class="btn btn-primary" id="resetBtn">Reset to Default</button>
+        </div>
+    </div>-->
+    <!-- end padding-->
+    <!--</div>
+    </div>-->
+    @*<div class="rightbar-overlay"></div>*@
+    <!-- /End-bar -->
+    <!-- bundle -->
+    <script src="/js/hyper/vendor.min.js"></script>
+    <script src="/js/hyper/app.min.js"></script>
+
+    <script src="/lib/bootstrap-daterangepicker/daterangepicker.js"></script>
+    <script src="/lib/ha-datetimepicker/ha-solardate.min.js"></script>
+    <script src="/lib/ha-datetimepicker/ha-datetimepicker.js"></script>
+    <script src="/lib/ClockPicker/js/bootstrap-clockpicker.min.js"></script>
+
+    @*<script src="/lib/MDBootstarpDatetimePicker/js/jalaali.js"></script>
+    <script src="/lib/MDBootstarpDatetimePicker/js/jquery.Bootstrap-PersianDateTimePicker.js"></script>
+
+    <script src="/lib/ClockPicker/js/bootstrap-clockpicker.min.js"></script>
+
+    <script src="/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+
+    <!-- third party js -->
+    @*<script src="/js/vendor/apexcharts.min.js"></script>*@
+    @*<script src="/js/vendor/jquery-jvectormap-1.2.2.min.js"></script>
+    <script src="/js/vendor/jquery-jvectormap-world-mill-en.js"></script>*@
+    <!-- third party js ends -->
+    <!-- demo app -->
+    @*<script src="/js/hyper/demo.dashboard.js"></script>*@
+    <!-- end demo js-->
+
+    <script type="text/javascript">
+        function error_handler(e) {
+            if (e.errors) {
+                var message = "Errors:\n";
+                $.each(e.errors, function (key, value) {
+                    if ('errors' in value) {
+                        $.each(value.errors, function () {
+                            message += this + "\n";
+                        });
+                    }
+                });
+                alert(message);
+            }
+        }
+
+    </script>
+
+    <script>
+        $(function () {
+            $('body').on('click', '.modal-link', function (e) {
+                e.preventDefault();
+                var href = $(this).attr('href');
+                $.ajax({
+                    type: "POST",
+                    url: href,
+                    data: {},
+                    contentType: "application/json",
+                    success: function (response) {
+                        var modalBody = $("#modal-container").find(".modal-body");
+                        modalBody.html(response);
+                        $("#modal-container").modal('show');
+                    },
+                    failure: function (response) {
+                        alert(response.responseText);
+                    },
+                    error: function (response) {
+                        alert(response.responseText);
+                    }
+                });
+
+            });
+        });
+
+        function closeModalDialog() {
+            $("#modal-container").modal('hide');
+        }
+
+        function ExportGridExcelData() {
+
+            //$("#Grid").kendoGrid({
+            //    excelExport: function (e) {
+            //        e.workbook.fileName = $('li.breadcrumb-item.active').text().replace(" ", "-") + ".xlsx";
+            //        e.workbook.rtl = true;
+            //    }
+            //});
+
+            var grid = $("#Grid").data("kendoGrid");
+
+            grid.setOptions({
+                excel: {
+                    allPages: true
+                }
+            });
+
+            grid.saveAsExcel();
+        }
+    </script>
+
+    @if (Convert.ToBoolean(ViewData["ShowToast"]))
+    {
+        switch (ViewData["ToastType"])
+        {
+            case "info":
+                <script>
+                    toastr.info("@ViewData["ToastText"]", "@ViewData["ToastTitle"]", {
+                        positionClass: "toast-bottom-left",
+                        timeOut: 5e3,
+                        closeButton: !0,
+                        debug: !1,
+                        newestOnTop: !0,
+                        progressBar: !0,
+                        preventDuplicates: !0,
+                        onclick: null,
+                        showDuration: "300",
+                        hideDuration: "1000",
+                        extendedTimeOut: "1000",
+                        showEasing: "swing",
+                        hideEasing: "linear",
+                        showMethod: "fadeIn",
+                        hideMethod: "fadeOut",
+                        tapToDismiss: !1
+                    })
+
+                </script>
+                break;
+            case "success":
+                <script>
+                    toastr.success("@ViewData["ToastText"]", "@ViewData["ToastTitle"]", {
+                        positionClass: "toast-bottom-left",
+                        timeOut: 5e3,
+                        closeButton: !0,
+                        debug: !1,
+                        newestOnTop: !0,
+                        progressBar: !0,
+                        preventDuplicates: !0,
+                        onclick: null,
+                        showDuration: "300",
+                        hideDuration: "1000",
+                        extendedTimeOut: "1000",
+                        showEasing: "swing",
+                        hideEasing: "linear",
+                        showMethod: "fadeIn",
+                        hideMethod: "fadeOut",
+                        tapToDismiss: !1
+                    })
+
+                </script>
+                break;
+            case "warning":
+                <script>
+                    toastr.warning("@ViewData["ToastText"]", "@ViewData["ToastTitle"]", {
+                        positionClass: "toast-bottom-left",
+                        timeOut: 5e3,
+                        closeButton: !0,
+                        debug: !1,
+                        newestOnTop: !0,
+                        progressBar: !0,
+                        preventDuplicates: !0,
+                        onclick: null,
+                        showDuration: "300",
+                        hideDuration: "1000",
+                        extendedTimeOut: "1000",
+                        showEasing: "swing",
+                        hideEasing: "linear",
+                        showMethod: "fadeIn",
+                        hideMethod: "fadeOut",
+                        tapToDismiss: !1
+                    })
+
+                </script>
+                break;
+            case "danger":
+                <script>
+                    toastr.error("@ViewData["ToastText"]", "@ViewData["ToastTitle"]", {
+                        positionClass: "toast-bottom-left",
+                        timeOut: 5e3,
+                        closeButton: !0,
+                        debug: !1,
+                        newestOnTop: !0,
+                        progressBar: !0,
+                        preventDuplicates: !0,
+                        onclick: null,
+                        showDuration: "300",
+                        hideDuration: "1000",
+                        extendedTimeOut: "1000",
+                        showEasing: "swing",
+                        hideEasing: "linear",
+                        showMethod: "fadeIn",
+                        hideMethod: "fadeOut",
+                        tapToDismiss: !1
+                    })
+
+                </script>
+                break;
+        }
+    }
+
+    <script>
+
+        function showSimpleModalMessage(modalStyle, title, message, buttonText) {
+
+
+            switch (modalStyle) {
+                case 'info':
+                    $('#msg-simple-modal-icon').addClass("dripicons-information");
+                    $('#msg-simple-modal-icon').addClass("text-info");
+                    $('#msg-simple-modal-button').addClass("btn-info");
+                    break;
+                case 'success':
+                    $('#msg-simple-modal-content').addClass("modal-filled");
+                    $('#msg-simple-modal-content').addClass("bg-success");
+                    $('#msg-simple-modal-icon').addClass("dripicons-checkmark");
+                    $('#msg-simple-modal-button').addClass("btn-light");
+                    break;
+                case "warning":
+                    $('#msg-simple-modal-icon').addClass("dripicons-warning");
+                    $('#msg-simple-modal-icon').addClass("text-warning");
+                    $('#msg-simple-modal-button').addClass("btn-warning");
+                    break;
+                case 'danger':
+                    $('#msg-simple-modal-content').addClass("modal-filled");
+                    $('#msg-simple-modal-content').addClass("bg-danger");
+                    $('#msg-simple-modal-icon').addClass("dripicons-wrong");
+                    $('#msg-simple-modal-button').addClass("btn-light");
+                    break;
+            }
+
+            if (message != '') {
+                $('#msg-simple-modal-message').text(message);
+            }
+
+            if (buttonText != '') {
+                $('#msg-simple-modal-button').text(buttonText);
+            }
+
+            $('#msg-simple-modal-title').text(title);
+            $('#msg-simple-modal').modal('toggle');
+        }
+
+        function showModalMessage(modalStyle, title, message, cancelButtonText, showButton,
+            buttonText, buttonStyle) {
+
+            switch (modalStyle) {
+                case 'info':
+                    $('#msg-modal-header').addClass("bg-info");
+                    break;
+                case 'success':
+                    $('#msg-modal-header').addClass("bg-success");
+                    break;
+                case "warning":
+                    $('#msg-modal-header').addClass("bg-warning");
+                    break;
+                case 'danger':
+                    $('#msg-modal-header').addClass("bg-danger");
+                    break;
+            }
+
+            if (title != '') {
+                $('#msg-modal-title').text(title);
+            }
+
+            if (cancelButtonText != '') {
+                $('#msg-modal-cancel-button').text(cancelButtonText);
+            }
+
+            if (showButton) {
+                $('#msg-modal-button').show();
+            }
+
+            if (buttonText != '') {
+                $('#msg-modal-button').text(buttonText);
+            }
+
+            switch (buttonStyle) {
+                case 'light':
+                    $('#msg-modal-button').addClass("btn-light");
+                    break;
+                case 'info':
+                    $('#msg-modal-button').addClass("btn-info");
+                    break;
+                case 'success':
+                    $('#msg-modal-button').addClass("btn-success");
+                    break;
+                case "warning":
+                    $('#msg-modal-button').addClass("btn-warning");
+                    break;
+                case 'danger':
+                    $('#msg-modal-button').addClass("btn-danger");
+                    break;
+            }
+
+            $('#msg-modal-message').html(message);
+
+            $('#msg-modal').modal('toggle');
+        }
+
+        function showConfirmModalMessage(modalStyle, title, message, cancelButtonText,
+            confirmButtonText, confirmButtonStyle, cofirmFunctionName, confirmFunctionArguments,
+            cancelFunctionName, cancelFunctionArguments) {
+
+            switch (modalStyle) {
+                case 'info':
+                    $('#confirm-modal-header').addClass("bg-info");
+                    break;
+                case 'success':
+                    $('#confirm-modal-header').addClass("bg-success");
+                    break;
+                case "warning":
+                    $('#confirm-modal-header').addClass("bg-warning");
+                    break;
+                case 'danger':
+                    $('#confirm-modal-header').addClass("bg-danger");
+                    break;
+            }
+
+            if (title != '') {
+                $('#confirm-modal-title').text(title);
+            }
+
+            if (cancelButtonText != '') {
+                $('#confirm-modal-cancel-button').text(cancelButtonText);
+            }
+
+            if (confirmButtonText != '') {
+                $('#confirm-modal-button').text(confirmButtonText);
+            }
+
+            switch (confirmButtonStyle) {
+                case 'light':
+                    $('#confirm-modal-button').addClass("btn-light");
+                    break;
+                case 'info':
+                    $('#confirm-modal-button').addClass("btn-info");
+                    break;
+                case 'success':
+                    $('#confirm-modal-button').addClass("btn-success");
+                    break;
+                case "warning":
+                    $('#confirm-modal-button').addClass("btn-warning");
+                    break;
+                case 'danger':
+                    $('#confirm-modal-button').addClass("btn-danger");
+                    break;
+            }
+
+            $('#confirm-modal-message').html(message);
+
+            $('#confirm-modal-button').off('click');
+
+            if (cofirmFunctionName != '') {
+                $('#confirm-modal-button').click(function () {
+                    $('#confirm-modal').modal('toggle');
+                    window[cofirmFunctionName](confirmFunctionArguments);
+                });
+            }
+            else {
+                $('#confirm-modal-button').click(function () {
+                    $('#confirm-modal').modal('toggle');
+                });
+            }
+
+            $('#confirm-modal-cancel-button').off('click');
+
+            if (cancelFunctionName != '') {
+                $('#confirm-modal-cancel-button').click(function () {
+                    $('#confirm-modal').modal('toggle');
+                    window[cancelFunctionName](cancelFunctionArguments);
+                });
+            }
+            else {
+                $('#confirm-modal-cancel-button').click(function () {
+                    $('#confirm-modal').modal('toggle');
+                });
+            }
+
+            $('#confirm-modal').modal('toggle');
+        }
+
+        function showToast(toastType, title, message) {
+            switch (toastType) {
+                case "info":
+                    toastr.info(message, title, {
+                        positionClass: "toast-bottom-left",
+                        timeOut: 5e3,
+                        closeButton: !0,
+                        debug: !1,
+                        newestOnTop: !0,
+                        progressBar: !0,
+                        preventDuplicates: !0,
+                        onclick: null,
+                        showDuration: "300",
+                        hideDuration: "1000",
+                        extendedTimeOut: "1000",
+                        showEasing: "swing",
+                        hideEasing: "linear",
+                        showMethod: "fadeIn",
+                        hideMethod: "fadeOut",
+                        tapToDismiss: !1
+                    })
+                    break;
+                case "success":
+                    toastr.success(message, title, {
+                        positionClass: "toast-bottom-left",
+                        timeOut: 5e3,
+                        closeButton: !0,
+                        debug: !1,
+                        newestOnTop: !0,
+                        progressBar: !0,
+                        preventDuplicates: !0,
+                        onclick: null,
+                        showDuration: "300",
+                        hideDuration: "1000",
+                        extendedTimeOut: "1000",
+                        showEasing: "swing",
+                        hideEasing: "linear",
+                        showMethod: "fadeIn",
+                        hideMethod: "fadeOut",
+                        tapToDismiss: !1
+                    })
+                    break;
+                case "warning":
+                    toastr.warning(message, title, {
+                        positionClass: "toast-bottom-left",
+                        timeOut: 5e3,
+                        closeButton: !0,
+                        debug: !1,
+                        newestOnTop: !0,
+                        progressBar: !0,
+                        preventDuplicates: !0,
+                        onclick: null,
+                        showDuration: "300",
+                        hideDuration: "1000",
+                        extendedTimeOut: "1000",
+                        showEasing: "swing",
+                        hideEasing: "linear",
+                        showMethod: "fadeIn",
+                        hideMethod: "fadeOut",
+                        tapToDismiss: !1
+                    })
+                    break;
+                case "danger":
+                    toastr.error(message, title, {
+                        positionClass: "toast-bottom-left",
+                        timeOut: 5e3,
+                        closeButton: !0,
+                        debug: !1,
+                        newestOnTop: !0,
+                        progressBar: !0,
+                        preventDuplicates: !0,
+                        onclick: null,
+                        showDuration: "300",
+                        hideDuration: "1000",
+                        extendedTimeOut: "1000",
+                        showEasing: "swing",
+                        hideEasing: "linear",
+                        showMethod: "fadeIn",
+                        hideMethod: "fadeOut",
+                        tapToDismiss: !1
+                    })
+                    break;
+            }
+        }
+    </script>
+</body>
+</html>

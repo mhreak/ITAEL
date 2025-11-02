@@ -1,0 +1,411 @@
+﻿@model Web.Model.ApplicantViewModel
+
+@{
+    ViewData["PageTitle"] = "ویرایش اطلاعات داوطلب";
+}
+
+<style>
+    .btn-operation {
+        color: #555;
+        box-shadow: none;
+        border-radius: 4px;
+        width: 100%;
+        font-weight: bold;
+        display: inline-block;
+        width: auto;
+        min-width: 160px;
+    }
+
+        .btn-operation:hover {
+            color: white;
+        }
+</style>
+
+<div style="margin-top:-14px;">
+    @using (Html.BeginForm(null, null, FormMethod.Post, new { name = "my-form", id = "my-form" }))
+    {
+        @Html.HiddenFor(model => model.ApplicantId)
+        @Html.HiddenFor(model => model.InsertDate)
+        @Html.HiddenFor(model => model.PersonalImageFileName)
+        @Html.HiddenFor(model => model.EducationalCertificateFileName)
+        @Html.HiddenFor(model => model.NationalCardFrontFileName)
+        @Html.HiddenFor(model => model.NationalCardBackFileName)
+        @Html.HiddenFor(model => model.IdentityCertificateFirstPageFileName)
+        @Html.HiddenFor(model => model.IdentityCertificateSecondPageFileName)
+
+        <div class="container-card padding30" style="padding-top:45px;">
+            <div class="form-horizontal">
+                <div class="row">
+                    <div class="col-md-6 col-12">
+                        <div class="row form-group" style="margin-top:30px;">
+                            @Html.LabelFor(model => model.FirstName, htmlAttributes: new { @class = "control-label col-md-4 col-sm-12 col-12 form-input-label" })
+                            <div class="col-md-6 col-sm-10 col-10">
+                                @Html.EditorFor(model => model.FirstName)
+                                @Html.ValidationMessageFor(model => model.FirstName, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="col-md-2 col-sm-2 col-2">
+                                <span style="color:red;font-size:20px;">*</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-12">
+                        <div class="row form-group" style="margin-top:30px;">
+                            @Html.LabelFor(model => model.LastName, htmlAttributes: new { @class = "control-label col-md-4 col-sm-12 col-12 form-input-label" })
+                            <div class="col-md-6 col-sm-10 col-10">
+                                @Html.EditorFor(model => model.LastName)
+                                @Html.ValidationMessageFor(model => model.LastName, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="col-md-2 col-sm-2 col-2">
+                                <span style="color:red;font-size:20px;">*</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 col-12">
+                        <div class="row form-group" style="margin-top:30px;">
+                            @Html.LabelFor(model => model.Gender, htmlAttributes: new { @class = "control-label col-md-4 col-sm-12 col-12 form-input-label" })
+                            <div class="col-md-6 col-sm-10 col-10">
+                                @(Html.Kendo().DropDownList()
+                                    .Name("Gender")
+                                    .DataTextField("Text")
+                                    .DataValueField("Value")
+                                    .OptionLabel("انتخاب کنید")
+                                    .HtmlAttributes(new { style = "width: 100%" })
+                                    .Value(Model.Gender.ToString())
+                                    .BindTo(new List<SelectListItem>() {
+                                        new SelectListItem() {
+                                        Text = "آقا",
+                                        Value = "True"
+                                        },
+                                        new SelectListItem() {
+                                        Text = "خانم",
+                                        Value = "False"
+                                        }
+                                        }))
+                                @Html.ValidationMessageFor(model => model.Gender, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="col-md-2 col-sm-2 col-2">
+                                <span style="color:red;font-size:20px;">*</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-12">
+                        <div class="row form-group" style="margin-top:30px;">
+                            @Html.LabelFor(model => model.NationalCode, htmlAttributes: new { @class = "control-label col-md-4 col-sm-12 col-12 form-input-label" })
+                            <div class="col-md-6 col-sm-10 col-10">
+                                @Html.EditorFor(model => model.NationalCode)
+                                @Html.ValidationMessageFor(model => model.NationalCode, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="col-md-2 col-sm-2 col-2">
+                                <span style="color:red;font-size:20px;">*</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 col-12">
+                        <div class="row form-group" style="margin-top:30px;">
+                            @Html.LabelFor(model => model.Phone, htmlAttributes: new { @class = "control-label col-md-4 col-sm-12 col-12 form-input-label" })
+                            <div class="col-md-6 col-sm-10 col-10">
+                                @Html.EditorFor(model => model.Phone)
+                                @Html.ValidationMessageFor(model => model.Phone, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="col-md-2 col-sm-2 col-2">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-12">
+                        <div class="row form-group" style="margin-top:30px;">
+                            @Html.LabelFor(model => model.Mobile, htmlAttributes: new { @class = "control-label col-md-4 col-sm-12 col-12 form-input-label" })
+                            <div class="col-md-6 col-sm-10 col-10">
+                                @Html.EditorFor(model => model.Mobile)
+                                @Html.ValidationMessageFor(model => model.Mobile, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="col-md-2 col-sm-2 col-2">
+                                <span style="color:red;font-size:20px;">*</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" style="margin-top:10px;">
+                    <div class="col-md-6 col-12">
+                        <div class="row form-group" style="margin-top:30px;">
+                            @Html.LabelFor(model => model.BirthDate, htmlAttributes: new { @class = "control-label col-md-4 col-sm-12 col-12 form-input-label" })
+                            <div class="col-md-6 col-sm-10 col-10">
+                                @Html.EditorFor(model => model.BirthDate)
+                                @Html.ValidationMessageFor(model => model.BirthDate, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="col-md-2 col-sm-2 col-2">
+                                <span style="color:red;font-size:20px;">*</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-12">
+                        <div class="row form-group" style="margin-top:30px;">
+                            @Html.LabelFor(model => model.StudyFieldName, htmlAttributes: new { @class = "control-label col-md-4 col-sm-12 col-12 form-input-label" })
+                            <div class="col-md-6 col-sm-10 col-10">
+                                @(Html.Kendo().DropDownList()
+                                    .Name("StudyField")
+                                    .OptionLabel("انتخاب کنید")
+                                    .DataTextField("Text")
+                                    .DataValueField("Value")
+                                    .Value(Model.StudyFieldId.ToString())
+                                    .DataSource(source =>
+                                    {
+                                        source.Read(read =>
+                                        {
+                                            read.Action("Fill_StudyField_Combo", "StudyField", new { Area = "Admin", active = "true" });
+                                        });
+                                    })
+                                    )
+                                @Html.ValidationMessageFor(model => model.StudyFieldId, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="col-md-2 col-sm-2 col-2">
+                                <span style="color:red;font-size:20px;">*</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" style="margin-top:10px;">
+                    <div class="col-md-6 col-12">
+                        <div class="row form-group" style="margin-top:30px;">
+                            @Html.LabelFor(model => model.ProvinceName, htmlAttributes: new { @class = "control-label col-md-4 col-sm-12 col-12 form-input-label" })
+                            <div class="col-md-6 col-sm-10 col-10">
+                                @(Html.Kendo().DropDownList()
+                                    .Name("ProvinceId")
+                                    .OptionLabel("همه")
+                                    .DataTextField("Text")
+                                    .DataValueField("Value")
+                                    .Value(Model.ProvinceId.ToString())
+                                    .DataSource(source =>
+                                    {
+                                        source.Read(read =>
+                                        {
+                                            read.Action("Fill_Province_Combo", "Province", new { Area = "Admin" });
+                                        });
+                                    })
+                                    )
+                                @Html.ValidationMessageFor(model => model.ProvinceId, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="col-md-2 col-sm-2 col-2">
+                                <span style="color:red;font-size:20px;">*</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-12">
+                        <div class="row form-group" style="margin-top:30px;">
+                            @Html.LabelFor(model => model.CityName, htmlAttributes: new { @class = "control-label col-md-4 col-sm-12 col-12 form-input-label" })
+                            <div class="col-md-6 col-sm-10 col-10">
+                                @(Html.Kendo().DropDownList()
+                                    .Name("CityId")
+                                    .OptionLabel("همه")
+                                    .DataTextField("Text")
+                                    .DataValueField("Value")
+                                    .Value(Model.CityId.ToString())
+                                    .DataSource(source =>
+                                    {
+                                        source.Read(read =>
+                                        {
+                                            read.Action("Fill_City_Combo", "City", new { Area = "Admin" })
+                                        .Data("filterCities");
+                                        })
+                                        .ServerFiltering(true);
+                                    })
+                                    .Enable(false)
+                                    .AutoBind(false)
+                                    .CascadeFrom("ProvinceId")
+                                    )
+                                @Html.ValidationMessageFor(model => model.CityId, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="col-md-2 col-sm-2 col-2">
+                                <span style="color:red;font-size:20px;">*</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 col-12">
+                        <div class="row form-group" style="margin-top:30px;">
+                            @Html.LabelFor(model => model.EnglishLanguageLevelStr, htmlAttributes: new { @class = "control-label col-md-4 col-sm-12 col-12 form-input-label" })
+                            <div class="col-md-6 col-sm-10 col-10">
+                                @(Html.Kendo().DropDownList()
+                                    .Name("EnglishLanguageLevel")
+                                    .DataTextField("Text")
+                                    .DataValueField("Value")
+                                    .OptionLabel("انتخاب کنید")
+                                    .HtmlAttributes(new { style = "width: 100%" })
+                                    .Value(Model.EnglishLanguageLevel.ToString())
+                                        .BindTo(new List<SelectListItem>() {
+                                            new SelectListItem() {
+                                            Text = "عالی",
+                                            Value = "1"
+                                            },
+                                            new SelectListItem() {
+                                            Text = "متوسط",
+                                            Value = "2"
+                                            },
+                                            new SelectListItem() {
+                                            Text = "ضعیف",
+                                            Value = "3"
+                                            }
+                                            }))
+                                @Html.ValidationMessageFor(model => model.Gender, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="col-md-2 col-sm-2 col-2">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-12">
+                    </div>
+                </div>
+                <hr style="margin-top:40px;" />
+                <div class="row">
+                    <div class="col-md-6 col-12">
+                        <div class="row form-group" style="margin-top:30px;">
+                            @Html.Label(null, "عکس پرسنلی", htmlAttributes: new { @class = "control-label col-md-4 col-sm-12 form-input-label", style = "float:right;text-align:right;" })
+                            <div class="col-md-6 col-sm-10 col-10">
+                                @(Html.Kendo().Upload()
+                                    .Name("PersonalImageFile")
+                                    .HtmlAttributes(new
+                                    {
+                                        id = "PersonalImageFile",
+                                        aria_label = "files"
+                                    })
+                                    .Messages(m => m.Select("انتخاب فایل"))
+                                    .Messages(m => m.InvalidMaxFileSize("حداکثر حجم قابل آپلود یک مگابایت است"))
+                                    .Validation(validation => validation.MaxFileSize(1048576))
+                                    .Validation(validation => validation.AllowedExtensions(new string[] { "jpg", "jpeg", "png" })))
+                            </div>
+                            <div class="col-md-2 col-sm-2 col-2">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-12">
+                        <div class="row form-group" style="margin-top:30px;">
+                            @Html.Label(null, "اسکن مدرک تحصیلی", htmlAttributes: new { @class = "control-label col-md-4 col-sm-12 form-input-label", style = "float:right;text-align:right;" })
+                            <div class="col-md-6 col-sm-10 col-10">
+                                @(Html.Kendo().Upload()
+                                    .Name("EducationalCertificateFile")
+                                    .HtmlAttributes(new
+                                    {
+                                        id = "EducationalCertificateFile",
+                                        aria_label = "files"
+                                    })
+                                    .Messages(m => m.Select("انتخاب فایل"))
+                                    .Messages(m => m.InvalidMaxFileSize("حداکثر حجم قابل آپلود یک مگابایت است"))
+                                    .Validation(validation => validation.MaxFileSize(1048576))
+                                    .Validation(validation => validation.AllowedExtensions(new string[] { "jpg", "jpeg", "png", "pdf" })))
+                            </div>
+                            <div class="col-md-2 col-sm-2 col-2">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" style="margin-top:10px;">
+                    <div class="col-md-6 col-12">
+                        <div class="row form-group" style="margin-top:30px;">
+                            @Html.Label(null, "اسکن کارت ملی (رو)", htmlAttributes: new { @class = "control-label col-md-4 col-sm-12 form-input-label", style = "float:right;text-align:right;" })
+                            <div class="col-md-6 col-sm-10 col-10">
+                                @(Html.Kendo().Upload()
+                                    .Name("NationalCardFrontFile")
+                                    .HtmlAttributes(new
+                                    {
+                                        id = "NationalCardFrontFile",
+                                        aria_label = "files"
+                                    })
+                                    .Messages(m => m.Select("انتخاب فایل"))
+                                    .Messages(m => m.InvalidMaxFileSize("حداکثر حجم قابل آپلود یک مگابایت است"))
+                                    .Validation(validation => validation.MaxFileSize(1048576))
+                                    .Validation(validation => validation.AllowedExtensions(new string[] { "jpg", "jpeg", "png", "pdf" })))
+                            </div>
+                            <div class="col-md-2 col-sm-2 col-2">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-12">
+                        <div class="row form-group" style="margin-top:30px;">
+                            @Html.Label(null, "اسکن کارت ملی (پشت)", htmlAttributes: new { @class = "control-label col-md-4 col-sm-12 form-input-label", style = "float:right;text-align:right;" })
+                            <div class="col-md-6 col-sm-10 col-10">
+                                @(Html.Kendo().Upload()
+                                    .Name("NationalCardBackFile")
+                                    .HtmlAttributes(new
+                                    {
+                                        id = "NationalCardBackFile",
+                                        aria_label = "files"
+                                    })
+                                    .Messages(m => m.Select("انتخاب فایل"))
+                                    .Messages(m => m.InvalidMaxFileSize("حداکثر حجم قابل آپلود یک مگابایت است"))
+                                    .Validation(validation => validation.MaxFileSize(1048576))
+                                    .Validation(validation => validation.AllowedExtensions(new string[] { "jpg", "jpeg", "png", "pdf" })))
+                            </div>
+                            <div class="col-md-2 col-sm-2 col-2">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" style="margin-top:10px;">
+                    <div class="col-md-6 col-12">
+                        <div class="row form-group" style="margin-top:30px;">
+                            @Html.Label(null, "شناسنامه (صفحه اول)", htmlAttributes: new { @class = "control-label col-md-4 col-sm-12 form-input-label", style = "float:right;text-align:right;" })
+                            <div class="col-md-6 col-sm-10 col-10">
+                                @(Html.Kendo().Upload()
+                                    .Name("IdentityCertificateFirstPageFile")
+                                    .HtmlAttributes(new
+                                    {
+                                        id = "IdentityCertificateFirstPageFile",
+                                        aria_label = "files"
+                                    })
+                                    .Messages(m => m.Select("انتخاب فایل"))
+                                    .Messages(m => m.InvalidMaxFileSize("حداکثر حجم قابل آپلود یک مگابایت است"))
+                                    .Validation(validation => validation.MaxFileSize(1048576))
+                                    .Validation(validation => validation.AllowedExtensions(new string[] { "jpg", "jpeg", "png", "pdf" })))
+                            </div>
+                            <div class="col-md-2 col-sm-2 col-2">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-12">
+                        <div class="row form-group" style="margin-top:30px;">
+                            @Html.Label(null, "شناسنامه (صفحه دوم)", htmlAttributes: new { @class = "control-label col-md-4 col-sm-12 form-input-label", style = "float:right;text-align:right;" })
+                            <div class="col-md-6 col-sm-10 col-10">
+                                @(Html.Kendo().Upload()
+                                    .Name("IdentityCertificateSecondPageFile")
+                                    .HtmlAttributes(new
+                                    {
+                                        id = "IdentityCertificateSecondPageFile",
+                                        aria_label = "files"
+                                    })
+                                    .Messages(m => m.Select("انتخاب فایل"))
+                                    .Messages(m => m.InvalidMaxFileSize("حداکثر حجم قابل آپلود یک مگابایت است"))
+                                    .Validation(validation => validation.MaxFileSize(1048576))
+                                    .Validation(validation => validation.AllowedExtensions(new string[] { "jpg", "jpeg", "png", "pdf" })))
+                            </div>
+                            <div class="col-md-2 col-sm-2 col-2">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <hr style="margin-top:45px;color:orangered;" />
+                <div class="row" style="margin-top:12px;">
+                    <div class="col-md-6 col-sm-12">
+                        <input type="submit" class="btn btn-success form-command-btn" value="ذخیره" style="float:right;" />
+                    </div>
+                    <div class="col-md-6 col-sm-12">
+                        <a href=@Url.Action("Index", "Applicant", new { Area = "Admin" }) class="btn btn-danger form-command-btn" style="float: left;">بازگشت</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<script>
+
+    function filterCities() {
+        return {
+            provinceId: $("#ProvinceId").val(),
+            active: null
+        };
+    }
+</script>

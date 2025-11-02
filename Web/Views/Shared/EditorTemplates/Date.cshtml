@@ -1,0 +1,48 @@
+﻿@using System.Globalization
+@model DateTime?
+@{
+    Func<DateTime, string> toPersianDate = date =>
+    {
+        var dateTime = new DateTime(date.Year, date.Month, date.Day, new GregorianCalendar());
+        var persianCalendar = new PersianCalendar();
+        return persianCalendar.GetYear(dateTime) + "/" +
+               persianCalendar.GetMonth(dateTime).ToString("00") + "/" +
+               persianCalendar.GetDayOfMonth(dateTime).ToString("00");
+    };
+    var today = toPersianDate(DateTime.Now);
+    var name = this.ViewContext.ViewData.ModelMetadata.PropertyName;
+
+    var dd = new DateTime(1900, 1, 1);
+    string value;
+    if (Model.HasValue && Model.Value < dd)
+    {
+        value = string.Empty;
+    }
+    else
+    {
+        value = Model.HasValue ? toPersianDate(Model.Value) : string.Empty;
+    }
+}
+
+@*<input type="text" dir="rtl"
+    name="@name" id="@name"
+    value="@value"
+    onclick="PersianDatePicker.Show(this,'@today');" />*@
+
+@*@(Html.Kendo().DatePicker()
+                  .Name(name)
+                  .Value(value)
+                  .Format("yyyy/MM/dd")
+                  .HtmlAttributes(new { style = "width: 100%" })
+    )*@
+
+
+
+<div class="input-group">
+    <div class="input-group-addon" data-mddatetimepicker="true" data-targetselector="#@name" data-trigger="click" data-enabletimepicker="false" data-isgregorian="false" data-englishnumber="false">
+        <span class="glyphicon glyphicon-calendar"></span>
+    </div>
+    <input type="text" class="form-control" id="@name" value="@value" name="@name" placeholder="" data-targetselector="#@name" data-mddatetimepicker="true" data-placement="right" data-englishnumber="false" />
+</div>
+
+

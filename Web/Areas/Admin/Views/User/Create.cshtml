@@ -1,0 +1,119 @@
+﻿@model Web.Model.Identity.CreateUserViewModel
+
+@{
+    ViewData["PageTitle"] = "ثبت کاربر جدید";
+}
+
+<div style="margin-top:-14px;">
+    @using (Html.BeginForm(null, null, FormMethod.Post, new { name = "my-form", id = "my-form" }))
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="form-horizontal">
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            <div class="container-card col-lg-12 col-md-12 col-sm-12 col-sx-12">
+                <div class="panel-body" style="padding-top:30px">
+                    <div class="row form-group">
+                        @Html.Label(null, "نام و نام خانوادگی", new { @class = "col-md-2 control-label form-input-label" })
+                        <div class="col-md-3">
+                            @Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="col-md-5 col-sm-1">
+                            <span style="color:red;font-size:20px;">*</span>
+                        </div>
+                    </div>
+
+                    <div class="row form-group" style="margin-top:30px;">
+                        @Html.Label(null, "نام کاربری (فقط انگلیسی)", new { @class = "col-md-2 control-label form-input-label" })
+                        <div class="col-md-3">
+                            @Html.TextBoxFor(m => m.UserName, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.UserName, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="col-md-5 col-sm-1">
+                            <span style="color:red;font-size:20px;">*</span>
+                        </div>
+                    </div>
+
+                    <div class="row form-group" style="margin-top:30px;">
+                        @Html.Label(null, "ایمیل", new { @class = "col-md-2 control-label form-input-label" })
+                        <div class="col-md-3">
+                            @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="col-md-5 col-sm-1">
+                        </div>
+                    </div>
+                    <div class="row form-group" style="margin-top:30px;">
+                        @Html.Label(null, "شماره تماس (یازده رقم)", new { @class = "col-md-2 control-label form-input-label" })
+                        <div class="col-md-3">
+                            @Html.TextBoxFor(m => m.PhoneNumber, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.PhoneNumber, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="col-md-5 col-sm-1">
+                            <span style="color:red;font-size:20px;">*</span>
+                        </div>
+                    </div>
+                    <hr />
+                    توجه: رمز عبور باید حداقل دارای طول هشت کاراکتر، دارای حداقل یک حرف انگلیسی کوچک، دارای حداقل یک حرف انگلیسی بزرگ، دارای حداقل یک عدد و دارای حداقل یک کاراکتر ویژه باشد
+
+                    <div class="row form-group" style="margin-top:30px;">
+                        @Html.Label(null, "کلمه عبور", new { @class = "col-md-2 control-label form-input-label" })
+                        <div class="col-md-3">
+                            @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="col-md-5 col-sm-1">
+                            <span style="color:red;font-size:20px;">*</span>
+                        </div>
+                    </div>
+                    <div class="row form-group" style="margin-top:30px;">
+                        @Html.Label(null, "تکرار کلمه عبور", new { @class = "col-md-2 control-label form-input-label" })
+                        <div class="col-md-3">
+                            @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.ConfirmPassword, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="col-md-5 col-sm-1">
+                            <span style="color:red;font-size:20px;">*</span>
+                        </div>
+                    </div>
+                    <hr />
+                    <div class="row form-group" style="margin-top:30px;">
+                        <label class="col-md-2 control-label form-input-label">
+                            نقش کاربر
+                        </label>
+                        <div class="col-md-3 k-rtl">
+                            @(Html.Kendo().DropDownList()
+                                .Name("RoleId")
+                                .DataTextField("Text")
+                                .DataValueField("Value")
+                                .OptionLabel("انتخاب کنید")
+                                .HtmlAttributes(new { style = "width: 100%" })
+                                .DataSource(source =>
+                                {
+                                    source.Read(read =>
+                                    {
+                                        read.Action("Fill_Role_Combo", "User", new { Area = "Admin", includeApplicantRole = false });
+                                    });
+                                }))
+                            @Html.ValidationMessageFor(model => model.RoleId, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="col-md-5 col-sm-1">
+                            <span style="color:red;font-size:20px;">*</span>
+                        </div>
+                    </div>
+                </div>
+                <hr style="margin-top:45px;color:orangered;" />
+                <div class="row" style="margin-top:12px;">
+                    <div class="col-md-6 col-sm-12">
+                        <input type="submit" class="btn btn-success form-command-btn" value="ذخیره" style="float:right;" />
+                    </div>
+                    <div class="col-md-6 col-sm-12">
+                        <a href=@Url.Action("Index", "User", new { Area = "Admin" })
+                           class="btn btn-danger form-command-btn" style="float: left;">بازگشت</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
