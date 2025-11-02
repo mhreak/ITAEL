@@ -43,6 +43,6 @@ namespace DbEntities
 
 
 
-        public virtual ICollection<Wallet_ReferralCode_CommissionRule> Wallet_ReferralCode_CommissionRule_List { get; set; }
+        public virtual ICollection<Wallet_Collaborator_CommissionRule> Wallet_Collaborator_CommissionRule_List { get; set; }
     }
 }

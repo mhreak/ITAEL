@@ -4,8 +4,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DbEntities
 {
-    [Table("Wallet_ReferralCode_CommissionRule")]
-    public class Wallet_ReferralCode_CommissionRule
+    [Table("Wallet_Collaborator_CommissionRule")]
+    public class Wallet_Collaborator_CommissionRule
     {
         [Key]
         [Column(Order = 0)]
@@ -16,10 +16,10 @@ namespace DbEntities
 
         [Key]
         [Column(Order = 1)]
-        public int ReferralCodeId { get; set; }
+        public int CollaboratorId { get; set; }
 
-        [ForeignKey("ReferralCodeId")]
-        public virtual ReferralCode ReferralCode { get; set; }
+        [ForeignKey("CollaboratorId")]
+        public virtual Collaborator Collaborator { get; set; }
 
         [Key]
         [Column(Order = 2)]

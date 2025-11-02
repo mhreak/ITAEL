@@ -20,6 +20,7 @@ namespace DbEntities
 
 
         public virtual ICollection<Applicant> ApplicantList { get; set; }
+        public virtual ICollection<StudyField_ExamResource> StudyField_ExamResource_List { get; set; }
         public virtual ICollection<JobAnnouncement_StudyField> JobAnnouncement_StudyField_List { get; set; }
     }
 }

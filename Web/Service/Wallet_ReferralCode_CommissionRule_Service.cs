@@ -15,7 +15,7 @@ namespace Web.Service
     {
         readonly IMapper _mapper;
         readonly IUnitOfWork _database;
-        readonly DbSet<Wallet_ReferralCode_CommissionRule> _table;
+        readonly DbSet<Wallet_Collaborator_CommissionRule> _table;
 
         public Wallet_ReferralCode_CommissionRule_Service(
             IUnitOfWork database,
@@ -23,14 +23,14 @@ namespace Web.Service
         {
             _database = database;
             _mapper = mappingEngine;
-            _table = _database.Set<Wallet_ReferralCode_CommissionRule>();
+            _table = _database.Set<Wallet_Collaborator_CommissionRule>();
         }
 
         public bool Add(Wallet_ReferralCode_CommissionRule_ViewModel uiModel)
         {
             if (!IsDuplicate(uiModel.WalletId, uiModel.ReferralCodeId, uiModel.CommissionRuleId))
             {
-                var dbModel = new Wallet_ReferralCode_CommissionRule();
+                var dbModel = new Wallet_Collaborator_CommissionRule();
 
                 dbModel.InsertDate = DateTime.Now;
 

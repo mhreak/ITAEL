@@ -29,7 +29,6 @@ namespace DbConnection
         public DbSet<SystemSMS> SystemSMS { get; set; }
         public DbSet<StudyField> StudyField { get; set; }
         public DbSet<PaymentType> PaymentType { get; set; }
-        public DbSet<ReferralCode> ReferralCode { get; set; }
         public DbSet<CommissionRule> CommissionRule { get; set; }
         public DbSet<JobAnnouncement> JobAnnouncement { get; set; }
         public DbSet<WalletCommission> WalletCommission { get; set; }
@@ -37,7 +36,7 @@ namespace DbConnection
         public DbSet<JobAnnouncementCategory> JobAnnouncementCategory { get; set; }
         public DbSet<Applicant_JobAnnouncement> Applicant_JobAnnouncement { get; set; }
         public DbSet<JobAnnouncement_StudyField> JobAnnouncement_StudyField { get; set; }
-        public DbSet<Wallet_ReferralCode_CommissionRule> Wallet_ReferralCode_CommissionRule { get; set; }
+        public DbSet<Wallet_Collaborator_CommissionRule> Wallet_ReferralCode_CommissionRule { get; set; }
         public DbSet<JobAnnouncement_JobAnnouncementCategory> JobAnnouncement_JobAnnouncementCategory { get; set; }
  
 
@@ -72,9 +71,9 @@ namespace DbConnection
                 table.StudyFieldId
             });
 
-            modelBuilder.Entity<Wallet_ReferralCode_CommissionRule>().HasKey(table => new {
+            modelBuilder.Entity<Wallet_Collaborator_CommissionRule>().HasKey(table => new {
                 table.WalletId,
-                table.ReferralCodeId,
+                table.CollaboratorId,
                 table.CommissionRuleId
             });
 

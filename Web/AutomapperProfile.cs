@@ -106,11 +106,11 @@ namespace Web
                 .ForMember(dest => dest.Max, src => src.MapFrom(x => ""));
             CreateMap<CommissionRuleViewModel, CommissionRule>();
 
-            CreateMap<Wallet_ReferralCode_CommissionRule, Wallet_ReferralCode_CommissionRule_ViewModel>()
+            CreateMap<Wallet_Collaborator_CommissionRule, Wallet_ReferralCode_CommissionRule_ViewModel>()
                .ForMember(dest => dest.WalletName, src => src.MapFrom(x => x.Wallet.WalletName))
                .ForMember(dest => dest.ReferralCodeName, src => src.MapFrom(x => x.ReferralCode.ReferralCodeName))
                .ForMember(dest => dest.ShamsiInsertDate, src => src.MapFrom(x => ""));
-            CreateMap<Wallet_ReferralCode_CommissionRule_ViewModel, Wallet_ReferralCode_CommissionRule>();
+            CreateMap<Wallet_ReferralCode_CommissionRule_ViewModel, Wallet_Collaborator_CommissionRule>();
 
             CreateMap<SystemSMS, SystemSMSViewModel>()
                 .ForMember(dest => dest.ShamsiSendDate, src => src.MapFrom(x => ""))

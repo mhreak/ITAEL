@@ -17,7 +17,7 @@ namespace Web.Service
     {
         readonly IMapper _mapper;
         readonly IUnitOfWork _database;
-        readonly DbSet<ReferralCode> _table;
+        readonly DbSet<Collaborator> _table;
 
         public ReferralCodeService(
             IUnitOfWork database,
@@ -25,12 +25,12 @@ namespace Web.Service
         {
             _database = database;
             _mapper = mappingEngine;
-            _table = _database.Set<ReferralCode>();
+            _table = _database.Set<Collaborator>();
         }
 
         public int Add(ReferralCodeViewModel uiModel)
         {
-            var dbModel = new ReferralCode();
+            var dbModel = new Collaborator();
             _mapper.Map(source: uiModel, destination: dbModel);
 
             dbModel.ReferralCodeName =

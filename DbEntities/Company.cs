@@ -22,7 +22,7 @@ namespace DbEntities
         public bool IsDeleted { get; set; }
 
 
-
+        public virtual ICollection<Collaborator> CollaboratorList { get; set; }
         public virtual ICollection<JobAnnouncement> JobAnnouncementList { get; set; }
     }
 }

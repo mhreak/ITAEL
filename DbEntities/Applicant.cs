@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -69,5 +70,9 @@ namespace DbEntities
 
         [Required]
         public DateTime InsertDate { get; set; }
+
+        public virtual ICollection<ExamResourceOrder> ExamResourceOrderList { get; set; } = [];
+        public virtual ICollection<ApplicantExamAttempt> ApplicantExamAttempt { get; set; } = [];
+        public virtual ICollection<InterviewAppointment> InterviewAppointmentList { get; set; } = [];
     }
 }

@@ -59,9 +59,12 @@ namespace DbEntities
         public bool IsDeleted { get; set; }
 
 
-        public virtual ICollection<JobAnnouncement_Skill> JobAnnouncement_Skill_List { get; set; }
-        public virtual ICollection<Applicant_JobAnnouncement> Applicant_JobAnnouncement_List { get; set; }
-        public virtual ICollection<JobAnnouncement_StudyField> JobAnnouncement_StudyField_List { get; set; }
-        public virtual ICollection<JobAnnouncement_JobAnnouncementCategory> JobAnnouncement_JobAnnouncementCategory_List { get; set; }
+        public virtual ICollection<InterviewAppointment> InterviewAppointmentList { get; set; } = [];
+        public virtual ICollection<JobAnnouncement_Exam> JobAnnouncement_Exam_List { get; set; } = [];
+        public virtual ICollection<JobAnnouncement_Skill> JobAnnouncement_Skill_List { get; set; } = [];
+        public virtual ICollection<Applicant_JobAnnouncement> Applicant_JobAnnouncement_List { get; set; } = [];
+        public virtual ICollection<JobAnnouncement_StudyField> JobAnnouncement_StudyField_List { get; set; } = [];
+        public virtual ICollection<JobAnnouncement_ExamResource> JobAnnouncement_ExamResource_List { get; set; } = [];
+        public virtual ICollection<JobAnnouncement_JobAnnouncementCategory> JobAnnouncement_JobAnnouncementCategory_List { get; set; } = [];
     }
 }
