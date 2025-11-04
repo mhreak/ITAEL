@@ -20,6 +20,7 @@ namespace DbConnection
 
 
         public DbSet<City> City { get; set; }
+        public DbSet<Exam> Exam { get; set; }
         public DbSet<Skill> Skill { get; set; }
         public DbSet<Wallet> Wallet { get; set; }
         public DbSet<Company> Company { get; set; }
@@ -29,16 +30,28 @@ namespace DbConnection
         public DbSet<SystemSMS> SystemSMS { get; set; }
         public DbSet<StudyField> StudyField { get; set; }
         public DbSet<PaymentType> PaymentType { get; set; }
+        public DbSet<Collaborator> Collaborator { get; set; }
+        public DbSet<ExamResource> ExamResource { get; set; }
+        public DbSet<ExamQuestion> ExamQuestion { get; set; }
         public DbSet<CommissionRule> CommissionRule { get; set; }
         public DbSet<JobAnnouncement> JobAnnouncement { get; set; }
         public DbSet<WalletCommission> WalletCommission { get; set; }
+        public DbSet<ExamResourceOrder> ExamResourceOrder { get; set; }
+        public DbSet<ExamQuestionOption> ExamQuestionOption { get; set; }
+        public DbSet<Skill_ExamResource> Skill_ExamResource { get; set; }
+        public DbSet<InterviewAppointment> InterviewAppointment { get; set; }
+        public DbSet<JobAnnouncement_Exam> JobAnnouncement_Exam { get; set; }
+        public DbSet<ApplicantExamAttempt> ApplicantExamAttempt { get; set; }
         public DbSet<JobAnnouncement_Skill> JobAnnouncement_Skill { get; set; }
+        public DbSet<StudyField_ExamResource> StudyField_ExamResource { get; set; }
         public DbSet<JobAnnouncementCategory> JobAnnouncementCategory { get; set; }
         public DbSet<Applicant_JobAnnouncement> Applicant_JobAnnouncement { get; set; }
         public DbSet<JobAnnouncement_StudyField> JobAnnouncement_StudyField { get; set; }
+        public DbSet<ApplicantExamQuestionAnswer> ApplicantExamQuestionAnswer { get; set; }
+        public DbSet<JobAnnouncement_ExamResource> JobAnnouncement_ExamResource { get; set; }
         public DbSet<Wallet_Collaborator_CommissionRule> Wallet_ReferralCode_CommissionRule { get; set; }
         public DbSet<JobAnnouncement_JobAnnouncementCategory> JobAnnouncement_JobAnnouncementCategory { get; set; }
- 
+
 
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -51,27 +64,62 @@ namespace DbConnection
             base.OnModelCreating(modelBuilder);
 
 
-            modelBuilder.Entity<Applicant_JobAnnouncement>().HasKey(table => new {
+            modelBuilder.Entity<Applicant_JobAnnouncement>().HasKey(table => new
+            {
                 table.ApplicantId,
                 table.JobAnnouncementId
             });
 
-            modelBuilder.Entity<JobAnnouncement_JobAnnouncementCategory>().HasKey(table => new {
+            modelBuilder.Entity<ApplicantExamQuestionAnswer>().HasKey(table => new
+            {
+                table.ExamQuestionId,
+                table.ApplicantExamAttemptId
+            });
+
+            modelBuilder.Entity<JobAnnouncement_JobAnnouncementCategory>().HasKey(table => new
+            {
                 table.JobAnnouncementId,
                 table.JobAnnouncementCategoryId
             });
 
-            modelBuilder.Entity<JobAnnouncement_Skill>().HasKey(table => new {
-                table.JobAnnouncementId,
-                table.SkillId
+            modelBuilder.Entity<JobAnnouncement_Skill>().HasKey(table => new
+            {
+                table.SkillId,
+                table.JobAnnouncementId
             });
 
-            modelBuilder.Entity<JobAnnouncement_StudyField>().HasKey(table => new {
-                table.JobAnnouncementId,
-                table.StudyFieldId
+            modelBuilder.Entity<JobAnnouncement_StudyField>().HasKey(table => new
+            {
+                table.StudyFieldId,
+                table.JobAnnouncementId
             });
 
-            modelBuilder.Entity<Wallet_Collaborator_CommissionRule>().HasKey(table => new {
+            modelBuilder.Entity<JobAnnouncement_Exam>().HasKey(table => new
+            {
+                table.ExamId,
+                table.JobAnnouncementId
+            });
+
+            modelBuilder.Entity<JobAnnouncement_ExamResource>().HasKey(table => new
+            {
+                table.ExamResourceId,
+                table.JobAnnouncementId
+            });
+
+            modelBuilder.Entity<Skill_ExamResource>().HasKey(table => new
+            {
+                table.SkillId,
+                table.ExamResourceId
+            });
+
+            modelBuilder.Entity<StudyField_ExamResource>().HasKey(table => new
+            {
+                table.StudyFieldId,
+                table.ExamResourceId
+            });
+
+            modelBuilder.Entity<Wallet_Collaborator_CommissionRule>().HasKey(table => new
+            {
                 table.WalletId,
                 table.CollaboratorId,
                 table.CommissionRuleId

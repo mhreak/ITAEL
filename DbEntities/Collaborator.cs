@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Reflection.Metadata.Ecma335;
 
 namespace DbEntities
 {
@@ -12,18 +11,18 @@ namespace DbEntities
         public int CollaboratorId { get; set; }
 
         [Required]
-        [StringLength(50)]
+        [MaxLength(50)]
         public string FirstName { get; set; }
 
         [Required]
-        [StringLength(50)]
+        [MaxLength(50)]
         public string LastName { get; set; }
 
         [Required]
         [StringLength(11)]
         public string PhoneNumber { get; set; }
 
-        [StringLength(100)]
+        [MaxLength(100)]
         public string? Email { get; set; }
 
         [Required]
@@ -33,6 +32,6 @@ namespace DbEntities
         [Required]
         public bool Active { get; set; }
 
-        public virtual ICollection<Wallet_Collaborator_CommissionRule> Wallet_ReferralCode_CommissionRule_List { get; set; }
+        public virtual ICollection<Wallet_Collaborator_CommissionRule> Wallet_Collaborator_CommissionRule_List { get; set; }
     }
 }

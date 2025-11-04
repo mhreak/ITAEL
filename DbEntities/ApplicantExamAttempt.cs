@@ -37,10 +37,8 @@ namespace DbEntities
         //2 -> رد شده
         //3 -> در حال بررسی
         [Required]
-        [StringLength(50)]
         public short Status { get; set; }
 
-        public virtual ICollection<InterviewAppointment> InterviewAppointmentList { get; set; } = [];
-
+        public virtual ICollection<ApplicantExamQuestionAnswer> ApplicantExamQuestionAnswerList { get; set; } = [];
     }
 }

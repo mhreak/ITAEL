@@ -17,21 +17,19 @@ namespace DbEntities
         public JobAnnouncement JobAnnouncement { get; set; }
 
         [Required]
-        public int InterviewSlotId { get; set; }
+        public int ApplicantId { get; set; }
 
-        //1 -> Pending
-        //2 -> Confirmed
-        //3 -> Canceled
-        //4 -> Completed
-        [StringLength(50)]
+        [ForeignKey("ApplicantId")]
+        public Applicant Applicant { get; set; }
+
+        //1 -> درحال بررسی
+        //2 -> تأیید شده 
+        //3 -> لغو شده
+        //4 -> تکمیل شده
         [Required]
         public short Status { get; set; }
 
-        public DateTime InsertDate { get; set; } = DateTime.Now;
-
-        public int? ApplicantExamAttemptId { get; set; }
-
-        [ForeignKey("ApplicantExamAttemptId")]
-        public ApplicantExamAttempt ApplicantExamAttempt { get; set; }
+        [Required]
+        public DateTime InsertDate { get; set; }
     }
 }

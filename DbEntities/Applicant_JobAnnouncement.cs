@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -24,9 +23,5 @@ namespace DbEntities
 
         [Required]
         public DateTime InsertDate { get; set; }
-
-
-
-        public virtual ICollection<Applicant_JobAnnouncement> Applicant_JobAnnouncement_List { get; set; }
     }
 }

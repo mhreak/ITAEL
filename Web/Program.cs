@@ -68,7 +68,7 @@ builder.Services.AddScoped<ISystemSMSService, SystemSMSService>();
 builder.Services.AddScoped<IStudyFieldService, StudyFieldService>();
 builder.Services.AddScoped<IRoleManagerService, RoleManagerService>();
 builder.Services.AddScoped<IPaymentTypeService, PaymentTypeService>();
-builder.Services.AddScoped<IReferralCodeService, ReferralCodeService>();
+//builder.Services.AddScoped<IReferralCodeService, ReferralCodeService>();
 builder.Services.AddScoped<ICommissionRuleService, CommissionRuleService>();
 builder.Services.AddScoped<IJobAnnouncementService, JobAnnouncementService>();
 builder.Services.AddScoped<IWalletCommissionService, WalletCommissionService>();

@@ -15,9 +15,9 @@ namespace Web.Service
 {
     public class CompanyService : ICompanyService
     {
-        readonly IMapper _mapper;
-        readonly IUnitOfWork _database;
-        readonly DbSet<Company> _table;
+        private readonly IMapper _mapper;
+        private readonly IUnitOfWork _database;
+        private readonly DbSet<Company> _table;
 
         public CompanyService(
             IUnitOfWork database,
@@ -93,9 +93,12 @@ namespace Web.Service
 
         public CompanyViewModel Get(int id)
         {
-            var dbModel = _table
-                .Where(x => x.CompanyId == id)
-                .FirstOrDefault();
+            var dbModel = _table.FirstOrDefault(x => x.CompanyId == id);
+
+            if (dbModel == null)
+            {
+                return null;
+            }
 
             var uiModel = new CompanyViewModel();
 

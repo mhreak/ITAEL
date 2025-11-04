@@ -8,7 +8,7 @@ namespace DbEntities
     public class ExamResourceOrder
     {
         [Key]
-        public int Id { get; set; }
+        public int ExamResourceOrderId { get; set; }
 
         [Required]
         public int ApplicantId { get; set; }
@@ -22,23 +22,20 @@ namespace DbEntities
         [ForeignKey("ExamResourceId")]
         public ExamResource ExamResource { get; set; }
 
-        [Required]
-        public int Quantity { get; set; }
-
         [Column(TypeName = "decimal(18,2)")]
         [Required]
         public decimal TotalPrice { get; set; }
 
-        //1 -> Pending
-        //2 -> Paid
-        //3 -> Shipped
-        //4 -> Delivered
-        //5 -> Downloaded
-        [StringLength(50)]
+        //1 -> درحال بررسی
+        //2 -> پرداخت شده
+        //3 -> ارسال شده
+        //4 -> تحویل داده شده
+        //5 -> دانلود شده
         [Required]
         public short Status { get; set; }
 
-        public DateTime OrderDate { get; set; } = DateTime.Now;
+        [Required]
+        public DateTime OrderDate { get; set; }
 
         public DateTime? DeliveryDate { get; set; }
     }

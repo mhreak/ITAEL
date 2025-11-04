@@ -1,13 +1,12 @@
-﻿using AutoMapper;
-using DbConnection;
-using DbEntities;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Dynamic.Core;
+﻿using System;
 using Web.Model;
+using AutoMapper;
+using DbEntities;
+using System.Linq;
+using DbConnection;
 using Web.Service.Interface;
+using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
 
 namespace Web.Service
 {
@@ -57,7 +56,7 @@ namespace Web.Service
         {
             if (IsDuplicate(walletId, referralCodeId, commissionRuleId))
             {
-                var dbModel = _table.SingleOrDefault(x => x.WalletId == walletId && x.ReferralCodeId == referralCodeId && x.CommissionRuleId == commissionRuleId);
+                var dbModel = _table.SingleOrDefault(x => x.WalletId == walletId && x.CollaboratorId == referralCodeId && x.CommissionRuleId == commissionRuleId);
 
                 _database.Entry(dbModel).State = EntityState.Deleted;
 
@@ -81,7 +80,7 @@ namespace Web.Service
 
         public bool Edit(Wallet_ReferralCode_CommissionRule_ViewModel uiModel)
         {
-            var dbModel = _table.SingleOrDefault(x => x.WalletId == uiModel.WalletId && x.ReferralCodeId == uiModel.ReferralCodeId &&
+            var dbModel = _table.SingleOrDefault(x => x.WalletId == uiModel.WalletId && x.CollaboratorId == uiModel.ReferralCodeId &&
                 x.CommissionRuleId == uiModel.CommissionRuleId);
 
             _mapper.Map(uiModel, dbModel);
@@ -104,7 +103,7 @@ namespace Web.Service
 
         public Wallet_ReferralCode_CommissionRule_ViewModel Get(int walletId, int referralCodeId, int commissionRuleId)
         {
-            var dbModel = _table.SingleOrDefault(x => x.WalletId == walletId && x.ReferralCodeId == referralCodeId &&
+            var dbModel = _table.SingleOrDefault(x => x.WalletId == walletId && x.CollaboratorId == referralCodeId &&
                 x.CommissionRuleId == commissionRuleId);
 
             var uiModel = new Wallet_ReferralCode_CommissionRule_ViewModel();
@@ -116,7 +115,7 @@ namespace Web.Service
 
         public IList<Wallet_ReferralCode_CommissionRule_ViewModel> GetAllByReferralCodeId(int referralCodeId)
         {
-            var dbModelList = _table.Where(x => x.ReferralCodeId == referralCodeId).ToList();
+            var dbModelList = _table.Where(x => x.CollaboratorId == referralCodeId).ToList();
             var uiModelList = new List<Wallet_ReferralCode_CommissionRule_ViewModel>();
 
             _mapper.Map(dbModelList, uiModelList);
@@ -146,7 +145,7 @@ namespace Web.Service
 
         public bool IsDuplicate(int walletId, int referralCodeId, int commissionRuleId)
         {
-            return _table.Any(x => x.WalletId == walletId && x.ReferralCodeId == referralCodeId &&
+            return _table.Any(x => x.WalletId == walletId && x.CollaboratorId == referralCodeId &&
                 x.CommissionRuleId == commissionRuleId);
         }
     }

@@ -12,13 +12,16 @@ namespace DbEntities
         public int ExamId { get; set; }
 
         [Required]
-        [StringLength(200)]
+        [MaxLength(200)]
         public string Title { get; set; }
 
+        [MaxLength(2000)]
         public string? Description { get; set; }
 
+        [Required]
         public DateTime StartTime { get; set; }
 
+        [Required]
         public DateTime EndTime { get; set; }
 
         [Required]
@@ -32,8 +35,12 @@ namespace DbEntities
         [Required]
         public bool RandomizeOptions { get; set; }
 
-        public virtual ICollection<Question> QuestionList { get; set; } = [];
-        public virtual ICollection<ApplicantExamAttempt> ApplicantAttempts { get; set; } = [];
+        //برگشتن به سؤال قبل
+        [Required]
+        public bool AllowNavigateToPreviousQuestion { get; set; }
+
+        public virtual ICollection<ExamQuestion> ExamQuestionList { get; set; } = [];
+        public virtual ICollection<ApplicantExamAttempt> ApplicantAttemptList { get; set; } = [];
         public virtual ICollection<JobAnnouncement_Exam> JobAnnouncement_Exam_List { get; set; } = [];
     }
 }

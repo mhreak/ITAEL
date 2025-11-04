@@ -90,3 +90,15 @@ $RECYCLE.BIN/
 *.lnk
 
 .vs/
+
+DbConnection/bin/
+
+DbConnection/obj/
+
+DbEntities/obj/
+
+DbEntities/bin/
+
+Web/bin/
+
+Web/obj/
