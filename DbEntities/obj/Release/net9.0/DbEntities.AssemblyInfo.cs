@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("DbEntities")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+51efac84e9c3490efa1afc9a1d2c8bf1057ca5ad")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+6a9d2da2cbc0dc06da0a81edc764a442b62076c7")]
 [assembly: System.Reflection.AssemblyProductAttribute("DbEntities")]
 [assembly: System.Reflection.AssemblyTitleAttribute("DbEntities")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -94,15 +94,13 @@ namespace Web.Service
 
             _mapper.Map(dbModel, uiModel);
 
-            PersianCalendar pc = new PersianCalendar();
-
             return uiModel;
         }
 
         public IList<ApplicantExamAttemptViewModel> GetAllFiltered(
             string filterApplicantId, string filterExamId,
-            string filterApplicantFullName, string filterExamTitle,
-            string filterShamsiStartTime, string filterShamsiEndTime,
+            string filterStartTimeFrom, string filterStartTimeTo,
+            string filterEndTimeFrom, string filterEndTimeTo,
             string filterFinalScore, string filterStatus,
             int currentPage, int pageSize, out int totalRecord)
         {
@@ -118,40 +116,12 @@ namespace Web.Service
                 whereStr += " AND ExamId = " + filterExamId;
             }
 
-            if (!string.IsNullOrEmpty(filterApplicantFullName))
-            {
-                whereStr += " AND Applicant.FirstName.Contains(@0)";
-            }
 
-            if (!string.IsNullOrEmpty(filterExamTitle))
+            DateTime? startTimeFromMiladi = null;
+            if (!string.IsNullOrEmpty(filterStartTimeFrom))
             {
-                whereStr += " AND Exam.Title.Contains(@1)";
-            }
-
-            DateTime? insertDateFromMiladi = null;
-            if (!string.IsNullOrEmpty(filterShamsiStartTime))
-            {
-                filterShamsiStartTime =
-                    filterShamsiStartTime.Replace("۰", "0")
-                                         .Replace("۱", "1")
-                                         .Replace("۲", "2")
-                                         .Replace("۳", "3")
-                                         .Replace("۴", "4")
-                                         .Replace("۵", "5")
-                                         .Replace("۶", "6")
-                                         .Replace("۷", "7")
-                                         .Replace("۸", "8")
-                                         .Replace("۹", "9");
-                PersianDateTime shamsiInsertDateFrom = PersianDateTime.Parse(filterShamsiStartTime);
-                insertDateFromMiladi = shamsiInsertDateFrom.ToDateTime();
-                whereStr += " AND StartTime >= @2";
-            }
-
-            DateTime? insertDateToMiladi = null;
-            if (!string.IsNullOrEmpty(filterShamsiEndTime))
-            {
-                filterShamsiEndTime =
-                    filterShamsiEndTime.Replace("۰", "0")
+                filterStartTimeFrom =
+                    filterStartTimeFrom.Replace("۰", "0")
                                        .Replace("۱", "1")
                                        .Replace("۲", "2")
                                        .Replace("۳", "3")
@@ -161,10 +131,70 @@ namespace Web.Service
                                        .Replace("۷", "7")
                                        .Replace("۸", "8")
                                        .Replace("۹", "9");
-                PersianDateTime shamsiInsertDateTo = PersianDateTime.Parse(filterShamsiEndTime);
-                insertDateToMiladi = shamsiInsertDateTo.ToDateTime();
+                PersianDateTime shamsiStartTimeFrom = PersianDateTime.Parse(filterStartTimeFrom);
+                startTimeFromMiladi = shamsiStartTimeFrom.ToDateTime();
+                whereStr += " AND StartTime >= @0";
+            }
 
-                insertDateToMiladi = insertDateToMiladi.Value.AddHours(23).AddMinutes(59).AddSeconds(59).AddMilliseconds(999);
+            DateTime? startTimeToMiladi = null;
+            if (!string.IsNullOrEmpty(filterStartTimeTo))
+            {
+                filterStartTimeTo =
+                    filterStartTimeTo.Replace("۰", "0")
+                                     .Replace("۱", "1")
+                                     .Replace("۲", "2")
+                                     .Replace("۳", "3")
+                                     .Replace("۴", "4")
+                                     .Replace("۵", "5")
+                                     .Replace("۶", "6")
+                                     .Replace("۷", "7")
+                                     .Replace("۸", "8")
+                                     .Replace("۹", "9");
+                PersianDateTime shamsiStartTimeTo = PersianDateTime.Parse(filterStartTimeTo);
+                startTimeToMiladi = shamsiStartTimeTo.ToDateTime();
+
+                startTimeToMiladi = startTimeToMiladi.Value.AddHours(23).AddMinutes(59).AddSeconds(59).AddMilliseconds(999);
+
+                whereStr += " AND StartTime <= @1";
+            }
+
+            DateTime? endTimeFromMiladi = null;
+            if (!string.IsNullOrEmpty(filterEndTimeFrom))
+            {
+                filterStartTimeFrom =
+                    filterStartTimeFrom.Replace("۰", "0")
+                                       .Replace("۱", "1")
+                                       .Replace("۲", "2")
+                                       .Replace("۳", "3")
+                                       .Replace("۴", "4")
+                                       .Replace("۵", "5")
+                                       .Replace("۶", "6")
+                                       .Replace("۷", "7")
+                                       .Replace("۸", "8")
+                                       .Replace("۹", "9");
+                PersianDateTime shamsiInsertDateFrom = PersianDateTime.Parse(filterStartTimeFrom);
+                endTimeFromMiladi = shamsiInsertDateFrom.ToDateTime();
+                whereStr += " AND EndTime >= @2";
+            }
+
+            DateTime? endTimeToMiladi = null;
+            if (!string.IsNullOrEmpty(filterEndTimeTo))
+            {
+                filterEndTimeTo =
+                    filterEndTimeTo.Replace("۰", "0")
+                                   .Replace("۱", "1")
+                                   .Replace("۲", "2")
+                                   .Replace("۳", "3")
+                                   .Replace("۴", "4")
+                                   .Replace("۵", "5")
+                                   .Replace("۶", "6")
+                                   .Replace("۷", "7")
+                                   .Replace("۸", "8")
+                                   .Replace("۹", "9");
+                PersianDateTime shamsiInsertDateTo = PersianDateTime.Parse(filterStartTimeTo);
+                endTimeToMiladi = shamsiInsertDateTo.ToDateTime();
+
+                endTimeToMiladi = endTimeToMiladi.Value.AddHours(23).AddMinutes(59).AddSeconds(59).AddMilliseconds(999);
 
                 whereStr += " AND EndTime <= @3";
             }
@@ -181,8 +211,8 @@ namespace Web.Service
 
             var dbModelList = new List<ApplicantExamAttempt>();
 
-            dbModelList = _table.Where(whereStr, filterApplicantFullName, filterExamTitle,
-                                       filterShamsiStartTime, filterShamsiEndTime).ToList();
+            dbModelList = _table.Where(whereStr, startTimeFromMiladi, startTimeToMiladi,
+                                       endTimeFromMiladi, endTimeToMiladi).ToList();
 
             totalRecord = dbModelList.Count();
 

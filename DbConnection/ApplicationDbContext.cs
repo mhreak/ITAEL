@@ -49,7 +49,7 @@ namespace DbConnection
         public DbSet<JobAnnouncement_StudyField> JobAnnouncement_StudyField { get; set; }
         public DbSet<ApplicantExamQuestionAnswer> ApplicantExamQuestionAnswer { get; set; }
         public DbSet<JobAnnouncement_ExamResource> JobAnnouncement_ExamResource { get; set; }
-        public DbSet<Wallet_Collaborator_CommissionRule> Wallet_ReferralCode_CommissionRule { get; set; }
+        public DbSet<Wallet_Collaborator_CommissionRule> Wallet_Collaborator_CommissionRule { get; set; }
         public DbSet<JobAnnouncement_JobAnnouncementCategory> JobAnnouncement_JobAnnouncementCategory { get; set; }
 
 
@@ -70,10 +70,32 @@ namespace DbConnection
                 table.JobAnnouncementId
             });
 
-            modelBuilder.Entity<ApplicantExamQuestionAnswer>().HasKey(table => new
+            modelBuilder.Entity<ApplicantExamQuestionAnswer>(b =>
             {
-                table.ExamQuestionId,
-                table.ApplicantExamAttemptId
+                b.HasKey(x => new { x.ExamQuestionId, x.ApplicantExamAttemptId });
+
+                b.HasOne(x => x.ApplicantExamAttempt)
+                 .WithMany(a => a.ApplicantExamQuestionAnswerList)
+                 .HasForeignKey(x => x.ApplicantExamAttemptId)
+                 .OnDelete(DeleteBehavior.Cascade);
+
+                b.HasOne(x => x.ExamQuestion)
+                 .WithMany(q => q.ApplicantExamQuestionAnswerList)
+                 .HasForeignKey(x => x.ExamQuestionId)
+                 .OnDelete(DeleteBehavior.Restrict);
+
+                b.HasOne(x => x.ExamQuestionOption)
+                 .WithMany(o => o.ApplicantExamQuestionAnswerList)
+                 .HasForeignKey(x => x.ExamQuestionOptionId)
+                 .OnDelete(DeleteBehavior.Restrict);
+
+                b.Property(x => x.AnswerText).HasMaxLength(4000);
+                b.Property(x => x.InsertDate).IsRequired();
+            });
+
+            modelBuilder.Entity<ApplicantExamAttempt>(b =>
+            {
+                b.Property(x => x.FinalScore).HasPrecision(10, 2); // choose precision/scale for your domain
             });
 
             modelBuilder.Entity<JobAnnouncement_JobAnnouncementCategory>().HasKey(table => new

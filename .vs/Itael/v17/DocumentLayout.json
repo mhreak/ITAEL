@@ -3,8 +3,8 @@
   "WorkspaceRootPath": "D:\\CSharpSaman\\Itael\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{DC692104-9395-4274-94D7-5E436AC6CFD0}|Web\\Web.csproj|d:\\csharpsaman\\itael\\web\\areas\\admin\\views\\applicant\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{DC692104-9395-4274-94D7-5E436AC6CFD0}|Web\\Web.csproj|solutionrelative:web\\areas\\admin\\views\\applicant\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{DC692104-9395-4274-94D7-5E436AC6CFD0}|Web\\Web.csproj|d:\\csharpsaman\\itael\\web\\areas\\admin\\controllers\\jobannouncement_examresource_controller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{DC692104-9395-4274-94D7-5E436AC6CFD0}|Web\\Web.csproj|solutionrelative:web\\areas\\admin\\controllers\\jobannouncement_examresource_controller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -51,14 +51,14 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "Create.cshtml",
-              "DocumentMoniker": "D:\\CSharpSaman\\Itael\\Web\\Areas\\Admin\\Views\\Applicant\\Create.cshtml",
-              "RelativeDocumentMoniker": "Web\\Areas\\Admin\\Views\\Applicant\\Create.cshtml",
-              "ToolTip": "D:\\CSharpSaman\\Itael\\Web\\Areas\\Admin\\Views\\Applicant\\Create.cshtml",
-              "RelativeToolTip": "Web\\Areas\\Admin\\Views\\Applicant\\Create.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAdAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-02-26T08:19:55.214Z",
+              "Title": "JobAnnouncement_ExamResource_Controller.cs",
+              "DocumentMoniker": "D:\\CSharpSaman\\Itael\\Web\\Areas\\Admin\\Controllers\\JobAnnouncement_ExamResource_Controller.cs",
+              "RelativeDocumentMoniker": "Web\\Areas\\Admin\\Controllers\\JobAnnouncement_ExamResource_Controller.cs",
+              "ToolTip": "D:\\CSharpSaman\\Itael\\Web\\Areas\\Admin\\Controllers\\JobAnnouncement_ExamResource_Controller.cs",
+              "RelativeToolTip": "Web\\Areas\\Admin\\Controllers\\JobAnnouncement_ExamResource_Controller.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAnwCYAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-05T13:42:54.65Z",
               "EditorCaption": ""
             }
           ]

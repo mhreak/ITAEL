@@ -6,6 +6,8 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
+#nullable disable
+
 namespace DbConnection.Migrations.DefaultSharedDb
 {
     [DbContext(typeof(ApplicationDbContext))]
@@ -15,16 +17,18 @@ namespace DbConnection.Migrations.DefaultSharedDb
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("ProductVersion", "5.0.17")
-                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                .HasAnnotation("ProductVersion", "9.0.10")
+                .HasAnnotation("Relational:MaxIdentifierLength", 128);
+
+            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
             modelBuilder.Entity("DbEntities.Applicant", b =>
                 {
                     b.Property<int>("ApplicantId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ApplicantId"));
 
                     b.Property<DateTime>("BirthDate")
                         .HasColumnType("datetime2");
@@ -101,19 +105,80 @@ namespace DbConnection.Migrations.DefaultSharedDb
                     b.ToTable("Applicant");
                 });
 
-            modelBuilder.Entity("DbEntities.Applicant_JobAnnouncement", b =>
+            modelBuilder.Entity("DbEntities.ApplicantExamAttempt", b =>
                 {
+                    b.Property<int>("ApplicantExamAttemptId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ApplicantExamAttemptId"));
+
                     b.Property<int>("ApplicantId")
                         .HasColumnType("int");
 
+                    b.Property<DateTime?>("EndTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("ExamId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("FinalScore")
+                        .HasPrecision(10, 2)
+                        .HasColumnType("decimal(10,2)");
+
+                    b.Property<DateTime>("StartTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<short>("Status")
+                        .HasColumnType("smallint");
+
+                    b.HasKey("ApplicantExamAttemptId");
+
+                    b.HasIndex("ApplicantId");
+
+                    b.HasIndex("ExamId");
+
+                    b.ToTable("ApplicantExamAttempt");
+                });
+
+            modelBuilder.Entity("DbEntities.ApplicantExamQuestionAnswer", b =>
+                {
+                    b.Property<int>("ExamQuestionId")
+                        .HasColumnType("int")
+                        .HasColumnOrder(1);
+
+                    b.Property<int>("ApplicantExamAttemptId")
+                        .HasColumnType("int")
+                        .HasColumnOrder(0);
+
+                    b.Property<string>("AnswerText")
+                        .HasMaxLength(4000)
+                        .HasColumnType("nvarchar(4000)");
+
+                    b.Property<int?>("ExamQuestionOptionId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("InsertDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("ExamQuestionId", "ApplicantExamAttemptId");
+
+                    b.HasIndex("ApplicantExamAttemptId");
+
+                    b.HasIndex("ExamQuestionOptionId");
+
+                    b.ToTable("ApplicantExamQuestionAnswer");
+                });
+
+            modelBuilder.Entity("DbEntities.Applicant_JobAnnouncement", b =>
+                {
+                    b.Property<int>("ApplicantId")
+                        .HasColumnType("int")
+                        .HasColumnOrder(0);
+
                     b.Property<int>("JobAnnouncementId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("Applicant_JobAnnouncementApplicantId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("Applicant_JobAnnouncementJobAnnouncementId")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnOrder(1);
 
                     b.Property<DateTime>("InsertDate")
                         .HasColumnType("datetime2");
@@ -122,8 +187,6 @@ namespace DbConnection.Migrations.DefaultSharedDb
 
                     b.HasIndex("JobAnnouncementId");
 
-                    b.HasIndex("Applicant_JobAnnouncementApplicantId", "Applicant_JobAnnouncementJobAnnouncementId");
-
                     b.ToTable("Applicant_JobAnnouncement");
                 });
 
@@ -131,8 +194,9 @@ namespace DbConnection.Migrations.DefaultSharedDb
                 {
                     b.Property<int>("CityId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CityId"));
 
                     b.Property<bool>("Active")
                         .HasColumnType("bit");
@@ -152,12 +216,53 @@ namespace DbConnection.Migrations.DefaultSharedDb
                     b.ToTable("City");
                 });
 
+            modelBuilder.Entity("DbEntities.Collaborator", b =>
+                {
+                    b.Property<int>("CollaboratorId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CollaboratorId"));
+
+                    b.Property<bool>("Active")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Email")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("PhoneNumber")
+                        .IsRequired()
+                        .HasMaxLength(11)
+                        .HasColumnType("nvarchar(11)");
+
+                    b.Property<string>("ReferralCode")
+                        .IsRequired()
+                        .HasMaxLength(6)
+                        .HasColumnType("nvarchar(6)");
+
+                    b.HasKey("CollaboratorId");
+
+                    b.ToTable("Collaborator");
+                });
+
             modelBuilder.Entity("DbEntities.CommissionRule", b =>
                 {
                     b.Property<int>("CommissionRuleId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CommissionRuleId"));
 
                     b.Property<bool>("Active")
                         .HasColumnType("bit");
@@ -198,8 +303,9 @@ namespace DbConnection.Migrations.DefaultSharedDb
                 {
                     b.Property<int>("CompanyId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CompanyId"));
 
                     b.Property<string>("CompanyName")
                         .IsRequired()
@@ -217,13 +323,186 @@ namespace DbConnection.Migrations.DefaultSharedDb
                     b.ToTable("Company");
                 });
 
+            modelBuilder.Entity("DbEntities.Exam", b =>
+                {
+                    b.Property<int>("ExamId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ExamId"));
+
+                    b.Property<bool>("AllowNavigateToPreviousQuestion")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)");
+
+                    b.Property<int>("DurationMinutes")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("EndTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("RandomizeOptions")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("RandomizeQuestions")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("StartTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.HasKey("ExamId");
+
+                    b.ToTable("Exam");
+                });
+
+            modelBuilder.Entity("DbEntities.ExamQuestion", b =>
+                {
+                    b.Property<int>("ExamQuestionId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ExamQuestionId"));
+
+                    b.Property<int>("ExamId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("QuestionOrder")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Text")
+                        .IsRequired()
+                        .HasMaxLength(3000)
+                        .HasColumnType("nvarchar(3000)");
+
+                    b.Property<short>("Type")
+                        .HasColumnType("smallint");
+
+                    b.HasKey("ExamQuestionId");
+
+                    b.HasIndex("ExamId");
+
+                    b.ToTable("ExamQuestion");
+                });
+
+            modelBuilder.Entity("DbEntities.ExamQuestionOption", b =>
+                {
+                    b.Property<int>("ExamQuestionOptionId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ExamQuestionOptionId"));
+
+                    b.Property<int>("ExamQuestionId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsCorrectAnswer")
+                        .HasColumnType("bit");
+
+                    b.Property<short>("Order")
+                        .HasColumnType("smallint");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.HasKey("ExamQuestionOptionId");
+
+                    b.HasIndex("ExamQuestionId");
+
+                    b.ToTable("ExamQuestionOption");
+                });
+
+            modelBuilder.Entity("DbEntities.ExamResource", b =>
+                {
+                    b.Property<int>("ExamResourceId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ExamResourceId"));
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)");
+
+                    b.Property<string>("DownloadLink")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("ImageFileName")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<DateTime>("InsertDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal?>("Price")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("ResourceName")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<short>("Type")
+                        .HasColumnType("smallint");
+
+                    b.HasKey("ExamResourceId");
+
+                    b.ToTable("ExamResource");
+                });
+
+            modelBuilder.Entity("DbEntities.ExamResourceOrder", b =>
+                {
+                    b.Property<int>("ExamResourceOrderId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ExamResourceOrderId"));
+
+                    b.Property<int>("ApplicantId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("DeliveryDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("ExamResourceId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("OrderDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<short>("Status")
+                        .HasColumnType("smallint");
+
+                    b.Property<decimal>("TotalPrice")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("ExamResourceOrderId");
+
+                    b.HasIndex("ApplicantId");
+
+                    b.HasIndex("ExamResourceId");
+
+                    b.ToTable("ExamResourceOrder");
+                });
+
             modelBuilder.Entity("DbEntities.Identity.ApplicationUser", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("UserId")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnName("UserId");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
@@ -294,15 +573,16 @@ namespace DbConnection.Migrations.DefaultSharedDb
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
-                    b.ToTable("User");
+                    b.ToTable("User", (string)null);
                 });
 
             modelBuilder.Entity("DbEntities.Identity.CustomRole", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
@@ -323,15 +603,16 @@ namespace DbConnection.Migrations.DefaultSharedDb
                         .HasDatabaseName("RoleNameIndex")
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
-                    b.ToTable("Role");
+                    b.ToTable("Role", (string)null);
                 });
 
             modelBuilder.Entity("DbEntities.Identity.CustomRoleClaim", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ClaimType")
                         .HasColumnType("nvarchar(max)");
@@ -346,15 +627,16 @@ namespace DbConnection.Migrations.DefaultSharedDb
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("RoleClaim");
+                    b.ToTable("RoleClaim", (string)null);
                 });
 
             modelBuilder.Entity("DbEntities.Identity.CustomUserClaim", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ClaimType")
                         .HasColumnType("nvarchar(max)");
@@ -369,7 +651,7 @@ namespace DbConnection.Migrations.DefaultSharedDb
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserClaim");
+                    b.ToTable("UserClaim", (string)null);
                 });
 
             modelBuilder.Entity("DbEntities.Identity.CustomUserLogin", b =>
@@ -390,7 +672,7 @@ namespace DbConnection.Migrations.DefaultSharedDb
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserLogin");
+                    b.ToTable("UserLogin", (string)null);
                 });
 
             modelBuilder.Entity("DbEntities.Identity.CustomUserRole", b =>
@@ -405,7 +687,7 @@ namespace DbConnection.Migrations.DefaultSharedDb
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("UserRole");
+                    b.ToTable("UserRole", (string)null);
                 });
 
             modelBuilder.Entity("DbEntities.Identity.CustomUserToken", b =>
@@ -424,15 +706,45 @@ namespace DbConnection.Migrations.DefaultSharedDb
 
                     b.HasKey("UserId", "LoginProvider", "Name");
 
-                    b.ToTable("UserToken");
+                    b.ToTable("UserToken", (string)null);
+                });
+
+            modelBuilder.Entity("DbEntities.InterviewAppointment", b =>
+                {
+                    b.Property<int>("InterviewAppointmentId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("InterviewAppointmentId"));
+
+                    b.Property<int>("ApplicantId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("InsertDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("JobAnnouncementId")
+                        .HasColumnType("int");
+
+                    b.Property<short>("Status")
+                        .HasColumnType("smallint");
+
+                    b.HasKey("InterviewAppointmentId");
+
+                    b.HasIndex("ApplicantId");
+
+                    b.HasIndex("JobAnnouncementId");
+
+                    b.ToTable("InterviewAppointment");
                 });
 
             modelBuilder.Entity("DbEntities.JobAnnouncement", b =>
                 {
                     b.Property<int>("JobAnnouncementId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("JobAnnouncementId"));
 
                     b.Property<bool>("Active")
                         .HasColumnType("bit");
@@ -493,8 +805,9 @@ namespace DbConnection.Migrations.DefaultSharedDb
                 {
                     b.Property<int>("JobAnnouncementCategoryId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("JobAnnouncementCategoryId"));
 
                     b.Property<bool>("Active")
                         .HasColumnType("bit");
@@ -508,13 +821,55 @@ namespace DbConnection.Migrations.DefaultSharedDb
                     b.ToTable("JobAnnouncementCategory");
                 });
 
+            modelBuilder.Entity("DbEntities.JobAnnouncement_Exam", b =>
+                {
+                    b.Property<int>("ExamId")
+                        .HasColumnType("int")
+                        .HasColumnOrder(1);
+
+                    b.Property<int>("JobAnnouncementId")
+                        .HasColumnType("int")
+                        .HasColumnOrder(0);
+
+                    b.Property<DateTime>("InsertDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("ExamId", "JobAnnouncementId");
+
+                    b.HasIndex("JobAnnouncementId");
+
+                    b.ToTable("JobAnnouncement_Exam");
+                });
+
+            modelBuilder.Entity("DbEntities.JobAnnouncement_ExamResource", b =>
+                {
+                    b.Property<int>("ExamResourceId")
+                        .HasColumnType("int")
+                        .HasColumnOrder(1);
+
+                    b.Property<int>("JobAnnouncementId")
+                        .HasColumnType("int")
+                        .HasColumnOrder(0);
+
+                    b.Property<DateTime>("InsertDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("ExamResourceId", "JobAnnouncementId");
+
+                    b.HasIndex("JobAnnouncementId");
+
+                    b.ToTable("JobAnnouncement_ExamResource");
+                });
+
             modelBuilder.Entity("DbEntities.JobAnnouncement_JobAnnouncementCategory", b =>
                 {
                     b.Property<int>("JobAnnouncementId")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnOrder(0);
 
                     b.Property<int>("JobAnnouncementCategoryId")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnOrder(1);
 
                     b.Property<DateTime>("InsertDate")
                         .HasColumnType("datetime2");
@@ -528,11 +883,13 @@ namespace DbConnection.Migrations.DefaultSharedDb
 
             modelBuilder.Entity("DbEntities.JobAnnouncement_Skill", b =>
                 {
-                    b.Property<int>("JobAnnouncementId")
-                        .HasColumnType("int");
-
                     b.Property<int>("SkillId")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnOrder(1);
+
+                    b.Property<int>("JobAnnouncementId")
+                        .HasColumnType("int")
+                        .HasColumnOrder(0);
 
                     b.Property<DateTime>("InsertDate")
                         .HasColumnType("datetime2");
@@ -540,27 +897,29 @@ namespace DbConnection.Migrations.DefaultSharedDb
                     b.Property<int>("RegistrationAmount")
                         .HasColumnType("int");
 
-                    b.HasKey("JobAnnouncementId", "SkillId");
+                    b.HasKey("SkillId", "JobAnnouncementId");
 
-                    b.HasIndex("SkillId");
+                    b.HasIndex("JobAnnouncementId");
 
                     b.ToTable("JobAnnouncement_Skill");
                 });
 
             modelBuilder.Entity("DbEntities.JobAnnouncement_StudyField", b =>
                 {
-                    b.Property<int>("JobAnnouncementId")
-                        .HasColumnType("int");
-
                     b.Property<int>("StudyFieldId")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnOrder(1);
+
+                    b.Property<int>("JobAnnouncementId")
+                        .HasColumnType("int")
+                        .HasColumnOrder(0);
 
                     b.Property<DateTime>("InsertDate")
                         .HasColumnType("datetime2");
 
-                    b.HasKey("JobAnnouncementId", "StudyFieldId");
+                    b.HasKey("StudyFieldId", "JobAnnouncementId");
 
-                    b.HasIndex("StudyFieldId");
+                    b.HasIndex("JobAnnouncementId");
 
                     b.ToTable("JobAnnouncement_StudyField");
                 });
@@ -601,8 +960,9 @@ namespace DbConnection.Migrations.DefaultSharedDb
                 {
                     b.Property<int>("ProvinceId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProvinceId"));
 
                     b.Property<bool>("Active")
                         .HasColumnType("bit");
@@ -615,34 +975,6 @@ namespace DbConnection.Migrations.DefaultSharedDb
                     b.HasKey("ProvinceId");
 
                     b.ToTable("Province");
-                });
-
-            modelBuilder.Entity("DbEntities.ReferralCode", b =>
-                {
-                    b.Property<int>("ReferralCodeId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<bool>("Active")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime>("InsertDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("RefCode")
-                        .IsRequired()
-                        .HasMaxLength(30)
-                        .HasColumnType("nvarchar(30)");
-
-                    b.Property<string>("ReferralCodeName")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.HasKey("ReferralCodeId");
-
-                    b.ToTable("ReferralCode");
                 });
 
             modelBuilder.Entity("DbEntities.Setting", b =>
@@ -673,8 +1005,9 @@ namespace DbConnection.Migrations.DefaultSharedDb
                 {
                     b.Property<int>("SkillId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SkillId"));
 
                     b.Property<bool>("Active")
                         .HasColumnType("bit");
@@ -689,12 +1022,33 @@ namespace DbConnection.Migrations.DefaultSharedDb
                     b.ToTable("Skill");
                 });
 
+            modelBuilder.Entity("DbEntities.Skill_ExamResource", b =>
+                {
+                    b.Property<int>("SkillId")
+                        .HasColumnType("int")
+                        .HasColumnOrder(0);
+
+                    b.Property<int>("ExamResourceId")
+                        .HasColumnType("int")
+                        .HasColumnOrder(1);
+
+                    b.Property<DateTime>("InsertDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("SkillId", "ExamResourceId");
+
+                    b.HasIndex("ExamResourceId");
+
+                    b.ToTable("Skill_ExamResource");
+                });
+
             modelBuilder.Entity("DbEntities.StudyField", b =>
                 {
                     b.Property<int>("StudyFieldId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("StudyFieldId"));
 
                     b.Property<bool>("Active")
                         .HasColumnType("bit");
@@ -709,12 +1063,33 @@ namespace DbConnection.Migrations.DefaultSharedDb
                     b.ToTable("StudyField");
                 });
 
+            modelBuilder.Entity("DbEntities.StudyField_ExamResource", b =>
+                {
+                    b.Property<int>("StudyFieldId")
+                        .HasColumnType("int")
+                        .HasColumnOrder(0);
+
+                    b.Property<int>("ExamResourceId")
+                        .HasColumnType("int")
+                        .HasColumnOrder(1);
+
+                    b.Property<DateTime>("InsertDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("StudyFieldId", "ExamResourceId");
+
+                    b.HasIndex("ExamResourceId");
+
+                    b.ToTable("StudyField_ExamResource");
+                });
+
             modelBuilder.Entity("DbEntities.SystemSMS", b =>
                 {
                     b.Property<int>("SystemSMSId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SystemSMSId"));
 
                     b.Property<string>("Mobile")
                         .IsRequired()
@@ -736,8 +1111,9 @@ namespace DbConnection.Migrations.DefaultSharedDb
                 {
                     b.Property<int>("WalletId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("WalletId"));
 
                     b.Property<bool>("Active")
                         .HasColumnType("bit");
@@ -759,8 +1135,9 @@ namespace DbConnection.Migrations.DefaultSharedDb
                 {
                     b.Property<int>("WalletCommissionId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("WalletCommissionId"));
 
                     b.Property<int>("Commission")
                         .HasColumnType("int");
@@ -778,27 +1155,30 @@ namespace DbConnection.Migrations.DefaultSharedDb
                     b.ToTable("WalletCommission");
                 });
 
-            modelBuilder.Entity("DbEntities.Wallet_ReferralCode_CommissionRule", b =>
+            modelBuilder.Entity("DbEntities.Wallet_Collaborator_CommissionRule", b =>
                 {
                     b.Property<int>("WalletId")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnOrder(0);
 
-                    b.Property<int>("ReferralCodeId")
-                        .HasColumnType("int");
+                    b.Property<int>("CollaboratorId")
+                        .HasColumnType("int")
+                        .HasColumnOrder(1);
 
                     b.Property<int>("CommissionRuleId")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnOrder(2);
 
                     b.Property<DateTime>("InsertDate")
                         .HasColumnType("datetime2");
 
-                    b.HasKey("WalletId", "ReferralCodeId", "CommissionRuleId");
+                    b.HasKey("WalletId", "CollaboratorId", "CommissionRuleId");
+
+                    b.HasIndex("CollaboratorId");
 
                     b.HasIndex("CommissionRuleId");
 
-                    b.HasIndex("ReferralCodeId");
-
-                    b.ToTable("Wallet_ReferralCode_CommissionRule");
+                    b.ToTable("Wallet_Collaborator_CommissionRule");
                 });
 
             modelBuilder.Entity("DbEntities.Applicant", b =>
@@ -820,6 +1200,51 @@ namespace DbConnection.Migrations.DefaultSharedDb
                     b.Navigation("StudyField");
                 });
 
+            modelBuilder.Entity("DbEntities.ApplicantExamAttempt", b =>
+                {
+                    b.HasOne("DbEntities.Applicant", "Applicant")
+                        .WithMany("ApplicantExamAttempt")
+                        .HasForeignKey("ApplicantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DbEntities.Exam", "Exam")
+                        .WithMany("ApplicantAttemptList")
+                        .HasForeignKey("ExamId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Applicant");
+
+                    b.Navigation("Exam");
+                });
+
+            modelBuilder.Entity("DbEntities.ApplicantExamQuestionAnswer", b =>
+                {
+                    b.HasOne("DbEntities.ApplicantExamAttempt", "ApplicantExamAttempt")
+                        .WithMany("ApplicantExamQuestionAnswerList")
+                        .HasForeignKey("ApplicantExamAttemptId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DbEntities.ExamQuestion", "ExamQuestion")
+                        .WithMany("ApplicantExamQuestionAnswerList")
+                        .HasForeignKey("ExamQuestionId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("DbEntities.ExamQuestionOption", "ExamQuestionOption")
+                        .WithMany("ApplicantExamQuestionAnswerList")
+                        .HasForeignKey("ExamQuestionOptionId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("ApplicantExamAttempt");
+
+                    b.Navigation("ExamQuestion");
+
+                    b.Navigation("ExamQuestionOption");
+                });
+
             modelBuilder.Entity("DbEntities.Applicant_JobAnnouncement", b =>
                 {
                     b.HasOne("DbEntities.Applicant", "Applicant")
@@ -833,10 +1258,6 @@ namespace DbConnection.Migrations.DefaultSharedDb
                         .HasForeignKey("JobAnnouncementId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("DbEntities.Applicant_JobAnnouncement", null)
-                        .WithMany("Applicant_JobAnnouncement_List")
-                        .HasForeignKey("Applicant_JobAnnouncementApplicantId", "Applicant_JobAnnouncementJobAnnouncementId");
 
                     b.Navigation("Applicant");
 
@@ -852,6 +1273,47 @@ namespace DbConnection.Migrations.DefaultSharedDb
                         .IsRequired();
 
                     b.Navigation("Province");
+                });
+
+            modelBuilder.Entity("DbEntities.ExamQuestion", b =>
+                {
+                    b.HasOne("DbEntities.Exam", "Exam")
+                        .WithMany("ExamQuestionList")
+                        .HasForeignKey("ExamId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Exam");
+                });
+
+            modelBuilder.Entity("DbEntities.ExamQuestionOption", b =>
+                {
+                    b.HasOne("DbEntities.ExamQuestion", "ExamQuestion")
+                        .WithMany("ExamQuestionOptionList")
+                        .HasForeignKey("ExamQuestionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ExamQuestion");
+                });
+
+            modelBuilder.Entity("DbEntities.ExamResourceOrder", b =>
+                {
+                    b.HasOne("DbEntities.Applicant", "Applicant")
+                        .WithMany("ExamResourceOrderList")
+                        .HasForeignKey("ApplicantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DbEntities.ExamResource", "ExamResource")
+                        .WithMany("ExamResourceOrderList")
+                        .HasForeignKey("ExamResourceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Applicant");
+
+                    b.Navigation("ExamResource");
                 });
 
             modelBuilder.Entity("DbEntities.Identity.CustomRoleClaim", b =>
@@ -905,6 +1367,25 @@ namespace DbConnection.Migrations.DefaultSharedDb
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("DbEntities.InterviewAppointment", b =>
+                {
+                    b.HasOne("DbEntities.Applicant", "Applicant")
+                        .WithMany("InterviewAppointmentList")
+                        .HasForeignKey("ApplicantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DbEntities.JobAnnouncement", "JobAnnouncement")
+                        .WithMany("InterviewAppointmentList")
+                        .HasForeignKey("JobAnnouncementId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Applicant");
+
+                    b.Navigation("JobAnnouncement");
+                });
+
             modelBuilder.Entity("DbEntities.JobAnnouncement", b =>
                 {
                     b.HasOne("DbEntities.Company", "Company")
@@ -914,6 +1395,44 @@ namespace DbConnection.Migrations.DefaultSharedDb
                         .IsRequired();
 
                     b.Navigation("Company");
+                });
+
+            modelBuilder.Entity("DbEntities.JobAnnouncement_Exam", b =>
+                {
+                    b.HasOne("DbEntities.Exam", "Exam")
+                        .WithMany("JobAnnouncement_Exam_List")
+                        .HasForeignKey("ExamId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DbEntities.JobAnnouncement", "JobAnnouncement")
+                        .WithMany("JobAnnouncement_Exam_List")
+                        .HasForeignKey("JobAnnouncementId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Exam");
+
+                    b.Navigation("JobAnnouncement");
+                });
+
+            modelBuilder.Entity("DbEntities.JobAnnouncement_ExamResource", b =>
+                {
+                    b.HasOne("DbEntities.ExamResource", "ExamResource")
+                        .WithMany("JobAnnouncement_ExamResource_List")
+                        .HasForeignKey("ExamResourceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DbEntities.JobAnnouncement", "JobAnnouncement")
+                        .WithMany("JobAnnouncement_ExamResource_List")
+                        .HasForeignKey("JobAnnouncementId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ExamResource");
+
+                    b.Navigation("JobAnnouncement");
                 });
 
             modelBuilder.Entity("DbEntities.JobAnnouncement_JobAnnouncementCategory", b =>
@@ -973,6 +1492,44 @@ namespace DbConnection.Migrations.DefaultSharedDb
                     b.Navigation("StudyField");
                 });
 
+            modelBuilder.Entity("DbEntities.Skill_ExamResource", b =>
+                {
+                    b.HasOne("DbEntities.ExamResource", "ExamResource")
+                        .WithMany("Skill_ExamResource_List")
+                        .HasForeignKey("ExamResourceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DbEntities.Skill", "Skill")
+                        .WithMany("Skill_ExamResource_List")
+                        .HasForeignKey("SkillId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ExamResource");
+
+                    b.Navigation("Skill");
+                });
+
+            modelBuilder.Entity("DbEntities.StudyField_ExamResource", b =>
+                {
+                    b.HasOne("DbEntities.ExamResource", "ExamResource")
+                        .WithMany("StudyField_ExamResource_List")
+                        .HasForeignKey("ExamResourceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DbEntities.StudyField", "StudyField")
+                        .WithMany("StudyField_ExamResource_List")
+                        .HasForeignKey("StudyFieldId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ExamResource");
+
+                    b.Navigation("StudyField");
+                });
+
             modelBuilder.Entity("DbEntities.WalletCommission", b =>
                 {
                     b.HasOne("DbEntities.Wallet", "Wallet")
@@ -984,36 +1541,45 @@ namespace DbConnection.Migrations.DefaultSharedDb
                     b.Navigation("Wallet");
                 });
 
-            modelBuilder.Entity("DbEntities.Wallet_ReferralCode_CommissionRule", b =>
+            modelBuilder.Entity("DbEntities.Wallet_Collaborator_CommissionRule", b =>
                 {
+                    b.HasOne("DbEntities.Collaborator", "Collaborator")
+                        .WithMany("Wallet_Collaborator_CommissionRule_List")
+                        .HasForeignKey("CollaboratorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("DbEntities.CommissionRule", "CommissionRule")
-                        .WithMany("Wallet_ReferralCode_CommissionRule_List")
+                        .WithMany("Wallet_Collaborator_CommissionRule_List")
                         .HasForeignKey("CommissionRuleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("DbEntities.ReferralCode", "ReferralCode")
-                        .WithMany("Wallet_ReferralCode_CommissionRule_List")
-                        .HasForeignKey("ReferralCodeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("DbEntities.Wallet", "Wallet")
-                        .WithMany("Wallet_ReferralCode_CommissionRule_List")
+                        .WithMany("Wallet_Collaborator_CommissionRule_List")
                         .HasForeignKey("WalletId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("CommissionRule");
+                    b.Navigation("Collaborator");
 
-                    b.Navigation("ReferralCode");
+                    b.Navigation("CommissionRule");
 
                     b.Navigation("Wallet");
                 });
 
-            modelBuilder.Entity("DbEntities.Applicant_JobAnnouncement", b =>
+            modelBuilder.Entity("DbEntities.Applicant", b =>
                 {
-                    b.Navigation("Applicant_JobAnnouncement_List");
+                    b.Navigation("ApplicantExamAttempt");
+
+                    b.Navigation("ExamResourceOrderList");
+
+                    b.Navigation("InterviewAppointmentList");
+                });
+
+            modelBuilder.Entity("DbEntities.ApplicantExamAttempt", b =>
+                {
+                    b.Navigation("ApplicantExamQuestionAnswerList");
                 });
 
             modelBuilder.Entity("DbEntities.City", b =>
@@ -1021,9 +1587,14 @@ namespace DbConnection.Migrations.DefaultSharedDb
                     b.Navigation("ApplicantList");
                 });
 
+            modelBuilder.Entity("DbEntities.Collaborator", b =>
+                {
+                    b.Navigation("Wallet_Collaborator_CommissionRule_List");
+                });
+
             modelBuilder.Entity("DbEntities.CommissionRule", b =>
                 {
-                    b.Navigation("Wallet_ReferralCode_CommissionRule_List");
+                    b.Navigation("Wallet_Collaborator_CommissionRule_List");
                 });
 
             modelBuilder.Entity("DbEntities.Company", b =>
@@ -1031,9 +1602,47 @@ namespace DbConnection.Migrations.DefaultSharedDb
                     b.Navigation("JobAnnouncementList");
                 });
 
+            modelBuilder.Entity("DbEntities.Exam", b =>
+                {
+                    b.Navigation("ApplicantAttemptList");
+
+                    b.Navigation("ExamQuestionList");
+
+                    b.Navigation("JobAnnouncement_Exam_List");
+                });
+
+            modelBuilder.Entity("DbEntities.ExamQuestion", b =>
+                {
+                    b.Navigation("ApplicantExamQuestionAnswerList");
+
+                    b.Navigation("ExamQuestionOptionList");
+                });
+
+            modelBuilder.Entity("DbEntities.ExamQuestionOption", b =>
+                {
+                    b.Navigation("ApplicantExamQuestionAnswerList");
+                });
+
+            modelBuilder.Entity("DbEntities.ExamResource", b =>
+                {
+                    b.Navigation("ExamResourceOrderList");
+
+                    b.Navigation("JobAnnouncement_ExamResource_List");
+
+                    b.Navigation("Skill_ExamResource_List");
+
+                    b.Navigation("StudyField_ExamResource_List");
+                });
+
             modelBuilder.Entity("DbEntities.JobAnnouncement", b =>
                 {
                     b.Navigation("Applicant_JobAnnouncement_List");
+
+                    b.Navigation("InterviewAppointmentList");
+
+                    b.Navigation("JobAnnouncement_ExamResource_List");
+
+                    b.Navigation("JobAnnouncement_Exam_List");
 
                     b.Navigation("JobAnnouncement_JobAnnouncementCategory_List");
 
@@ -1052,14 +1661,11 @@ namespace DbConnection.Migrations.DefaultSharedDb
                     b.Navigation("CityList");
                 });
 
-            modelBuilder.Entity("DbEntities.ReferralCode", b =>
-                {
-                    b.Navigation("Wallet_ReferralCode_CommissionRule_List");
-                });
-
             modelBuilder.Entity("DbEntities.Skill", b =>
                 {
                     b.Navigation("JobAnnouncement_Skill_List");
+
+                    b.Navigation("Skill_ExamResource_List");
                 });
 
             modelBuilder.Entity("DbEntities.StudyField", b =>
@@ -1067,13 +1673,15 @@ namespace DbConnection.Migrations.DefaultSharedDb
                     b.Navigation("ApplicantList");
 
                     b.Navigation("JobAnnouncement_StudyField_List");
+
+                    b.Navigation("StudyField_ExamResource_List");
                 });
 
             modelBuilder.Entity("DbEntities.Wallet", b =>
                 {
-                    b.Navigation("Wallet_ReferralCode_CommissionRule_List");
-
                     b.Navigation("WalletCommissionList");
+
+                    b.Navigation("Wallet_Collaborator_CommissionRule_List");
                 });
 #pragma warning restore 612, 618
         }

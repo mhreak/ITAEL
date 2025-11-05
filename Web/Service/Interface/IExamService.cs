@@ -16,9 +16,6 @@ namespace Web.Service.Interface
 
         public IList<ExamViewModel> GetAllFiltered(
             string filterTitle, string filterDescription,
-            string filterShamsiStartTime, string filterShamsiEndTime,
-            string filterDurationMinutes, string filterRandomizeQuestions,
-            string filterRandomizeOptions, string filterAllowNavigateToPreviousQuestion,
             int currentPage, int pageSize, out int totalRecord);
     }
 }

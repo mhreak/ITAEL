@@ -106,8 +106,7 @@ namespace Web.Service
         }
 
         public IList<InterviewAppointmentViewModel> GetAllFiltered(string filterJobAnnouncementId, string filterApplicantId, 
-                                                                   string filterStatus, string filterShamsiInsertDateFrom, 
-                                                                   string filterShamsiInsertDateTo, 
+                                                                   string filterStatus, string filterInsertDateFrom, string filterInsertDateTo, 
                                                                    int currentPage, int pageSize, out int totalRecord)
         {
             string whereStr = "InterviewAppointmentId > 0 ";
@@ -128,39 +127,39 @@ namespace Web.Service
             }
 
             DateTime? insertDateFromMiladi = null;
-            if (!string.IsNullOrEmpty(filterShamsiInsertDateFrom))
+            if (!string.IsNullOrEmpty(filterInsertDateFrom))
             {
-                filterShamsiInsertDateFrom =
-                    filterShamsiInsertDateFrom.Replace("۰", "0")
-                                              .Replace("۱", "1")
-                                              .Replace("۲", "2")
-                                              .Replace("۳", "3")
-                                              .Replace("۴", "4")
-                                              .Replace("۵", "5")
-                                              .Replace("۶", "6")
-                                              .Replace("۷", "7")
-                                              .Replace("۸", "8")
-                                              .Replace("۹", "9");
-                PersianDateTime shamsiOrderDateFrom = PersianDateTime.Parse(filterShamsiInsertDateFrom);
+                filterInsertDateFrom =
+                    filterInsertDateFrom.Replace("۰", "0")
+                                        .Replace("۱", "1")
+                                        .Replace("۲", "2")
+                                        .Replace("۳", "3")
+                                        .Replace("۴", "4")
+                                        .Replace("۵", "5")
+                                        .Replace("۶", "6")
+                                        .Replace("۷", "7")
+                                        .Replace("۸", "8")
+                                        .Replace("۹", "9");
+                PersianDateTime shamsiOrderDateFrom = PersianDateTime.Parse(filterInsertDateFrom);
                 insertDateFromMiladi = shamsiOrderDateFrom.ToDateTime();
                 whereStr += " AND InsertDate >= @0";
             }
 
             DateTime? insertDateToMiladi = null;
-            if (!string.IsNullOrEmpty(filterShamsiInsertDateTo))
+            if (!string.IsNullOrEmpty(filterInsertDateTo))
             {
-                filterShamsiInsertDateTo =
-                    filterShamsiInsertDateTo.Replace("۰", "0")
-                                            .Replace("۱", "1")
-                                            .Replace("۲", "2")
-                                            .Replace("۳", "3")
-                                            .Replace("۴", "4")
-                                            .Replace("۵", "5")
-                                            .Replace("۶", "6")
-                                            .Replace("۷", "7")
-                                            .Replace("۸", "8")
-                                            .Replace("۹", "9");
-                PersianDateTime shamsiOrderDateTo = PersianDateTime.Parse(filterShamsiInsertDateTo);
+                filterInsertDateTo =
+                    filterInsertDateTo.Replace("۰", "0")
+                                      .Replace("۱", "1")
+                                      .Replace("۲", "2")
+                                      .Replace("۳", "3")
+                                      .Replace("۴", "4")
+                                      .Replace("۵", "5")
+                                      .Replace("۶", "6")
+                                      .Replace("۷", "7")
+                                      .Replace("۸", "8")
+                                      .Replace("۹", "9");
+                PersianDateTime shamsiOrderDateTo = PersianDateTime.Parse(filterInsertDateTo);
                 insertDateToMiladi = shamsiOrderDateTo.ToDateTime();
 
                 insertDateToMiladi = insertDateToMiladi.Value.AddHours(23).AddMinutes(59).AddSeconds(59).AddMilliseconds(999);
@@ -170,7 +169,7 @@ namespace Web.Service
 
             var dbModelList = new List<InterviewAppointment>();
 
-            dbModelList = _table.Where(whereStr, filterShamsiInsertDateFrom, filterShamsiInsertDateTo)
+            dbModelList = _table.Where(whereStr, insertDateFromMiladi, insertDateToMiladi)
                                 .Include(x => x.Applicant)
                                 .Include(x => x.JobAnnouncement)
                                 .ToList();

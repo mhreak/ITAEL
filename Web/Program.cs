@@ -77,7 +77,7 @@ builder.Services.AddScoped<IJobAnnouncement_Skill_Service, JobAnnouncement_Skill
 builder.Services.AddScoped<IJobAnnouncementCategoryService, JobAnnouncementCategoryService>();
 builder.Services.AddScoped<IApplicant_JobAnnouncement_Service, Applicant_JobAnnouncement_Service>();
 builder.Services.AddScoped<IJobAnnouncement_StudyField_Service, JobAnnouncement_StudyField_Service>();
-builder.Services.AddScoped<IWallet_ReferralCode_CommissionRule_Service, Wallet_ReferralCode_CommissionRule_Service>();
+builder.Services.AddScoped<IWallet_Collaborator_CommissionRule_Service, Wallet_Collaborator_CommissionRule_Service>();
 builder.Services.AddScoped<IJobAnnouncement_JobAnnouncementCategory_Service, JobAnnouncement_JobAnnouncementCategory_Service>();
 
 var app = builder.Build();

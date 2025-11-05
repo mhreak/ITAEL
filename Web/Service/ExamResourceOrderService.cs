@@ -105,10 +105,10 @@ namespace Web.Service
                                                                 string filterStatus,
                                                                 string filterTotalPriceFrom,
                                                                 string filterTotalPriceTo,
-                                                                string filterShamsiOrderDateFrom,
-                                                                string filterShamsiOrderDateTo,
-                                                                string filterShamsiDeliveryDateFrom,
-                                                                string filterShamsiDeliveryDateTo,
+                                                                string filterOrderDateFrom,
+                                                                string filterOrderDateTo,
+                                                                string filterDeliveryDateFrom,
+                                                                string filterDeliveryDateTo,
                                                                 int currentPage,
                                                                 int pageSize,
                                                                 out int totalRecord)
@@ -141,10 +141,10 @@ namespace Web.Service
             }
 
             DateTime? insertOrderDateFromMiladi = null;
-            if (!string.IsNullOrEmpty(filterShamsiOrderDateFrom))
+            if (!string.IsNullOrEmpty(filterOrderDateFrom))
             {
-                filterShamsiOrderDateFrom =
-                    filterShamsiOrderDateFrom.Replace("۰", "0")
+                filterOrderDateFrom =
+                    filterOrderDateFrom.Replace("۰", "0")
                                              .Replace("۱", "1")
                                              .Replace("۲", "2")
                                              .Replace("۳", "3")
@@ -154,16 +154,16 @@ namespace Web.Service
                                              .Replace("۷", "7")
                                              .Replace("۸", "8")
                                              .Replace("۹", "9");
-                PersianDateTime shamsiOrderDateFrom = PersianDateTime.Parse(filterShamsiOrderDateFrom);
+                PersianDateTime shamsiOrderDateFrom = PersianDateTime.Parse(filterOrderDateFrom);
                 insertOrderDateFromMiladi = shamsiOrderDateFrom.ToDateTime();
                 whereStr += " AND OrderDate >= @2";
             }
 
             DateTime? insertOrderDateToMiladi = null;
-            if (!string.IsNullOrEmpty(filterShamsiOrderDateTo))
+            if (!string.IsNullOrEmpty(filterOrderDateTo))
             {
-                filterShamsiOrderDateTo =
-                    filterShamsiOrderDateTo.Replace("۰", "0")
+                filterOrderDateTo =
+                    filterOrderDateTo.Replace("۰", "0")
                                            .Replace("۱", "1")
                                            .Replace("۲", "2")
                                            .Replace("۳", "3")
@@ -173,7 +173,7 @@ namespace Web.Service
                                            .Replace("۷", "7")
                                            .Replace("۸", "8")
                                            .Replace("۹", "9");
-                PersianDateTime shamsiOrderDateTo = PersianDateTime.Parse(filterShamsiOrderDateTo);
+                PersianDateTime shamsiOrderDateTo = PersianDateTime.Parse(filterOrderDateTo);
                 insertOrderDateToMiladi = shamsiOrderDateTo.ToDateTime();
 
                 insertOrderDateToMiladi = insertOrderDateToMiladi.Value.AddHours(23).AddMinutes(59).AddSeconds(59).AddMilliseconds(999);
@@ -182,10 +182,10 @@ namespace Web.Service
             }
 
             DateTime? insertDeliveryDateFromMiladi = null;
-            if (!string.IsNullOrEmpty(filterShamsiDeliveryDateFrom))
+            if (!string.IsNullOrEmpty(filterDeliveryDateFrom))
             {
-                filterShamsiOrderDateFrom =
-                    filterShamsiOrderDateFrom.Replace("۰", "0")
+                filterOrderDateFrom =
+                    filterOrderDateFrom.Replace("۰", "0")
                                              .Replace("۱", "1")
                                              .Replace("۲", "2")
                                              .Replace("۳", "3")
@@ -195,16 +195,16 @@ namespace Web.Service
                                              .Replace("۷", "7")
                                              .Replace("۸", "8")
                                              .Replace("۹", "9");
-                PersianDateTime shamsiDeliveryDateFrom = PersianDateTime.Parse(filterShamsiDeliveryDateFrom);
+                PersianDateTime shamsiDeliveryDateFrom = PersianDateTime.Parse(filterDeliveryDateFrom);
                 insertDeliveryDateFromMiladi = shamsiDeliveryDateFrom.ToDateTime();
                 whereStr += " AND DeliveryDate >= @4";
             }
 
             DateTime? insertDeliveryDateToMiladi = null;
-            if (!string.IsNullOrEmpty(filterShamsiDeliveryDateTo))
+            if (!string.IsNullOrEmpty(filterDeliveryDateTo))
             {
-                filterShamsiOrderDateTo =
-                    filterShamsiOrderDateTo.Replace("۰", "0")
+                filterOrderDateTo =
+                    filterOrderDateTo.Replace("۰", "0")
                                            .Replace("۱", "1")
                                            .Replace("۲", "2")
                                            .Replace("۳", "3")
@@ -214,7 +214,7 @@ namespace Web.Service
                                            .Replace("۷", "7")
                                            .Replace("۸", "8")
                                            .Replace("۹", "9");
-                PersianDateTime shamsiDeliveryDateTo = PersianDateTime.Parse(filterShamsiDeliveryDateTo);
+                PersianDateTime shamsiDeliveryDateTo = PersianDateTime.Parse(filterDeliveryDateTo);
                 insertDeliveryDateToMiladi = shamsiDeliveryDateTo.ToDateTime();
 
                 insertDeliveryDateToMiladi = insertDeliveryDateToMiladi.Value.AddHours(23).AddMinutes(59).AddSeconds(59).AddMilliseconds(999);
@@ -225,9 +225,9 @@ namespace Web.Service
             var dbModelList = new List<ExamResourceOrder>();
 
             dbModelList = _table.Where(whereStr, filterTotalPriceFrom,
-                                       filterTotalPriceTo, filterShamsiOrderDateFrom,
-                                       filterShamsiOrderDateTo, filterShamsiDeliveryDateFrom,
-                                       filterShamsiDeliveryDateTo)
+                                       filterTotalPriceTo, insertOrderDateFromMiladi,
+                                       insertOrderDateToMiladi, insertDeliveryDateFromMiladi,
+                                       insertDeliveryDateToMiladi)
                                 .Include(x => x.Applicant)
                                 .Include(x => x.ExamResource)
                                 .ToList();

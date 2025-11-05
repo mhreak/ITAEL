@@ -102,9 +102,6 @@ namespace Web.Service
         }
 
         public IList<ExamViewModel> GetAllFiltered(string filterTitle, string filterDescription,
-                                                   string filterShamsiStartTime, string filterShamsiEndTime,
-                                                   string filterDurationMinutes, string filterRandomizeQuestions,
-                                                   string filterRandomizeOptions, string filterAllowNavigateToPreviousQuestion,
                                                    int currentPage, int pageSize, out int totalRecord)
         {
             string whereStr = "ExamId > 0 ";
@@ -119,71 +116,10 @@ namespace Web.Service
                 whereStr += " AND Description.Contains(@1)";
             }
 
-            DateTime? insertDateFromMiladi = null;
-            if (!string.IsNullOrEmpty(filterShamsiStartTime))
-            {
-                filterShamsiStartTime =
-                    filterShamsiStartTime.Replace("۰", "0")
-                                         .Replace("۱", "1")
-                                         .Replace("۲", "2")
-                                         .Replace("۳", "3")
-                                         .Replace("۴", "4")
-                                         .Replace("۵", "5")
-                                         .Replace("۶", "6")
-                                         .Replace("۷", "7")
-                                         .Replace("۸", "8")
-                                         .Replace("۹", "9");
-                PersianDateTime shamsiInsertDateFrom = PersianDateTime.Parse(filterShamsiStartTime);
-                insertDateFromMiladi = shamsiInsertDateFrom.ToDateTime();
-                whereStr += " AND StartTime >= @2";
-            }
-
-            DateTime? insertDateToMiladi = null;
-            if (!string.IsNullOrEmpty(filterShamsiEndTime))
-            {
-                filterShamsiEndTime =
-                    filterShamsiEndTime.Replace("۰", "0")
-                                       .Replace("۱", "1")
-                                       .Replace("۲", "2")
-                                       .Replace("۳", "3")
-                                       .Replace("۴", "4")
-                                       .Replace("۵", "5")
-                                       .Replace("۶", "6")
-                                       .Replace("۷", "7")
-                                       .Replace("۸", "8")
-                                       .Replace("۹", "9");
-                PersianDateTime shamsiInsertDateTo = PersianDateTime.Parse(filterShamsiEndTime);
-                insertDateToMiladi = shamsiInsertDateTo.ToDateTime();
-
-                insertDateToMiladi = insertDateToMiladi.Value.AddHours(23).AddMinutes(59).AddSeconds(59).AddMilliseconds(999);
-
-                whereStr += " AND EndTime <= @3";
-            }
-
-            if (!string.IsNullOrEmpty(filterDurationMinutes))
-            {
-                whereStr += " AND DurationMinutes = " + filterDurationMinutes;
-            }
-
-            if (!string.IsNullOrEmpty(filterRandomizeQuestions))
-            {
-                whereStr += " AND RandomizeQuestions = " + filterRandomizeQuestions;
-            }
-
-            if (!string.IsNullOrEmpty(filterRandomizeOptions))
-            {
-                whereStr += " AND RandomizeOptions = " + filterRandomizeOptions;
-            }
-
-            if (!string.IsNullOrEmpty(filterAllowNavigateToPreviousQuestion))
-            {
-                whereStr += " AND AllowNavigateToPreviousQuestion = " + filterAllowNavigateToPreviousQuestion;
-            }
 
             var dbModelList = new List<Exam>();
 
-            dbModelList = _table.Where(whereStr, filterTitle, filterDescription, 
-                                       filterShamsiStartTime, filterShamsiEndTime).ToList();
+            dbModelList = _table.Where(whereStr, filterTitle, filterDescription).ToList();
 
             totalRecord = dbModelList.Count();
 

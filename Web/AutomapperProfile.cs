@@ -163,12 +163,7 @@ namespace Web
                 .ForMember(dest => dest.ActiveStr, src => src.MapFrom(x => x.Active ? "فعال" : "غیرفعال"));
             CreateMap<CollaboratorViewModel, Collaborator>();
 
-            CreateMap<Exam, ExamViewModel>()
-                .ForMember(dest => dest.ShamsiStartTime, src => src.MapFrom(x => ConvertToShamsiDateWithTime(x.StartTime)))
-                .ForMember(dest => dest.ShamsiEndTime, src => src.MapFrom(x => ConvertToShamsiDateWithTime(x.EndTime)))
-                .ForMember(dest => dest.AllowNavigateToPreviousQuestionStr, src => src.MapFrom(x => x.AllowNavigateToPreviousQuestion ? "بله" : "خیر"))
-                .ForMember(dest => dest.RandomizeQuestionsStr, src => src.MapFrom(x => x.RandomizeQuestions ? "بله" : "خیر"))
-                .ForMember(dest => dest.RandomizeOptionsStr, src => src.MapFrom(x => x.RandomizeOptions ? "بله" : "خیر"));
+            CreateMap<Exam, ExamViewModel>();
             CreateMap<ExamViewModel, Exam>();
 
             CreateMap<ExamQuestion, ExamQuestionViewModel>()
@@ -206,7 +201,12 @@ namespace Web
             CreateMap<JobAnnouncement_Exam, JobAnnouncement_Exam_ViewModel>()
                 .ForMember(dest => dest.ExamTitle, src => src.MapFrom(x => x.Exam.Title))
                 .ForMember(dest => dest.JobAnnouncementTitle, src => src.MapFrom(x => x.JobAnnouncement.Title))
-                .ForMember(dest => dest.ShamsiInsertDate, src => src.MapFrom(x => ConvertToShamsiDate(x.InsertDate)));
+                .ForMember(dest => dest.ShamsiInsertDate, src => src.MapFrom(x => ConvertToShamsiDate(x.InsertDate)))
+                .ForMember(dest => dest.ShamsiStartTime, src => src.MapFrom(x => ConvertToShamsiDateWithTime(x.StartTime)))
+                .ForMember(dest => dest.ShamsiEndTime, src => src.MapFrom(x => ConvertToShamsiDateWithTime(x.EndTime)))
+                .ForMember(dest => dest.AllowNavigateToPreviousQuestionStr, src => src.MapFrom(x => x.AllowNavigateToPreviousQuestion ? "بله" : "خیر"))
+                .ForMember(dest => dest.RandomizeQuestionsStr, src => src.MapFrom(x => x.RandomizeQuestions ? "بله" : "خیر"))
+                .ForMember(dest => dest.RandomizeOptionsStr, src => src.MapFrom(x => x.RandomizeOptions ? "بله" : "خیر"));
             CreateMap<JobAnnouncement_Exam_ViewModel, JobAnnouncement_Exam>();
 
             CreateMap<JobAnnouncement_ExamResource, JobAnnouncement_ExamResource_ViewModel>()

@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("DbConnection")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a283a7b86a54aad213533e26e2d89fdd1c7bedec")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+6a9d2da2cbc0dc06da0a81edc764a442b62076c7")]
 [assembly: System.Reflection.AssemblyProductAttribute("DbConnection")]
 [assembly: System.Reflection.AssemblyTitleAttribute("DbConnection")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
