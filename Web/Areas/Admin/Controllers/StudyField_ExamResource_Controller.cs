@@ -12,24 +12,25 @@ namespace Web.Areas.Admin.Controllers
     [Area("Admin")]
     [Route("Admin/[controller]")]
     [Authorize(Roles = "Manager,Admin")]
-    public class JobAnnouncement_ExamResource_Controller(IJobAnnouncement_ExamResource_Service ja_ExamResource_Service) : BaseController
+    public class StudyField_ExamResource_Controller(IStudyField_ExamResource_Service studyField_ExamResource_Service) : BaseController
     {
-        [Route("Index/{jobAnnouncementId}")]
-        public IActionResult Index(int jobAnnouncementId)
+        [Route("Index/{studyFieldId}")]
+        public IActionResult Index(int studyFieldId)
         {
-            ViewBag.jobAnnouncementId = jobAnnouncementId;
+            ViewBag.StudyFieldId = studyFieldId;
             return View();
         }
 
         [Route("Grid_Data_Read")]
-        public IActionResult Grid_Data_Read([DataSourceRequest] DataSourceRequest request, int jobAnnouncementId)
+        public IActionResult Grid_Data_Read([DataSourceRequest] DataSourceRequest request,
+            int studyFieldId)
         {
-            var jobAnnouncement_Exam_ViewModelList = ja_ExamResource_Service.GetAllByJobAnnouncementId(jobAnnouncementId);
+            var studyField_ExamResource_ViewModelList = studyField_ExamResource_Service.GetAllByStudyFieldId(studyFieldId).ToList();
 
             var result = new DataSourceResult()
             {
-                Data = jobAnnouncement_Exam_ViewModelList,
-                Total = jobAnnouncement_Exam_ViewModelList.Count // Total number of records
+                Data = studyField_ExamResource_ViewModelList,
+                Total = studyField_ExamResource_ViewModelList.Count // Total number of records
             };
 
             return Json(result);
@@ -45,17 +46,17 @@ namespace Web.Areas.Admin.Controllers
         [HttpPost]
         [Route("Create")]
         [ValidateAntiForgeryToken]
-        public virtual ActionResult Create(JobAnnouncement_Exam_ViewModel model)
+        public virtual ActionResult Create(StudyField_ExamResource_ViewModel model)
         {
             if (ModelState.IsValid)
             {
-                if (!ja_ExamResource_Service.IsDuplicate(model.JobAnnouncementId, model.ExamId))
+                if (!studyField_ExamResource_Service.IsDuplicate(model.ExamResourceId, model.StudyFieldId))
                 {
-                    if (ja_ExamResource_Service.Add(model.JobAnnouncementId, model.ExamId))
+                    if (studyField_ExamResource_Service.Add(model.ExamResourceId, model.StudyFieldId))
                     {
                         ShowSuccessToast("عملیات انجام شد", "اطلاعات با موفقیت ذخیره شد");
 
-                        return RedirectToAction("Index", new { jobAnnouncementId = model.JobAnnouncementId });
+                        return RedirectToAction("Index", new { studyFieldId = model.StudyFieldId });
                     }
                     else
                     {
@@ -80,25 +81,25 @@ namespace Web.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        [Route("Edit/{jobAnnouncementId}/{examResourceId}")]
-        public IActionResult Edit(int jobAnnouncementId, int examResourceId)
+        [Route("Edit/{studyFieldId}/{examResourceId}")]
+        public IActionResult Edit(int studyFieldId, int examResourceId)
         {
-            var model = ja_ExamResource_Service.Get(jobAnnouncementId, examResourceId);
+            var model = studyField_ExamResource_Service.Get(examResourceId, studyFieldId);
             return View(model);
         }
 
         [HttpPost]
         [Route("Edit")]
         [ValidateAntiForgeryToken]
-        public virtual ActionResult Edit(JobAnnouncement_ExamResource_ViewModel model)
+        public virtual ActionResult Edit(StudyField_ExamResource_ViewModel model)
         {
             if (ModelState.IsValid)
             {
-                if (ja_ExamResource_Service.Edit(model))
+                if (studyField_ExamResource_Service.Edit(model))
                 {
                     ShowSuccessToast("عملیات انجام شد", "اطلاعات با موفقیت ذخیره شد");
 
-                    return RedirectToAction("Index", new { jobAnnouncementId = model.JobAnnouncementId });
+                    return RedirectToAction("Index", new { studyFieldId = model.StudyFieldId });
                 }
                 else
                 {
@@ -118,21 +119,21 @@ namespace Web.Areas.Admin.Controllers
         }
 
         [Route("Delete")]
-        public bool Delete(int jobAnnouncementId, int examId)
+        public bool Delete(int studyFieldId, int examResourceId)
         {
-            return ja_ExamResource_Service.Delete(jobAnnouncementId, examId);
+            return studyField_ExamResource_Service.Delete(examResourceId, studyFieldId);
         }
 
-        [Route("Fill_Ja_ExamResource_Combo")]
-        public virtual JsonResult Fill_Ja_ExamResource_Combo(int jobAnnouncementId)
+        [Route("Fill_StudyField_ExamResource_Combo")]
+        public virtual JsonResult Fill_StudyField_ExamResource_Combo(int skillId)
         {
-            var DataList = ja_ExamResource_Service.GetAllByJobAnnouncementId(jobAnnouncementId)
-                                                  .Select(x =>
-                                                              new SelectListItem
-                                                              {
-                                                                  Text = x.ResourceName,
-                                                                  Value = x.ExamResourceId.ToString()
-                                                              });
+            var DataList = studyField_ExamResource_Service.GetAllByStudyFieldId(skillId)
+                                                          .Select(x =>
+                                                                      new SelectListItem
+                                                                      {
+                                                                          Text = x.StudyFieldName,
+                                                                          Value = x.StudyFieldId.ToString()
+                                                                      });
             return Json(DataList);
         }
     }

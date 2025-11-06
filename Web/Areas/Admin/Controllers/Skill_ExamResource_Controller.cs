@@ -12,29 +12,25 @@ namespace Web.Areas.Admin.Controllers
     [Area("Admin")]
     [Route("Admin/[controller]")]
     [Authorize(Roles = "Manager,Admin")]
-    public class SkillController(ISkillService skillService) : BaseController
+    public class Skill_ExamResource_Controller(ISkill_ExamResource_Service skill_ExamResource_Service) : BaseController
     {
-        [Route("Index")]
-        public IActionResult Index()
+        [Route("Index/{skillId}")]
+        public IActionResult Index(int skillId)
         {
+            ViewBag.SkillId = skillId;
             return View();
         }
 
         [Route("Grid_Data_Read")]
         public IActionResult Grid_Data_Read([DataSourceRequest] DataSourceRequest request,
-            string filterSkillName, string filterActive)
+            int skillId)
         {
-            //Paging and Sorting
-            int currentPage = request.Page;
-            int pageSize = request.PageSize;
-
-            int totalRecord = 0;
-
+            var skill_ExamResource_ViewModelList = skill_ExamResource_Service.GetAllBySkillId(skillId).ToList();
 
             var result = new DataSourceResult()
             {
-                Data = skillService.GetAllFiltered(filterSkillName, filterActive, currentPage, pageSize, out totalRecord),
-                Total = totalRecord // Total number of records
+                Data = skill_ExamResource_ViewModelList,
+                Total = skill_ExamResource_ViewModelList.Count // Total number of records
             };
 
             return Json(result);
@@ -50,17 +46,17 @@ namespace Web.Areas.Admin.Controllers
         [HttpPost]
         [Route("Create")]
         [ValidateAntiForgeryToken]
-        public virtual ActionResult Create(SkillViewModel model)
+        public virtual ActionResult Create(Skill_ExamResource_ViewModel model)
         {
             if (ModelState.IsValid)
             {
-                if (!skillService.IsDuplicateByName(null, model.SkillName))
+                if (!skill_ExamResource_Service.IsDuplicate(model.ExamResourceId, model.SkillId))
                 {
-                    if (skillService.Add(model) != -1)
+                    if (skill_ExamResource_Service.Add(model.ExamResourceId, model.SkillId))
                     {
                         ShowSuccessToast("عملیات انجام شد", "اطلاعات با موفقیت ذخیره شد");
 
-                        return RedirectToAction("Index");
+                        return RedirectToAction("Index", new { skillId = model.SkillId });
                     }
                     else
                     {
@@ -85,36 +81,29 @@ namespace Web.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        [Route("Edit/{id}")]
-        public IActionResult Edit(int id)
+        [Route("Edit/{skillId}/{examResourceId}")]
+        public IActionResult Edit(int skillId, int examResourceId)
         {
-            var model = skillService.Get(id);
+            var model = skill_ExamResource_Service.Get(examResourceId, skillId);
             return View(model);
         }
 
         [HttpPost]
-        [Route("Edit/{id}")]
+        [Route("Edit")]
         [ValidateAntiForgeryToken]
-        public virtual ActionResult Edit(SkillViewModel model)
+        public virtual ActionResult Edit(Skill_ExamResource_ViewModel model)
         {
             if (ModelState.IsValid)
             {
-                if (!skillService.IsDuplicateByName(model.SkillId, model.SkillName))
+                if (skill_ExamResource_Service.Edit(model))
                 {
-                    if (skillService.Edit(model))
-                    {
-                        ShowSuccessToast("عملیات انجام شد", "اطلاعات با موفقیت ذخیره شد");
+                    ShowSuccessToast("عملیات انجام شد", "اطلاعات با موفقیت ذخیره شد");
 
-                        return RedirectToAction("Index");
-                    }
-                    else
-                    {
-                        ShowDangerToast(null, "خطا هنگام ذخیره اطلاعات");
-                    }
+                    return RedirectToAction("Index", new { skillId = model.SkillId });
                 }
                 else
                 {
-                    ShowDangerToast(null, "یک مهارت دیگر با این نام وجود دارد");
+                    ShowDangerToast(null, "خطا هنگام ذخیره اطلاعات");
                 }
             }
             else
@@ -130,21 +119,21 @@ namespace Web.Areas.Admin.Controllers
         }
 
         [Route("Delete")]
-        public bool Delete(int id)
+        public bool Delete(int skillId, int examResourceId)
         {
-            return skillService.Delete(id);
+            return skill_ExamResource_Service.Delete(examResourceId, skillId);
         }
 
-        [Route("Fill_Skill_Combo")]
-        public virtual JsonResult Fill_Skill_Combo(bool? active)
+        [Route("Fill_Skill_ExamResource_Combo")]
+        public virtual JsonResult Fill_Skill_ExamResource_Combo(int skillId)
         {
-            var DataList = skillService.GetAll(active)
-                .Select(x =>
-                new SelectListItem
-                {
-                    Text = x.SkillName,
-                    Value = x.SkillId.ToString()
-                });
+            var DataList = skill_ExamResource_Service.GetAllBySkillId(skillId)
+                                                     .Select(x =>
+                                                                 new SelectListItem
+                                                                 {
+                                                                     Text = x.SkillName,
+                                                                     Value = x.SkillId.ToString()
+                                                                 });
             return Json(DataList);
         }
     }

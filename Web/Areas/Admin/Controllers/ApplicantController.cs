@@ -1,18 +1,14 @@
-﻿using Kendo.Mvc.UI;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using System.Linq;
-using System;
-using Web.Controllers;
-using Web.Model;
-using Web.Service;
-using Web.Service.Identity.Interface;
-using Web.Service.Interface;
-using Microsoft.AspNetCore.Http;
-using static Kendo.Mvc.UI.UIPrimitives;
+﻿using Web.Model;
 using System.IO;
+using System.Linq;
+using Kendo.Mvc.UI;
+using Web.Controllers;
+using Web.Service.Interface;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Hosting;
+using Web.Service.Identity.Interface;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Web.Areas.Admin.Controllers
 {

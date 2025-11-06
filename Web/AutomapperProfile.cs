@@ -1,10 +1,10 @@
-﻿using AutoMapper;
-using DbEntities;
-using DbEntities.Identity;
-using System;
-using System.Globalization;
+﻿using System;
 using Web.Model;
+using AutoMapper;
+using DbEntities;
 using Web.Model.Identity;
+using DbEntities.Identity;
+using System.Globalization;
 
 namespace Web
 {

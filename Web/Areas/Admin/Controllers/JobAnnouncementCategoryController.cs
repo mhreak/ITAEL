@@ -1,11 +1,11 @@
-﻿using Kendo.Mvc.UI;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Web.Model;
 using System.Linq;
+using Kendo.Mvc.UI;
 using Web.Controllers;
-using Web.Model;
 using Web.Service.Interface;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Web.Areas.Admin.Controllers
 {

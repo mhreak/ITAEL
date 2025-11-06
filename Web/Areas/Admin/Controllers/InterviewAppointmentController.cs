@@ -4,9 +4,13 @@ using Kendo.Mvc.UI;
 using Web.Controllers;
 using Web.Service.Interface;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Web.Areas.Admin.Controllers
 {
+    [Area("Admin")]
+    [Route("Admin/[controller]")]
+    [Authorize(Roles = "Manager,Admin")]
     public class InterviewAppointmentController(IInterviewAppointmentService interviewAppointmentService) : BaseController
     {
         [Route("Index/{jobAnnouncementId}")]

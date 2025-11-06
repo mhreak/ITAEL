@@ -4,10 +4,14 @@ using Kendo.Mvc.UI;
 using Web.Controllers;
 using Web.Service.Interface;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Web.Areas.Admin.Controllers
 {
+    [Area("Admin")]
+    [Route("Admin/[controller]")]
+    [Authorize(Roles = "Manager,Admin")]
     public class JobAnnouncement_Exam_Controller(IJobAnnouncement_Exam_Service ja_Exam_Service) : BaseController
     {
         [Route("Index/{jobAnnouncementId}")]

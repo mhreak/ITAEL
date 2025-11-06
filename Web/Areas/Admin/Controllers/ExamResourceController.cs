@@ -1,13 +1,16 @@
-﻿using Kendo.Mvc.UI;
-using Microsoft.AspNetCore.Mvc;
+﻿using Web.Model;
 using System.Linq;
+using Kendo.Mvc.UI;
 using Web.Controllers;
-using Web.Model;
-using Web.Service;
 using Web.Service.Interface;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Web.Areas.Admin.Controllers
 {
+    [Area("Admin")]
+    [Route("Admin/[controller]")]
+    [Authorize(Roles = "Manager,Admin")]
     public class ExamResourceController(IExamResourceService examResourceService) : BaseController
     {
         [Route("Index")]

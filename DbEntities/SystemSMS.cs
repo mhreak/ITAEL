@@ -1,8 +1,4 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-
-namespace DbEntities
+﻿namespace DbEntities
 {
     [Table("SystemSMS")]
     public class SystemSMS

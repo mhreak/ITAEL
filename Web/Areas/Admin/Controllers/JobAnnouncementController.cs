@@ -1,13 +1,12 @@
-﻿using DbEntities;
-using Kendo.Mvc.UI;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using Web.Controllers;
+﻿using System;
 using Web.Model;
+using System.Linq;
+using Kendo.Mvc.UI;
+using Web.Controllers;
 using Web.Service.Interface;
+using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Web.Areas.Admin.Controllers
 {

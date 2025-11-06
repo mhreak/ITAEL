@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-
-namespace DbEntities
+﻿namespace DbEntities
 {
     [Table("CommissionRule")]
     public class CommissionRule

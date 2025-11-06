@@ -1,7 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-
-namespace DbEntities
+﻿namespace DbEntities
 {
     [Table(name: "PaymentType")]
     public class PaymentType
