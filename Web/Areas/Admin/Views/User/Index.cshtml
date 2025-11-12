@@ -99,7 +99,7 @@
             .Events(events => events.Error("error_handler"))
             .Model(model =>
             {
-                model.Id(x => x.PassengerId);
+                model.Id(x => x.ApplicantId);
             })
             .Read(read => read.Action("Grid_Data_Read", "User", new { Area = "Admin" })
             .Data("getUserFilterDataParams"))

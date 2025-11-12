@@ -5,7 +5,6 @@ using DbEntities;
 using System.Linq;
 using DbConnection;
 using MD.PersianDateTime;
-using System.Globalization;
 using Web.Service.Interface;
 using System.Linq.Dynamic.Core;
 using System.Collections.Generic;
@@ -95,6 +94,37 @@ namespace Web.Service
             _mapper.Map(dbModel, uiModel);
 
             return uiModel;
+        }
+
+        public ApplicantExamAttemptViewModel GetByApplicantIdAndExamId(int applicantId, int examId)
+        {
+            if (applicantId == 0 || examId == 0) { return null; }
+
+            var dbModel = _table.FirstOrDefault(x => x.ApplicantId == applicantId && x.ExamId == examId);
+
+            if (dbModel == null)
+            {
+                return null;
+            }
+
+            var uiModel = new ApplicantExamAttemptViewModel();
+
+            _mapper.Map(dbModel, uiModel);
+
+            return uiModel;
+        }
+
+        public List<ApplicantExamAttemptViewModel> GetAllByApplicantId(int applicantId)
+        {
+            if (applicantId == 0) { return null; }
+
+            var dbModelList = _table.Where(x => x.ApplicantId == applicantId).ToList();
+
+            var uiModelList = new List<ApplicantExamAttemptViewModel>();
+
+            _mapper.Map(dbModelList, uiModelList);
+
+            return uiModelList;
         }
 
         public IList<ApplicantExamAttemptViewModel> GetAllFiltered(

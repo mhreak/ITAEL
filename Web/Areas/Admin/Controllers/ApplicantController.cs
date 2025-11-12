@@ -19,6 +19,7 @@ namespace Web.Areas.Admin.Controllers
         IUtilService utilService,
         IApplicantService applicantService,
         IWebHostEnvironment webHostEnvironment,
+        ICityService cityService,
         IApplicationUserManagerService userManagerService)
         : BaseController
     {
@@ -77,6 +78,8 @@ namespace Web.Areas.Admin.Controllers
                 {
                     if (!applicantService.IsDuplicateByMobile(null, model.Mobile))
                     {
+                        var cityList = cityService.GetAllByProvinceId(model.ProvinceId);
+                        model.CityId = cityList.First().CityId;
                         int applicantId = applicantService.Add(model);
                         if (applicantId != -1)
                         {

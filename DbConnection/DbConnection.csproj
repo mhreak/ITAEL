@@ -24,4 +24,8 @@
     <ProjectReference Include="..\DbEntities\DbEntities.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Migrations\ApplicationDb\" />
+  </ItemGroup>
+
 </Project>

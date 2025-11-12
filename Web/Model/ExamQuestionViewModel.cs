@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using DbEntities;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace Web.Model
 {
@@ -31,5 +33,7 @@ namespace Web.Model
         [Display(Name = "ترتیب سوال")]
         [Required(ErrorMessage = "این فیلد الزامی است")]
         public int QuestionOrder { get; set; }
+
+        public List<ExamQuestionOptionViewModel>? ExamQuestionOptionViewModelList { get; set; }
     }
 }

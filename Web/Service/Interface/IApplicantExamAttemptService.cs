@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using Web.Model;
+﻿using Web.Model;
+using System.Collections.Generic;
 
 namespace Web.Service.Interface
 {
@@ -12,6 +12,10 @@ namespace Web.Service.Interface
         bool Delete(int id);
 
         ApplicantExamAttemptViewModel Get(int id);
+
+        List<ApplicantExamAttemptViewModel> GetAllByApplicantId(int applicantId);
+
+        ApplicantExamAttemptViewModel GetByApplicantIdAndExamId(int applicantId, int examId);
 
         public IList<ApplicantExamAttemptViewModel> GetAllFiltered(
             string filterApplicantId, string filterExamId,

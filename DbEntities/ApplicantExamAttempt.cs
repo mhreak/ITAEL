@@ -28,6 +28,9 @@
         [Required]
         public decimal FinalScore { get; set; }
 
+        //فقط برای زمانی که سوالات رندوم باشد.
+        public string? QuestionsOrder { get; set; }
+
         //1 -> قبول شده
         //2 -> رد شده
         //3 -> در حال بررسی

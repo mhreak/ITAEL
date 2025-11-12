@@ -168,7 +168,8 @@ namespace Web
 
             CreateMap<ExamQuestion, ExamQuestionViewModel>()
                 .ForMember(dest => dest.ExamTitle, src => src.MapFrom(x => x.Exam.Title))
-                .ForMember(dest => dest.TypeStr, src => src.MapFrom(x => x.Type == 1 ? "چندگزینه ای" : (x.Type == 2 ? "تشریحی" : "نامعتبر")));
+                .ForMember(dest => dest.TypeStr, src => src.MapFrom(x => x.Type == 1 ? "چندگزینه ای" : (x.Type == 2 ? "تشریحی" : "نامعتبر")))
+                .ForMember(dest => dest.ExamQuestionOptionViewModelList, src => src.MapFrom(x => x.ExamQuestionOptionList));
             CreateMap<ExamQuestionViewModel, ExamQuestion>();
 
             CreateMap<ExamQuestionOption, ExamQuestionOptionViewModel>()

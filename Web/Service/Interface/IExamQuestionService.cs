@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using Web.Model;
+﻿using Web.Model;
+using System.Collections.Generic;
 
 namespace Web.Service.Interface
 {
@@ -16,6 +16,8 @@ namespace Web.Service.Interface
         public IList<ExamQuestionViewModel> GetAllFiltered(string filterText, string filterExamId, string filterExamTitle,
                                                            string filterType, string filterQuestionOrder,
                                                            int currentPage, int pageSize, out int totalRecord);
+
+        IList<ExamQuestionViewModel> GetAllByExamId(int examId);
 
     }
 }

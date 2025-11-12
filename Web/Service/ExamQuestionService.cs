@@ -147,5 +147,14 @@ namespace Web.Service
 
             return uiModelList;
         }
+
+        public IList<ExamQuestionViewModel> GetAllByExamId(int examId)
+        {
+            var dbModelList = _table.Where(x => x.ExamId == examId)
+                                    .Include(x => x.Exam).ToList();
+            var uiModelList = new List<ExamQuestionViewModel>();
+            _mapper.Map(dbModelList, uiModelList);
+            return uiModelList;
+        }
     }
 }

@@ -1,0 +1,84 @@
+﻿@* @model ExamQuestionViewModel 
+
+<section id="exam-section" class="mt-4">
+    <div class="section-box card p-3 p-md-4">
+        <div class="d-flex flex-grid justify-content-between align-items-center mb-3">
+            <h5 class="m-0">آزمون شرکت گُلارن</h5>
+        </div>
+        @if (Model.Type == 1)
+        {
+            <form asp-controller="Exam" asp-action="Index">
+
+            </form>
+            <div class="exam-container">
+                <div class="exam-main">
+                    <div class="question-card" id="q-card">
+                        <div class="q-title">سوال 3</div>
+                        <div class="q-body">
+                            @Model.Text
+                        </div>
+                        <div class="options">
+                            <label class="option">
+                                <input type="radio" name="q3" value="A">
+                                <span class="o-text">7</span>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q3" value="B">
+                                <span class="o-text">52</span>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q3" value="C">
+                                <span class="o-text">Wrong Time Error</span>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q3" value="D">
+                                <span class="o-text">undefined</span>
+                            </label>
+                        </div>
+                        <div class="q-nav">
+                            <button class="btn btn-outline" id="prevQ">سؤال قبلی</button>
+                            <button class="btn btn-primary" id="nextQ">سؤال بعدی</button>
+                        </div>
+                    </div>
+                </div>
+                <aside class="exam-aside">
+                    <div class="aside-card timer">
+                        <div class="timer-head">
+                            <i class="bi bi-clock-history"></i>
+                            <small class="time-left">زمان باقیمانده:<span id="time-left"></span></small>
+                        </div>
+                        <small class="text-body-secondary">زمان کل آزمون : 45:00</small>
+                    </div>
+                    <div class="aside-crd">
+                        <div class="counter">
+                            <span>سوال</span>
+                            <b><span id="q-now">3</span>/<span id="q-total">20</span></b>
+                        </div>
+                        <div class="progress"><span id="q-progress" style="width:15%"></span></div>
+                    </div>
+                    <button class="btn btn-muted" id="finishBtn" style="width:100%">پایان آزمون</button>
+                </aside>
+            </div>
+        }
+        @if (Model.Type == 2)
+        {
+            <div class="exam-container">
+                <div class="exam-main">
+                    <div class="question-card" id="q-card">
+                        <div class="q-title">سوال 4</div>
+                        <div class="q-body">الگوریتم مرتب سازی درجی را شرح دهید.</div>
+
+                        <div class="answer-box" dir="rtl">
+                            <label class="answer-label" for="ans-q4">پاسخ شما</label>
+                            <textarea id="ans-q4" rows="6" maxlength="1200" placeholder="اینجا پاسخ خود را بنویسید..."></textarea>
+                        </div>
+                        <div class="q-nav">
+                            <button class="btn btn-outline" id="prevQ">سؤال قبلی</button>
+                            <button class="btn btn-primary" id="nextQ">سؤال بعدی</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</section> *@

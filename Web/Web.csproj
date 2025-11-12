@@ -5,6 +5,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Areas\a\**" />
+    <Content Remove="Areas\a\**" />
+    <EmbeddedResource Remove="Areas\a\**" />
+    <None Remove="Areas\a\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="Areas\Admin\Data\" />
     <Folder Include="Areas\Admin\Models\" />
   </ItemGroup>

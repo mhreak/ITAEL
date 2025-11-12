@@ -1,22 +1,32 @@
-﻿using Web.Model;
-using System.Linq;
-using Kendo.Mvc.UI;
-using Web.Controllers;
-using Web.Service.Interface;
-using Microsoft.AspNetCore.Mvc;
+﻿using Kendo.Mvc.UI;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System.Linq;
+using Web.Controllers;
+using Web.Model;
+using Web.Service;
+using Web.Service.Interface;
 
 namespace Web.Areas.Admin.Controllers
 {
     [Area("Admin")]
     [Route("Admin/[controller]")]
     [Authorize(Roles = "Manager,Admin")]
-    public class ExamQuestionController(IExamQuestionService examQuestionService) : BaseController
+    public class ExamQuestionController(IExamQuestionService examQuestionService, IExamService examService) : BaseController
     {
         [Route("Index/{examId}")]
         public IActionResult Index(int examId)
         {
-            ViewBag.ExamId = examId;
+            var examViewModel = examService.Get(examId);
+
+            if (examViewModel == null)
+            {
+                ShowDangerToast("", "آزمون یافت نشد.");
+            }
+
+            ViewBag.ExamId = examViewModel.ExamId;
+            ViewBag.ExamTitle = examViewModel.Title;
+
             return View();
         }
 
@@ -41,16 +51,25 @@ namespace Web.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        [Route("Create")]
-        public IActionResult Create()
+        [Route("Create/{examId}")]
+        public IActionResult Create(int examId)
         {
+            var examViewModel = examService.Get(examId);
+
+            if (examViewModel == null)
+            {
+                ShowDangerToast("", "آزمون یافت نشد.");
+                return RedirectToAction("Index");
+            }
+
+            ViewBag.ExamId = examId;
             return View();
         }
 
         [HttpPost]
         [Route("Create")]
         [ValidateAntiForgeryToken]
-        public virtual ActionResult Create(ExamQuestionViewModel model)
+        public IActionResult Create(ExamQuestionViewModel model)
         {
             if (ModelState.IsValid)
             {

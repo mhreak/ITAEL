@@ -14,7 +14,7 @@ namespace Web.Model.Identity
         public string UserName { get; set; }
 
         [Display(Name = "شناسه مسافر")]
-        public int? PassengerId { get; set; }
+        public int? ApplicantId { get; set; }
 
         [MaxLength(70)]
         [Display(Name = "شرکت/ سازمان")]

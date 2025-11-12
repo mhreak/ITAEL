@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DbConnection.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20251105080410_mg-09")]
-    partial class mg09
+    [Migration("20251112080029_mg-01")]
+    partial class mg01
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -128,6 +128,9 @@ namespace DbConnection.Migrations
                     b.Property<decimal>("FinalScore")
                         .HasPrecision(10, 2)
                         .HasColumnType("decimal(10,2)");
+
+                    b.Property<string>("QuestionsOrder")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("StartTime")
                         .HasColumnType("datetime2");
@@ -334,27 +337,9 @@ namespace DbConnection.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ExamId"));
 
-                    b.Property<bool>("AllowNavigateToPreviousQuestion")
-                        .HasColumnType("bit");
-
                     b.Property<string>("Description")
                         .HasMaxLength(2000)
                         .HasColumnType("nvarchar(2000)");
-
-                    b.Property<int>("DurationMinutes")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("EndTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("RandomizeOptions")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("RandomizeQuestions")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime>("StartTime")
-                        .HasColumnType("datetime2");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -834,7 +819,25 @@ namespace DbConnection.Migrations
                         .HasColumnType("int")
                         .HasColumnOrder(0);
 
+                    b.Property<bool>("AllowNavigateToPreviousQuestion")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("DurationMinutes")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("EndTime")
+                        .HasColumnType("datetime2");
+
                     b.Property<DateTime>("InsertDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("RandomizeOptions")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("RandomizeQuestions")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("StartTime")
                         .HasColumnType("datetime2");
 
                     b.HasKey("ExamId", "JobAnnouncementId");
