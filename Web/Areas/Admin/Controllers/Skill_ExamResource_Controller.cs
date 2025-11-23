@@ -12,41 +12,59 @@ namespace Web.Areas.Admin.Controllers
     [Area("Admin")]
     [Route("Admin/[controller]")]
     [Authorize(Roles = "Manager,Admin")]
-    public class Skill_ExamResource_Controller(ISkill_ExamResource_Service skill_ExamResource_Service) : BaseController
+    public class Skill_ExamResource_Controller(ISkill_ExamResource_Service skill_ExamResource_Service, ISkillService skillService) : BaseController
     {
         [Route("Index/{skillId}")]
         public IActionResult Index(int skillId)
         {
-            ViewBag.SkillId = skillId;
+            var skillViewModel = skillService.Get(skillId);
+
+            if (skillViewModel == null)
+            {
+                ShowDangerToast("", "مهارت یافت نشد.");
+            }
+
+            ViewBag.SkillId = skillViewModel.SkillId;
+            ViewBag.SkillName = skillViewModel.SkillName;
             return View();
         }
 
         [Route("Grid_Data_Read")]
-        public IActionResult Grid_Data_Read([DataSourceRequest] DataSourceRequest request,
-            int skillId)
+        public IActionResult Grid_Data_Read([DataSourceRequest] DataSourceRequest request, string filterSkillId,
+                                            string filterExamResourceId, string filterInsertDateFrom, string filterInsertDateTo)
         {
-            var skill_ExamResource_ViewModelList = skill_ExamResource_Service.GetAllBySkillId(skillId).ToList();
 
             var result = new DataSourceResult()
             {
-                Data = skill_ExamResource_ViewModelList,
-                Total = skill_ExamResource_ViewModelList.Count // Total number of records
+                Data = skill_ExamResource_Service.GetAllFiltered(filterSkillId, filterExamResourceId, 
+                                                                 filterInsertDateFrom, filterInsertDateTo, request.Page,
+                                                                 request.PageSize, out int totalRecord),
+                Total = totalRecord
             };
 
             return Json(result);
         }
 
         [HttpGet]
-        [Route("Create")]
-        public IActionResult Create()
+        [Route("Create/{skillId}")]
+        public IActionResult Create(int skillId)
         {
+            var skillViewModel = skillService.Get(skillId);
+
+            if (skillViewModel == null)
+            {
+                ShowDangerToast("", "مهارت یافت نشد.");
+            }
+
+            ViewBag.SkillId = skillViewModel.SkillId;
+            ViewBag.SkillName = skillViewModel.SkillName;
             return View();
         }
 
         [HttpPost]
-        [Route("Create")]
+        [Route("Create/{skillId}")]
         [ValidateAntiForgeryToken]
-        public virtual ActionResult Create(Skill_ExamResource_ViewModel model)
+        public IActionResult Create(Skill_ExamResource_ViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -61,11 +79,13 @@ namespace Web.Areas.Admin.Controllers
                     else
                     {
                         ShowDangerToast(null, "خطا هنگام ذخیره اطلاعات");
+                        return RedirectToAction("Index", new { skillId = model.SkillId });
                     }
                 }
                 else
                 {
-                    ShowDangerToast(null, "یک مهارت دیگر با این نام وجود دارد");
+                    ShowDangerToast(null, "این منبع آزمون برای این مهارت وجود دارد");
+                    return RedirectToAction("Index", new { skillId = model.SkillId });
                 }
             }
             else
@@ -76,6 +96,7 @@ namespace Web.Areas.Admin.Controllers
                 .ToArray();
 
                 ShowDangerToast(null, "اطلاعات واردشده معتبر نیست");
+                return RedirectToAction("Index", new { skillId = model.SkillId });
             }
             return View(model);
         }
@@ -91,7 +112,7 @@ namespace Web.Areas.Admin.Controllers
         [HttpPost]
         [Route("Edit")]
         [ValidateAntiForgeryToken]
-        public virtual ActionResult Edit(Skill_ExamResource_ViewModel model)
+        public IActionResult Edit(Skill_ExamResource_ViewModel model)
         {
             if (ModelState.IsValid)
             {

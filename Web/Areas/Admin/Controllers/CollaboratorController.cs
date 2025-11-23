@@ -20,8 +20,8 @@ namespace Web.Areas.Admin.Controllers
         }
 
         [Route("Grid_Data_Read")]
-        public IActionResult Grid_Data_Read([DataSourceRequest] DataSourceRequest request,
-            string filterReferralCode, string filterActive)
+        public IActionResult Grid_Data_Read([DataSourceRequest] DataSourceRequest request, string filterFirstName,
+                                            string filterLastName, string filterPhoneNumber, string filterReferralCode, string filterActive)
         {
             //Paging and Sorting
             int currentPage = request.Page;
@@ -32,14 +32,15 @@ namespace Web.Areas.Admin.Controllers
 
             var result = new DataSourceResult()
             {
-                Data = collaboratorService.GetAllFiltered(filterReferralCode, filterActive,
+                Data = collaboratorService.GetAllFiltered(filterFirstName, filterLastName, filterPhoneNumber,
+                                                          filterReferralCode, filterActive,
                                                           currentPage, pageSize, out totalRecord),
                 Total = totalRecord // Total number of records
             };
 
             return Json(result);
         }
-
+            
         [HttpGet]
         [Route("Create")]
         public IActionResult Create()
@@ -50,7 +51,7 @@ namespace Web.Areas.Admin.Controllers
         [HttpPost]
         [Route("Create")]
         [ValidateAntiForgeryToken]
-        public virtual ActionResult Create(CollaboratorViewModel model)
+        public IActionResult Create(CollaboratorViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -77,7 +78,7 @@ namespace Web.Areas.Admin.Controllers
             return View(model);
         }
 
-        [HttpGet]
+        [HttpGet]   
         [Route("Edit/{id}")]
         public IActionResult Edit(int id)
         {
@@ -88,7 +89,7 @@ namespace Web.Areas.Admin.Controllers
         [HttpPost]
         [Route("Edit/{id}")]
         [ValidateAntiForgeryToken]
-        public virtual ActionResult Edit(CollaboratorViewModel model)
+        public IActionResult Edit(CollaboratorViewModel model)
         {
             if (ModelState.IsValid)
             {

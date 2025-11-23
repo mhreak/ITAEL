@@ -1,52 +1,71 @@
-﻿using Web.Model;
-using System.Linq;
-using Kendo.Mvc.UI;
-using Web.Controllers;
-using Web.Service.Interface;
+﻿using Kendo.Mvc.UI;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.AspNetCore.Authorization;
+using System.Linq;
+using Web.Controllers;
+using Web.Model;
+using Web.Service.Interface;
 
 namespace Web.Areas.Admin.Controllers
 {
     [Area("Admin")]
     [Route("Admin/[controller]")]
     [Authorize(Roles = "Manager,Admin")]
-    public class StudyField_ExamResource_Controller(IStudyField_ExamResource_Service studyField_ExamResource_Service) : BaseController
+    public class StudyField_ExamResource_Controller(IStudyField_ExamResource_Service studyField_ExamResource_Service, IStudyFieldService studyFieldService) : BaseController
     {
         [Route("Index/{studyFieldId}")]
         public IActionResult Index(int studyFieldId)
         {
-            ViewBag.StudyFieldId = studyFieldId;
+            var studyFieldViewModel = studyFieldService.Get(studyFieldId);
+
+            if (studyFieldViewModel == null)
+            {
+                ShowDangerToast("", "رشته تحصیلی یافت نشد");
+            }
+
+            ViewBag.StudyFieldId = studyFieldViewModel.StudyFieldId;
+            ViewBag.StudyFieldName = studyFieldViewModel.StudyFieldName;
             return View();
         }
 
         [Route("Grid_Data_Read")]
         public IActionResult Grid_Data_Read([DataSourceRequest] DataSourceRequest request,
-            int studyFieldId)
+                                            string filterStudyFieldId, string filterExamResourceId,
+                                            string filterInsertDateFrom, string filterInsertDateTo)
         {
-            var studyField_ExamResource_ViewModelList = studyField_ExamResource_Service.GetAllByStudyFieldId(studyFieldId).ToList();
-
             var result = new DataSourceResult()
             {
-                Data = studyField_ExamResource_ViewModelList,
-                Total = studyField_ExamResource_ViewModelList.Count // Total number of records
+                Data = studyField_ExamResource_Service.GetAllFiltered(filterStudyFieldId, filterExamResourceId,
+                                                                      filterInsertDateFrom, filterInsertDateTo,
+                                                                      request.Page, request.PageSize, out int totalRecord),
+                Total = totalRecord // Total number of records
             };
 
             return Json(result);
         }
 
         [HttpGet]
-        [Route("Create")]
-        public IActionResult Create()
+        [Route("Create/{studyFieldId}")]
+        public IActionResult Create(int studyFieldId)
         {
+            var studyFieldViewModel = studyFieldService.Get(studyFieldId);
+
+            if (studyFieldViewModel == null)
+            {
+                ShowDangerToast("", "رشته تحصیلی یافت نشد");
+            }
+
+            ViewBag.StudyFieldId = studyFieldViewModel.StudyFieldId;
+            ViewBag.StudyFieldName = studyFieldViewModel.StudyFieldName;
+
             return View();
         }
 
         [HttpPost]
-        [Route("Create")]
+        [Route("Create/{studyFieldId}")]
         [ValidateAntiForgeryToken]
-        public virtual ActionResult Create(StudyField_ExamResource_ViewModel model)
+        public IActionResult Create(StudyField_ExamResource_ViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -61,11 +80,13 @@ namespace Web.Areas.Admin.Controllers
                     else
                     {
                         ShowDangerToast(null, "خطا هنگام ذخیره اطلاعات");
+                        return RedirectToAction("Index", new { studyFieldId = model.StudyFieldId });
                     }
                 }
                 else
                 {
-                    ShowDangerToast(null, "یک مهارت دیگر با این نام وجود دارد");
+                    ShowDangerToast(null, "این منبع آزمون برای این رشته تحصیلی وجود دارد");
+                    return RedirectToAction("Index", new { studyFieldId = model.StudyFieldId });
                 }
             }
             else
@@ -76,6 +97,7 @@ namespace Web.Areas.Admin.Controllers
                 .ToArray();
 
                 ShowDangerToast(null, "اطلاعات واردشده معتبر نیست");
+                return RedirectToAction("Index", new { studyFieldId = model.StudyFieldId });
             }
             return View(model);
         }
@@ -84,14 +106,20 @@ namespace Web.Areas.Admin.Controllers
         [Route("Edit/{studyFieldId}/{examResourceId}")]
         public IActionResult Edit(int studyFieldId, int examResourceId)
         {
-            var model = studyField_ExamResource_Service.Get(examResourceId, studyFieldId);
-            return View(model);
+            var studyFieldExamResourceViewModel = studyField_ExamResource_Service.Get(examResourceId, studyFieldId);
+
+            if (studyFieldExamResourceViewModel == null)
+            {
+                ShowDangerToast("", "رشته تحصیلی یافت نشد");
+            }
+
+            return View(studyFieldExamResourceViewModel);
         }
 
         [HttpPost]
-        [Route("Edit")]
+        [Route("Edit/{studyFieldId}/{examResourceId}")]
         [ValidateAntiForgeryToken]
-        public virtual ActionResult Edit(StudyField_ExamResource_ViewModel model)
+        public IActionResult Edit(StudyField_ExamResource_ViewModel model)
         {
             if (ModelState.IsValid)
             {

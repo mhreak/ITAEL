@@ -1,0 +1,121 @@
+﻿<script>
+    $("body").on("click", ".applicant-filter-grid .k-checkbox", FilterApplicantGridOnRowClick);
+
+    var selectedApplicantId = 0;
+    var selectedApplicantFullName = "";
+
+
+    var getApplicantFilterDataParams = function (e) {
+        var result = {
+            filterFullName: $('#FilterFullName').val(),
+            filterMobile: $('#FilterApplicantMobile').val()
+        }
+        return result;
+    };
+
+    function filterApplicantData() {
+        $("#Applicant_Filter_Grid").data("kendoGrid").dataSource.read();
+    }
+
+    function FilterApplicantGridOnRowClick(e) {
+        selectedApplicantId = 0;
+        selectedApplicantFullName = "";
+        var grid = $("#Applicant_Filter_Grid").data("kendoGrid");
+        var row = $(e.target).closest("tr");
+
+        if (row.hasClass("k-state-selected")) {
+            grid.clearSelection();
+            grid.select(row);
+            selectedApplicantId = grid.dataItem(row).ApplicantId;
+
+            if (grid.dataItem(row).FullName != null && grid.dataItem(row).FullName != '' && grid.dataItem(row).FullName != ' ') {
+                selectedApplicantFullName = grid.dataItem(row).FullName;
+            }
+            else{
+                selectedApplicantFullName = grid.dataItem(row).Mobile;
+            }
+        }
+    }
+
+    function selectApplicant() {
+        if (selectedApplicantId != 0) {
+            $('#' + '@ViewBag.DisplayElementId').val(selectedApplicantFullName);
+            $('#clearApplicantFilterLink').show();
+            $('#' + '@ViewBag.ValueElementId').val(selectedApplicantId).trigger('change');
+            closeModalDialog();
+        }
+    }
+
+    $(document).ready(function () {
+        $('.k-grid-content').css("height", "271px");
+    });
+</script>
+<div>
+    <div style="text-align:center">
+        <div class="modal-dialog-title">جستجوی داوطلبین</div>
+    </div>
+
+    <div style="padding:20px;">
+        <div class="row">
+            <div class="col-md-6 col-sm-12">
+                <div class="row form-group">
+                    @Html.Label(null, "نام", htmlAttributes: new { @class = "control-label col-md-3 col-sm-12 modal-dialog-label", style = "text-align:right;" })
+                    <div class="col-md-9 col-sm-12">
+                        @Html.Editor("FilterFullName", new { htmlAttributes = new { @class = "modal-dialog-editor" } })
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-sm-12">
+                <div class="row form-group">
+                    @Html.Label(null, "شماره تماس", htmlAttributes: new { @class = "control-label col-md-3 col-sm-12 modal-dialog-label", style = "text-align:left;" })
+                    <div class="col-md-9 col-sm-12">
+                        @Html.Editor("FilterApplicantMobile", new { htmlAttributes = new { @class = "modal-dialog-editor" } })
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div style="margin-top:10px;">
+            <a class="btn btn-info" style="float:left;box-shadow:none;" onclick="filterApplicantData()">فیلتر اطلاعات</a>
+        </div>
+        <div class="k-rtl applicant-filter-grid" style="margin-top:48px;">
+            <div id="report-grid" style="height:100%;">
+                @(Html.Kendo().Grid<Web.Model.ApplicantViewModel>().Name("Applicant_Filter_Grid").Columns(columns =>
+                                {
+                                    columns.Select().Width(50).ClientHeaderTemplate(" ");
+                                    columns.Bound(c => c.FullName);
+                                    columns.Bound(c => c.Mobile);
+                                })
+                                .HtmlAttributes(new { style = "height: 370px;" })
+                                .Filterable(ftb => ftb.Mode(GridFilterMode.Menu))
+                                .Scrollable()
+                                .Sortable()
+                                .Pageable(pageable => pageable
+                                .Refresh(true)
+                                .PageSizes(true)
+                                .ButtonCount(5))
+                                .DataSource(dataSource => dataSource
+                                .Ajax()
+                                .Model(model =>
+                                {
+                                    model.Id(p => p.ApplicantId);
+                                })
+                                .Read(read => read.Action("Grid_Data_Read", "Applicant", new { Area = "Admin" }).Data("getApplicantFilterDataParams"))
+                                .PageSize(20)
+
+                                ))
+            </div>
+        </div>
+        <div class="row" style="margin-top:20px;">
+            <div class="col-xs-6 col-sm-6 col-md-6">
+                <a onclick="selectApplicant()" class="btn btn-success form-command-btn">
+                    <span><i class="fa fa-check"></i><span>&nbsp;</span>انتخاب</span>
+                </a>
+            </div>
+            <div class="col-xs-6 col-sm-6 col-md-6 text-left">
+                <button type="button" class="btn btn-danger form-command-btn" style="float:left;" data-bs-dismiss="modal">
+                    <span class="btn-label"><i class="fa fa-reply"></i><span>&nbsp;</span>لغو</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

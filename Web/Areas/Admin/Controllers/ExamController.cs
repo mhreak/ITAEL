@@ -116,5 +116,14 @@ namespace Web.Areas.Admin.Controllers
         {
             return examService.Delete(id);
         }
+
+        [Route("ShowExamSearchDialog")]
+        public virtual ActionResult ShowExamSearchDialog(string valueElementId, string displayElementId)
+        {
+            ViewBag.ValueElementId = valueElementId;
+            ViewBag.DisplayElementId = displayElementId;
+
+            return PartialView("_ExamSearchDialog");
+        }
     }
 }

@@ -250,6 +250,8 @@
 
                         command.Custom("حذف").Click("deleteRow").HtmlAttributes(new { @class = "command-btn-red" });
 
+                        command.Custom("سفارشات").Click("examResourceOrderListRow").HtmlAttributes(new { @class = "command-btn-blue" });
+
                     }).Width(400);
                 })
                 .HtmlAttributes(new { style = "height: 550px;border-radius:0.25rem;" })
@@ -325,12 +327,29 @@
     }
 
     function deleteRow(e) {
+        e.preventDefault();
         var dataItem = this.dataItem(jQuery(e.currentTarget).closest("tr"));
+
+        showConfirmModalMessage(
+            "warning",
+            "عملیات حذف",
+            "آیا از حذف اطمینان دارید؟",
+            "انصراف",         
+            "حذف",            
+            "danger",         
+            "Confirm",        
+            dataItem.ApplicantId,
+            "Cancel",          
+            null               
+        );
+    }
+
+    function Confirm(applicantId) {
         $.ajax({
             url: '/Admin/Applicant/Delete',
             type: "GET",
             data: {
-                id: dataItem.ApplicantId
+                id: applicantId
             }
         }).done(function (dresult) {
             if (dresult == true) {
@@ -341,6 +360,18 @@
             else {
                 showSimpleModalMessage('danger', 'خطا', 'امکان حذف این اطلاعات وجود ندارد', '');
             }
-        })
+        }).fail(function (xhr) {
+            showSimpleModalMessage('danger', 'خطا', 'در ارسال درخواست خطا رخ داد: ' + (xhr.responseText || xhr.statusText), '');
+        });
+    }
+
+    function Cancel(x) {
+        
+    }
+        
+    function examResourceOrderListRow(e) {
+        e.preventDefault();
+        var dataItem = this.dataItem(jQuery(e.currentTarget).closest("tr"));
+        window.location.href = "/Admin/ExamResourceOrder/Index/" + dataItem.ApplicantId;
     }
 </script>

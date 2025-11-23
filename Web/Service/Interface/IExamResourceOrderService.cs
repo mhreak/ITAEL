@@ -13,6 +13,8 @@ namespace Web.Service.Interface
 
         ExamResourceOrderViewModel Get(int id);
 
+        IList<ExamResourceOrderViewModel> GetAll();
+
         IList<ExamResourceOrderViewModel> GetAllFiltered(string filterApplicantId,
                                                          string filterExamResourceId,
                                                          string filterStatus,

@@ -15,9 +15,14 @@ namespace Web.Service.Interface
 
         CollaboratorViewModel Get(string referralCode);
 
-        public IList<CollaboratorViewModel> GetAllFiltered(
-            string filterReferralCodeName, string filterActive,
-           int currentPage, int pageSize, out int totalRecord);
+        public IList<CollaboratorViewModel> GetAllFiltered(string filterFirstName,
+                                                           string filterLastName,
+                                                           string filterPhoneNumber,
+                                                           string filterReferralCode,
+                                                           string filterActive,
+                                                           int currentPage,
+                                                           int pageSize,
+                                                           out int totalRecord);
 
         bool IsDuplicateByReferralCode(int? id, string referralCode);
     }

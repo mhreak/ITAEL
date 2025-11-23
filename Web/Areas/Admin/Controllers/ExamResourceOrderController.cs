@@ -11,12 +11,20 @@ namespace Web.Areas.Admin.Controllers
     [Area("Admin")]
     [Route("Admin/[controller]")]
     [Authorize(Roles = "Manager,Admin")]
-    public class ExamResourceOrderController(IExamResourceOrderService examResourceOrderService) : BaseController
+    public class ExamResourceOrderController(IExamResourceOrderService examResourceOrderService, IApplicantService applicantService) : BaseController
     {
-        [Route("Index/{examResourceId}")]
-        public IActionResult Index(int examResourceId)
+        [Route("Index/{applicantId}")]
+        public IActionResult Index(int applicantId)
         {
-            ViewBag.ExamResourceId = examResourceId;
+            var applicantViewModel = applicantService.Get(applicantId);
+
+            if (applicantViewModel == null)
+            {
+                ShowDangerToast(null, "داوطلب یافت نشد.");
+            }
+
+            ViewBag.ApplicantId = applicantViewModel.ApplicantId;
+            ViewBag.ApplicantFullName = applicantViewModel.FullName;
             return View();
         }
 

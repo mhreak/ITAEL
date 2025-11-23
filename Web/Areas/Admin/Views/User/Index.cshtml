@@ -144,12 +144,29 @@
     }
 
     function deleteUser(e) {
-        var dataItem = this.dataItem(jQuery(e.currentTarget).closest("tr"));
+            e.preventDefault();
+            var dataItem = this.dataItem(jQuery(e.currentTarget).closest("tr"));
+
+            showConfirmModalMessage(
+                "danger",
+                "عملیات حذف",
+                "آیا از حذف اطمینان دارید؟",
+                "انصراف",
+                "حذف",
+                "danger",
+                "Confirm",
+                 dataItem.Id,
+                "Cancel",
+                null
+            );
+    }
+
+    function Confirm(id) {
         $.ajax({
             url: '/Admin/User/Delete',
             type: "GET",
             data: {
-                userId: dataItem.Id
+                userId: id
             }
         }).done(function (dresult) {
             if (dresult == 1) {
@@ -174,4 +191,9 @@
             }
         })
     }
+            
+    function Cancel(x) {
+
+    }
+
 </script>

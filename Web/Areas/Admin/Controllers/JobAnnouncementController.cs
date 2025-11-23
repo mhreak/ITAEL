@@ -277,5 +277,13 @@ namespace Web.Areas.Admin.Controllers
         {
             return jobAnnouncementService.Delete(id);
         }
+
+        [Route("ShowOperationMenuDrawer/{jobAnnouncementId}")]
+        public virtual ActionResult ShowOperationMenuDrawer(int jobAnnouncementId)
+        {
+            var model = jobAnnouncementService.Get(jobAnnouncementId);
+
+            return PartialView("_JobAnnouncementOprationDrawer", model);
+        }
     }
 }

@@ -1,14 +1,15 @@
-﻿using Web.Model;
+﻿using Kendo.Mvc.UI;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System.IO;
 using System.Linq;
-using Kendo.Mvc.UI;
 using Web.Controllers;
-using Web.Service.Interface;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Hosting;
+using Web.Model;
 using Web.Service.Identity.Interface;
-using Microsoft.AspNetCore.Authorization;
+using Web.Service.Interface;
 
 namespace Web.Areas.Admin.Controllers
 {
@@ -492,6 +493,28 @@ namespace Web.Areas.Admin.Controllers
         public bool Delete(int id)
         {
             return applicantService.Delete(id);
+        }
+
+        [Route("Fill_Applicant_Combo")]
+        public IActionResult Fill_Applicant_Combo()
+        {
+            var DataList = applicantService.GetAll()
+                                      .Select(x =>
+                                                  new SelectListItem
+                                                  {
+                                                      Text = x.FullName,
+                                                      Value = x.ApplicantId.ToString()
+                                                  });
+            return Json(DataList);
+        }
+
+        [Route("ShowApplicantSearchDialog")]
+        public virtual ActionResult ShowApplicantSearchDialog(string valueElementId, string displayElementId)
+        {
+            ViewBag.ValueElementId = valueElementId;
+            ViewBag.DisplayElementId = displayElementId;
+
+            return PartialView("_ApplicantSearchDialog");
         }
     }
 }

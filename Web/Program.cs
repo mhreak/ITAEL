@@ -1,17 +1,18 @@
-using Web;
-using Web.Service;
 using DbConnection;
-using Web.Identity;
 using DbEntities.Identity;
-using Web.Service.Identity;
-using Web.Service.Interface;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Web.Service.Identity.Interface;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Web;
+using Web.Extensions;
+using Web.Identity;
+using Web.Service;
+using Web.Service.Identity;
+using Web.Service.Identity.Interface;
+using Web.Service.Interface;
 using static Web.ModelBinder.PersianDateModelBinder;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -111,7 +112,7 @@ app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
-
+app.UseSeedDatabase();
 app.UseEndpoints(endpoints =>
                  {
                      // area-aware route (maps /{area}/{controller}/{action})

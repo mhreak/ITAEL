@@ -8,6 +8,7 @@ using Web.Service.Interface;
 using System.Linq.Dynamic.Core;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Web.Service;
 
@@ -16,12 +17,15 @@ public class ExamQuestionOptionService : IExamQuestionOptionService
     private readonly IMapper _mapper;
     private readonly IUnitOfWork _database;
     private readonly DbSet<ExamQuestionOption> _table;
+    private readonly IExamQuestionService _examQuestionService;
 
     public ExamQuestionOptionService(IUnitOfWork database,
-                                     IMapper mappingEngine)
+                                     IMapper mappingEngine,
+                                     IExamQuestionService examQuestionService)
     {
         _database = database;
         _mapper = mappingEngine;
+        _examQuestionService = examQuestionService;
         _table = _database.Set<ExamQuestionOption>();
     }
 
@@ -83,6 +87,28 @@ public class ExamQuestionOptionService : IExamQuestionOptionService
         }
     }
 
+    public ExamQuestionOptionViewModel GetCorrectAnswerByExamQuestionId(int examQuestionId)
+    {
+        var examQuestionViewModel = _examQuestionService.Get(examQuestionId);
+
+        if (examQuestionViewModel == null)
+        {
+            return null;
+        }
+
+        var dbModel = _table.FirstOrDefault(x => x.ExamQuestionId == examQuestionViewModel.ExamQuestionId && x.IsCorrectAnswer);
+
+        if (dbModel == null)
+        {
+            return null;
+        }
+
+        var uiModel = new ExamQuestionOptionViewModel();
+        _mapper.Map(dbModel, uiModel);
+
+        return uiModel;
+    }
+
     public ExamQuestionOptionViewModel Get(int id)
     {
         if (id == 0)
@@ -112,7 +138,7 @@ public class ExamQuestionOptionService : IExamQuestionOptionService
                                                              int pageSize,
                                                              out int totalRecord)
     {
-        string whereStr = "ExamId > 0 ";
+        string whereStr = "ExamQuestionOptionId > 0 ";
 
         if (!string.IsNullOrEmpty(filterTitle))
         {

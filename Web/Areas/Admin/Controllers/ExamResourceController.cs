@@ -5,6 +5,7 @@ using Web.Controllers;
 using Web.Service.Interface;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Web.Areas.Admin.Controllers
 {
@@ -51,7 +52,7 @@ namespace Web.Areas.Admin.Controllers
         [HttpPost]
         [Route("Create")]
         [ValidateAntiForgeryToken]
-        public virtual ActionResult Create(ExamResourceViewModel model)
+        public IActionResult Create(ExamResourceViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -120,6 +121,28 @@ namespace Web.Areas.Admin.Controllers
         public bool Delete(int id)
         {
             return examResourceService.Delete(id);
+        }
+
+        [Route("Fill_ExamResource_Combo")]
+        public virtual JsonResult Fill_ExamResource_Combo()
+        {
+            var DataList = examResourceService.GetAll()
+                                                   .Select(x =>
+                                                               new SelectListItem
+                                                               {
+                                                                   Text = x.ResourceName,
+                                                                   Value = x.ExamResourceId.ToString()
+                                                               });
+            return Json(DataList);
+        }
+
+        [Route("ShowExamResourceSearchDialog")]
+        public virtual ActionResult ShowExamResourceSearchDialog(string valueElementId, string displayElementId)
+        {
+            ViewBag.ValueElementId = valueElementId;
+            ViewBag.DisplayElementId = displayElementId;
+
+            return PartialView("_ExamResourceSearchDialog");
         }
     }
 }

@@ -13,6 +13,7 @@ namespace Web.Service.Interface
 
         ApplicantViewModel Get(int id);
 
+        IList<ApplicantViewModel> GetAll();
         public IList<ApplicantViewModel> GetAllFiltered(
             string filterFirstName, string filterLastName,
             string filterFullName, string filterGender,

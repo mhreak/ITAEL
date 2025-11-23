@@ -55,11 +55,173 @@
     <script src="/lib/toastr/js/toastr.min.js"></script>
 
     @*<link rel="stylesheet" href="/lib/MDBootstarpDatetimePicker/css/jquery.Bootstrap-PersianDateTimePicker.css" />*@
+    
+    <style>
+        /* body{
+                                        overflow-y: hidden;
+                                    } */
+
+        #top-animated-overlay {
+            height: 380px;
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: gradient 60s ease infinite;
+        }
+
+        @@keyframes gradient {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+    </style>
+
+    <style>
+        #footerSlideContainer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+
+        #footerSlideButton {
+            background: url(sliderButton.png) top left no-repeat #ccc;
+            width: 50px;
+            height: 50px;
+            border: none;
+            cursor: pointer;
+        }
+
+        #footerSlideBody {
+            width: 100%;
+            height: 0px;
+            background: #fff;
+            color: #CCCCCC;
+            font-size: 0.8em;
+            border: none;
+            box-shadow: 0 -120px 250px -80px rgba(0, 0, 0, 0.15);
+            font-family: DejaVuSansBook, Sans-Serif;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        #footerSlideText {
+            padding: 15px 10px 25px 25px;
+        }
+
+        #footer-drawer-title {
+            text-align: right;
+            font-weight: bold;
+            color: #193A60;
+            font-family: IranSans;
+            font-size: 20px;
+        }
+
+        #footer-drawer-close-icon {
+            width: 32px;
+            float: left;
+            margin-top: 10px;
+            cursor: pointer;
+            transition: transform 0.6s ease-in-out;
+        }
+
+            #footer-drawer-close-icon:hover {
+                transform: rotate(360deg);
+            }
+    </style>
+
+    <style>
+        /* برای مرورگرهای WebKit: Chrome, Edge, Safari */
+        *::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        *::-webkit-scrollbar-track {
+            background: #f5f5f5;
+            border-radius: 10px;
+        }
+
+        *::-webkit-scrollbar-thumb {
+            background-color: #c1c1c1;
+            border-radius: 10px;
+            border: 2px solid #f5f5f5; /* فضای بین thumb و track */
+        }
+
+            *::-webkit-scrollbar-thumb:hover {
+                background-color: #999;
+            }
+
+        /* Firefox scrollbar */
+        * {
+            scrollbar-width: thin; /* یا "auto" یا "none" */
+            scrollbar-color: #c1c1c1 #f5f5f5; /* thumb | track */
+        }
+    </style>
+
+    <style>
+        @@keyframes blink {
+            0%, 100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0;
+            }
+        }
+
+        .blink {
+            animation: blink 0.3s ease-in-out 2; /* 2 بار تکرار */
+        }
+
+        .copy-to-clipboard {
+            cursor: pointer;
+        }
+    </style>
 </head>
 
 <body class="loading" data-layout-config='{"leftSideBarTheme":"dark","layoutBoxed":false, "leftSidebarCondensed":false, "leftSidebarScrollable":false,"darkMode":false, "showRightSidebarOnStart": true}'>
-    <!-- Begin page -->
-    <div class="wrapper">
+<!-- Begin page -->
+
+<div id="footerSlideContainer" style="z-index:1000;">
+    <div id="footerSlideBody">
+        <div id="footerSlideText" style="text-align:center;">
+            <div class="row">
+                <div class="col-md-1"></div>
+                <div class="col-md-10">
+                    <div class="row" style="margin-top:15px;border-bottom:1px solid #efefef;padding-bottom:12px;">
+                        <div class="col-md-6 col-6" style="padding-right:0;">
+                            <h2 id="footer-drawer-title"></h2>
+                        </div>
+                        <div class="col-md-6 col-6" style="padding-left:0;">
+                            <img src="/image/icon/ic-error.png" id="footer-drawer-close-icon" />
+                        </div>
+                    </div>
+
+                    <div id="footer-drawer-loading" style="display: flex; justify-content: center;align-items: center;">
+                        <div>
+                            <img src="/image/loading.gif" style="width:300px;" />
+                            <div style="font-family:IRANSans;color:#888;font-size:16px;margin-top:-25px;">در حال بارگذاری...</div>
+                        </div>
+                    </div>
+
+                    <div id="footer-drawer-content" style="margin:0 -10px;"></div>
+                </div>
+                <div class="col-md-1"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="wrapper">
         <!-- ========== Left Sidebar Start ========== -->
         <div class="leftside-menu" style="max-width:230px;">
 
@@ -96,7 +258,7 @@
                     <span> پیشخوان </span>
                     </a>
                     </li> *@
-                    
+
                     <li class="side-nav-item">
                         <a data-bs-toggle="collapse" aria-expanded="false" href="#sidebar-ja"
                            aria-controls="sidebar-ja" class="side-nav-link">
@@ -131,18 +293,18 @@
                     </li>
 
                     <li class="side-nav-item">
-                            <a data-bs-toggle="collapse" aria-expanded="false" href="#sidebar-sms"
-                               aria-controls="sidebar-sms" class="side-nav-link">
-                                <i class="uil-envelope"></i>
-                                <span> پیامک </span>
-                            </a>
-                            <div class="collapse" id="sidebar-sms">
-                                <ul class="side-nav-second-level">
-                                    <li>
-                                        <a href=@Url.Action("Index", "SystemSMS", new { Area = "Admin" })><i class="uil-circle" style="color: #f39c12;"></i> پیامک های سیستمی</a>
-                                    </li>
-                                </ul>
-                            </div>
+                        <a data-bs-toggle="collapse" aria-expanded="false" href="#sidebar-sms"
+                           aria-controls="sidebar-sms" class="side-nav-link">
+                            <i class="uil-envelope"></i>
+                            <span> پیامک </span>
+                        </a>
+                        <div class="collapse" id="sidebar-sms">
+                            <ul class="side-nav-second-level">
+                                <li>
+                                    <a href=@Url.Action("Index", "SystemSMS", new { Area = "Admin" })><i class="uil-circle" style="color: #f39c12;"></i> پیامک های سیستمی</a>
+                                </li>
+                            </ul>
+                        </div>
                     </li>
 
                     <li class="side-nav-item">
@@ -160,6 +322,9 @@
                                     <a href=@Url.Action("Index", "Exam", new { Area = "Admin" })><i class="uil-circle" style="color: #f39c12;"></i> آزمون ها</a>
                                 </li>
                                 <li>
+                                    <a href=@Url.Action("Index", "ExamResource", new { Area = "Admin" })><i class="uil-circle" style="color: #f39c12;"></i> منابع آزمون ها</a>
+                                </li>
+                                <li>
                                     <a href=@Url.Action("Index", "Company", new { Area = "Admin" })><i class="uil-circle" style="color: #f39c12;"></i> شرکت ها</a>
                                 </li>
                                 <li>
@@ -172,11 +337,9 @@
                                     <a href=@Url.Action("Index", "Wallet", new { Area = "Admin" })><i class="uil-circle" style="color: #f39c12;"></i> کیف پول ها</a>
                                 </li>
                                 <li>
-                                    <a href=@Url.Action("Index", "ReferralCode", new { Area = "Admin" })><i class="uil-circle" style="color: #f39c12;"></i> کد های رهگیری</a>
-                                </li>
-                                <li>
                                     <a href=@Url.Action("Index", "CommissionRule", new { Area = "Admin" })><i class="uil-circle" style="color: #f39c12;"></i> قوانین محاسبه پورسانت</a>
-                                </li>                            </ul>
+                                </li>
+                            </ul>
                         </div>
                     </li>
 
@@ -211,6 +374,24 @@
                                 </li>
                                 <li>
                                     <a href=@Url.Action("Create", "User", new { Area = "Admin" })><i class="uil-circle" style="color: #f39c12;"></i> ثبت کاربر جدید</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                    
+                    <li class="side-nav-item">
+                        <a data-bs-toggle="collapse" aria-expanded="false" href="#sidebar-collaborators"
+                           aria-controls="sidebar-base-information" class="side-nav-link">
+                            <i class="uil-user"></i>
+                            <span> همکاران </span>
+                        </a>
+                        <div class="collapse" id="sidebar-collaborators">
+                            <ul class="side-nav-second-level">
+                                <li>
+                                    <a href=@Url.Action("Index", "Collaborator", new { Area = "Admin" })><i class="uil-circle" style="color: #f39c12;"></i> لیست همکاران</a>
+                                </li>
+                                <li>
+                                    <a href=@Url.Action("Create", "Collaborator", new { Area = "Admin" })><i class="uil-circle" style="color: #f39c12;"></i> ثبت همکار جدید</a>
                                 </li>
                             </ul>
                         </div>
@@ -463,7 +644,7 @@
             <label class="form-check-label" for="light-check">Light</label>
         </div>
 
-        <div class="form-check form-switch mb-3">
+        <div class="form-check form-switch mb-1">
             <input class="form-check-input" type="checkbox" name="theme" value="dark" id="dark-check">
             <label class="form-check-label" for="dark-check">Dark</label>
         </div>
@@ -585,103 +766,126 @@
         }
     </script>
 
-    @if (Convert.ToBoolean(ViewData["ShowToast"]))
-    {
-        switch (ViewData["ToastType"])
+    @{
+        // try ViewData first (same-request). If not present, fallback to TempData (after redirect).
+        bool showToast = false;
+        string toastType = "";
+        string toastTitle = "";
+        string toastText = "";
+
+        // ViewData (when controller set and no redirect)
+        if (ViewData["ShowToast"] is bool vdShow && vdShow)
         {
-            case "info":
-                <script>
-                    toastr.info("@ViewData["ToastText"]", "@ViewData["ToastTitle"]", {
-                        positionClass: "toast-bottom-left",
-                        timeOut: 5e3,
-                        closeButton: !0,
-                        debug: !1,
-                        newestOnTop: !0,
-                        progressBar: !0,
-                        preventDuplicates: !0,
-                        onclick: null,
-                        showDuration: "300",
-                        hideDuration: "1000",
-                        extendedTimeOut: "1000",
-                        showEasing: "swing",
-                        hideEasing: "linear",
-                        showMethod: "fadeIn",
-                        hideMethod: "fadeOut",
-                        tapToDismiss: !1
-                    })
-
-                </script>
-                break;
-            case "success":
-                <script>
-                    toastr.success("@ViewData["ToastText"]", "@ViewData["ToastTitle"]", {
-                        positionClass: "toast-bottom-left",
-                        timeOut: 5e3,
-                        closeButton: !0,
-                        debug: !1,
-                        newestOnTop: !0,
-                        progressBar: !0,
-                        preventDuplicates: !0,
-                        onclick: null,
-                        showDuration: "300",
-                        hideDuration: "1000",
-                        extendedTimeOut: "1000",
-                        showEasing: "swing",
-                        hideEasing: "linear",
-                        showMethod: "fadeIn",
-                        hideMethod: "fadeOut",
-                        tapToDismiss: !1
-                    })
-
-                </script>
-                break;
-            case "warning":
-                <script>
-                    toastr.warning("@ViewData["ToastText"]", "@ViewData["ToastTitle"]", {
-                        positionClass: "toast-bottom-left",
-                        timeOut: 5e3,
-                        closeButton: !0,
-                        debug: !1,
-                        newestOnTop: !0,
-                        progressBar: !0,
-                        preventDuplicates: !0,
-                        onclick: null,
-                        showDuration: "300",
-                        hideDuration: "1000",
-                        extendedTimeOut: "1000",
-                        showEasing: "swing",
-                        hideEasing: "linear",
-                        showMethod: "fadeIn",
-                        hideMethod: "fadeOut",
-                        tapToDismiss: !1
-                    })
-
-                </script>
-                break;
-            case "danger":
-                <script>
-                    toastr.error("@ViewData["ToastText"]", "@ViewData["ToastTitle"]", {
-                        positionClass: "toast-bottom-left",
-                        timeOut: 5e3,
-                        closeButton: !0,
-                        debug: !1,
-                        newestOnTop: !0,
-                        progressBar: !0,
-                        preventDuplicates: !0,
-                        onclick: null,
-                        showDuration: "300",
-                        hideDuration: "1000",
-                        extendedTimeOut: "1000",
-                        showEasing: "swing",
-                        hideEasing: "linear",
-                        showMethod: "fadeIn",
-                        hideMethod: "fadeOut",
-                        tapToDismiss: !1
-                    })
-
-                </script>
-                break;
+            showToast = true;
+            toastType = (ViewData["ToastType"] as string) ?? "";
+            toastTitle = (ViewData["ToastTitle"] as string) ?? "";
+            toastText = (ViewData["ToastText"] as string) ?? "";
         }
+        else if (TempData["ShowToast"] != null && TempData["ShowToast"].ToString().ToLower() == "true")
+        {
+            // fallback to TempData (after redirect)
+            showToast = true;
+            toastType = (TempData["ToastType"] as string) ?? "";
+            toastTitle = (TempData["ToastTitle"] as string) ?? "";
+            toastText = (TempData["ToastText"] as string) ?? "";
+        }
+    }
+
+    @if (showToast == true)
+    {
+        <script>
+            // safely serialize server strings into JS (handles quotes / special chars)
+            var _toastTitle = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(toastTitle));
+            var _toastText = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(toastText));
+            var _toastType = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(toastType));
+
+            switch (_toastType) {
+                case "info":
+                    toastr.info(_toastText, _toastTitle, {
+                        positionClass: "toast-bottom-left",
+                        timeOut: 5000,
+                        closeButton: true,
+                        debug: false,
+                        newestOnTop: true,
+                        progressBar: true,
+                        preventDuplicates: true,
+                        onclick: null,
+                        showDuration: "300",
+                        hideDuration: "1000",
+                        extendedTimeOut: "1000",
+                        showEasing: "swing",
+                        hideEasing: "linear",
+                        showMethod: "fadeIn",
+                        hideMethod: "fadeOut",
+                        tapToDismiss: false
+                    });
+                    break;
+                case "success":
+                    toastr.success(_toastText, _toastTitle, {
+                        positionClass: "toast-bottom-left",
+                        timeOut: 5000,
+                        closeButton: true,
+                        debug: false,
+                        newestOnTop: true,
+                        progressBar: true,
+                        preventDuplicates: true,
+                        onclick: null,
+                        showDuration: "300",
+                        hideDuration: "1000",
+                        extendedTimeOut: "1000",
+                        showEasing: "swing",
+                        hideEasing: "linear",
+                        showMethod: "fadeIn",
+                        hideMethod: "fadeOut",
+                        tapToDismiss: false
+                    });
+                    break;
+                case "warning":
+                    toastr.warning(_toastText, _toastTitle, {
+                        positionClass: "toast-bottom-left",
+                        timeOut: 5000,
+                        closeButton: true,
+                        debug: false,
+                        newestOnTop: true,
+                        progressBar: true,
+                        preventDuplicates: true,
+                        onclick: null,
+                        showDuration: "300",
+                        hideDuration: "1000",
+                        extendedTimeOut: "1000",
+                        showEasing: "swing",
+                        hideEasing: "linear",
+                        showMethod: "fadeIn",
+                        hideMethod: "fadeOut",
+                        tapToDismiss: false
+                    });
+                    break;
+                case "danger":
+                    toastr.error(_toastText, _toastTitle, {
+                        positionClass: "toast-bottom-left",
+                        timeOut: 5000,
+                        closeButton: true,
+                        debug: false,
+                        newestOnTop: true,
+                        progressBar: true,
+                        preventDuplicates: true,
+                        onclick: null,
+                        showDuration: "300",
+                        hideDuration: "1000",
+                        extendedTimeOut: "1000",
+                        showEasing: "swing",
+                        hideEasing: "linear",
+                        showMethod: "fadeIn",
+                        hideMethod: "fadeOut",
+                        tapToDismiss: false
+                    });
+                    break;
+                default:
+                    // fallback
+                    toastr.info(_toastText, _toastTitle);
+                    break;
+            }
+        </script>
     }
 
     <script>
@@ -864,6 +1068,65 @@
 
             $('#confirm-modal').modal('toggle');
         }
+
+        var pageTitleBeforOpenningDrawer = '';
+
+        function openBottomDrawer(href, title, height, pageTitle, drawerBackgroundColor) {
+
+            const windowHeight = $(window).height();
+            const targetHeight = windowHeight * (height / 100);
+
+            $('#footer-drawer-content').html('');
+            $('#footer-drawer-loading').show();
+            $('#footer-drawer-loading').height(targetHeight - 250);
+            $('#footerSlideBody').css('background-color', '#FFF');
+
+            $('#footer-drawer-title').text(title);
+            $(this).css('backgroundPosition', 'bottom left');
+            $('body').css('overflow-y', 'hidden');
+
+            pageTitleBeforOpenningDrawer = $('title').text();
+            if (pageTitle != '') {
+                $('title').text(pageTitle + ' | ' + pageTitleBeforOpenningDrawer.split("|")[1]);
+            }
+
+            $('#footerSlideBody').animate({ height: targetHeight + 'px' });
+
+            $.ajax({
+                type: "POST",
+                url: href,
+                data: {},
+                contentType: "application/json",
+                success: function (response) {
+                    $('#footer-drawer-loading').hide();
+
+                    if (drawerBackgroundColor != '') {
+                        $('#footerSlideBody').css('background-color', drawerBackgroundColor)
+                    }
+
+                    $('#footer-drawer-content').html(response);
+                },
+                failure: function (response) {
+                    $('#footer-drawer-loading').hide();
+                    alert(response.responseText);
+                },
+                error: function (response) {
+                    $('#footer-drawer-loading').hide();
+                    alert(response.responseText);
+                }
+            });
+        }
+
+        function closeBottomDrawer() {
+            $('#footerSlideBody').animate({ height: '0px' });
+            $(this).css('backgroundPosition', 'top left');
+            $('body').css('overflow-y', 'auto');
+            $('title').text(pageTitleBeforOpenningDrawer);
+        }
+
+        $('#footer-drawer-close-icon').click(function () {
+            closeBottomDrawer();
+        });
 
         function showToast(toastType, title, message) {
             switch (toastType) {

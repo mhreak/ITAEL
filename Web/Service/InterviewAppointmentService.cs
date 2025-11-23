@@ -50,10 +50,10 @@ namespace Web.Service
         public bool Edit(InterviewAppointmentViewModel uiModel)
         {
             var dbModel = _table.SingleOrDefault(x => x.InterviewAppointmentId == uiModel.InterviewAppointmentId);
-
+            DateTime insertDate = dbModel.InsertDate;
             _mapper.Map(uiModel, dbModel);
 
-            dbModel.InsertDate = DateTime.Now;
+            dbModel.InsertDate = insertDate;
 
             _table.Attach(dbModel);
 
@@ -74,7 +74,7 @@ namespace Web.Service
         {
             var dbModel = _table.SingleOrDefault(x => x.InterviewAppointmentId == id);
 
-            _database.Entry(dbModel).State = EntityState.Modified;
+            _database.Entry(dbModel).State = EntityState.Deleted;
 
             try
             {
@@ -105,8 +105,9 @@ namespace Web.Service
             return uiModel;
         }
 
-        public IList<InterviewAppointmentViewModel> GetAllFiltered(string filterJobAnnouncementId, string filterApplicantId, 
-                                                                   string filterStatus, string filterInsertDateFrom, string filterInsertDateTo, 
+        public IList<InterviewAppointmentViewModel> GetAllFiltered(string filterJobAnnouncementId, string filterApplicantId,
+                                                                   string filterApplicantFirstName, string filterApplicantLastName,
+                                                                   string filterStatus, string filterInsertDateFrom, string filterInsertDateTo,
                                                                    int currentPage, int pageSize, out int totalRecord)
         {
             string whereStr = "InterviewAppointmentId > 0 ";
@@ -119,6 +120,16 @@ namespace Web.Service
             if (!String.IsNullOrEmpty(filterApplicantId))
             {
                 whereStr += " AND ApplicantId = " + filterApplicantId;
+            }
+
+            if (!String.IsNullOrEmpty(filterApplicantFirstName))
+            {
+                whereStr += " AND Applicant.FirstName.Contains(@0)";
+            }
+
+            if (!String.IsNullOrEmpty(filterApplicantLastName))
+            {
+                whereStr += " AND Applicant.LastName.Contains(@1)";
             }
 
             if (!String.IsNullOrEmpty(filterStatus))
@@ -142,7 +153,7 @@ namespace Web.Service
                                         .Replace("۹", "9");
                 PersianDateTime shamsiOrderDateFrom = PersianDateTime.Parse(filterInsertDateFrom);
                 insertDateFromMiladi = shamsiOrderDateFrom.ToDateTime();
-                whereStr += " AND InsertDate >= @0";
+                whereStr += " AND InsertDate >= @2";
             }
 
             DateTime? insertDateToMiladi = null;
@@ -164,12 +175,12 @@ namespace Web.Service
 
                 insertDateToMiladi = insertDateToMiladi.Value.AddHours(23).AddMinutes(59).AddSeconds(59).AddMilliseconds(999);
 
-                whereStr += " AND InsertDate <= @1";
+                whereStr += " AND InsertDate <= @3";
             }
 
             var dbModelList = new List<InterviewAppointment>();
 
-            dbModelList = _table.Where(whereStr, insertDateFromMiladi, insertDateToMiladi)
+            dbModelList = _table.Where(whereStr, filterApplicantFirstName, filterApplicantLastName, insertDateFromMiladi, insertDateToMiladi)
                                 .Include(x => x.Applicant)
                                 .Include(x => x.JobAnnouncement)
                                 .ToList();

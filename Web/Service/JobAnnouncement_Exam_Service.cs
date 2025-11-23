@@ -27,16 +27,13 @@ public class JobAnnouncement_Exam_Service : IJobAnnouncement_Exam_Service
         _table = _database.Set<JobAnnouncement_Exam>();
     }
 
-    public bool Add(int jobAnnouncementId, int examId)
+    public bool Add(JobAnnouncement_Exam_ViewModel uiModel)
     {
-        if (!IsDuplicate(jobAnnouncementId, examId))
+        if (!IsDuplicate(uiModel.JobAnnouncementId, uiModel.ExamId))
         {
             var dbModel = new JobAnnouncement_Exam();
-
-            dbModel.JobAnnouncementId = jobAnnouncementId;
-            dbModel.ExamId = examId;
+            _mapper.Map(uiModel, dbModel);
             dbModel.InsertDate = DateTime.Now;
-
             _table.Add(dbModel);
             try
             {
@@ -46,7 +43,7 @@ public class JobAnnouncement_Exam_Service : IJobAnnouncement_Exam_Service
             }
             catch (Exception)
             {
-                return false;
+                return false;   
             }
         }
         else
@@ -59,9 +56,9 @@ public class JobAnnouncement_Exam_Service : IJobAnnouncement_Exam_Service
     public bool Edit(JobAnnouncement_Exam_ViewModel uiModel)
     {
         var dbModel = _table.SingleOrDefault(x => x.JobAnnouncementId == uiModel.JobAnnouncementId && x.ExamId == uiModel.ExamId);
-
+        var oldInsertDate = dbModel.InsertDate;
         _mapper.Map(uiModel, dbModel);
-
+        dbModel.InsertDate = oldInsertDate;
         _table.Attach(dbModel);
 
         _database.Entry(dbModel).State = EntityState.Modified;
@@ -80,27 +77,19 @@ public class JobAnnouncement_Exam_Service : IJobAnnouncement_Exam_Service
 
     public bool Delete(int jobAnnouncementId, int examId)
     {
-        if (IsDuplicate(jobAnnouncementId, examId))
+        var dbModel = _table.SingleOrDefault(x => x.JobAnnouncementId == jobAnnouncementId && x.ExamId == examId);
+
+        _database.Entry(dbModel).State = EntityState.Deleted;
+
+        try
         {
-            var dbModel = _table.SingleOrDefault(x => x.JobAnnouncementId == jobAnnouncementId && x.ExamId == examId);
+            _database.SaveChanges();
 
-            _database.Entry(dbModel).State = EntityState.Deleted;
-
-            try
-            {
-                _database.SaveChanges();
-
-                return true;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
-        }
-        else
-        {
-            //return true if record not exists in database
             return true;
+        }
+        catch (Exception)
+        {
+            return false;
         }
     }
 
@@ -147,9 +136,10 @@ public class JobAnnouncement_Exam_Service : IJobAnnouncement_Exam_Service
         return uiModelList;
     }
 
-    public IList<JobAnnouncement_Exam_ViewModel> GetAllFiltered(string filterJobAnnouncementId, string filterExamId,
+    public IList<JobAnnouncement_Exam_ViewModel> GetAllFiltered(string filterJobAnnouncementId, string filterExamId, string filterExamTitle,
                                                                 string filterStartTimeFrom, string filterStartTimeTo,
                                                                 string filterEndTimeFrom, string filterEndTimeTo,
+                                                                string filterInsertDateFrom, string filterInsertDateTo,
                                                                 string filterDurationMinutes, string filterRandomizeQuestions,
                                                                 string filterRandomizeOptions, string filterAllowNavigateToPreviousQuestion,
                                                                 int currentPage, int pageSize, out int totalRecord)
@@ -164,6 +154,11 @@ public class JobAnnouncement_Exam_Service : IJobAnnouncement_Exam_Service
         if (!string.IsNullOrEmpty(filterExamId))
         {
             whereStr += " AND ExamId = " + filterExamId;
+        }
+
+        if (!string.IsNullOrEmpty(filterExamTitle))
+        {
+            whereStr += " AND Exam.Title.Contains(@0)";
         }
 
         DateTime? startTimeFromMiladi = null;
@@ -182,7 +177,7 @@ public class JobAnnouncement_Exam_Service : IJobAnnouncement_Exam_Service
                                    .Replace("۹", "9");
             PersianDateTime shamsiStartTimeFrom = PersianDateTime.Parse(filterStartTimeFrom);
             startTimeFromMiladi = shamsiStartTimeFrom.ToDateTime();
-            whereStr += " AND StartTime >= @0";
+            whereStr += " AND StartTime >= @1";
         }
 
         DateTime? startTimeToMiladi = null;
@@ -204,26 +199,26 @@ public class JobAnnouncement_Exam_Service : IJobAnnouncement_Exam_Service
 
             startTimeToMiladi = startTimeToMiladi.Value.AddHours(23).AddMinutes(59).AddSeconds(59).AddMilliseconds(999);
 
-            whereStr += " AND StartTime <= @1";
+            whereStr += " AND StartTime <= @2";
         }
 
         DateTime? endTimeFromMiladi = null;
         if (!string.IsNullOrEmpty(filterEndTimeFrom))
         {
-            filterStartTimeFrom =
-                filterStartTimeFrom.Replace("۰", "0")
-                                   .Replace("۱", "1")
-                                   .Replace("۲", "2")
-                                   .Replace("۳", "3")
-                                   .Replace("۴", "4")
-                                   .Replace("۵", "5")
-                                   .Replace("۶", "6")
-                                   .Replace("۷", "7")
-                                   .Replace("۸", "8")
-                                   .Replace("۹", "9");
-            PersianDateTime shamsiInsertDateFrom = PersianDateTime.Parse(filterStartTimeFrom);
-            endTimeFromMiladi = shamsiInsertDateFrom.ToDateTime();
-            whereStr += " AND EndTime >= @2";
+            filterEndTimeFrom =
+                filterEndTimeFrom.Replace("۰", "0")
+                                 .Replace("۱", "1")
+                                 .Replace("۲", "2")
+                                 .Replace("۳", "3")
+                                 .Replace("۴", "4")
+                                 .Replace("۵", "5")
+                                 .Replace("۶", "6")
+                                 .Replace("۷", "7")
+                                 .Replace("۸", "8")
+                                 .Replace("۹", "9");
+            PersianDateTime shamsiEndTimeFrom = PersianDateTime.Parse(filterEndTimeFrom);
+            endTimeFromMiladi = shamsiEndTimeFrom.ToDateTime();
+            whereStr += " AND EndTime >= @3";
         }
 
         DateTime? endTimeToMiladi = null;
@@ -240,12 +235,53 @@ public class JobAnnouncement_Exam_Service : IJobAnnouncement_Exam_Service
                                .Replace("۷", "7")
                                .Replace("۸", "8")
                                .Replace("۹", "9");
-            PersianDateTime shamsiInsertDateTo = PersianDateTime.Parse(filterStartTimeTo);
-            endTimeToMiladi = shamsiInsertDateTo.ToDateTime();
+            PersianDateTime shamsiEndTimeTo = PersianDateTime.Parse(filterEndTimeTo);
+            endTimeToMiladi = shamsiEndTimeTo.ToDateTime();
 
             endTimeToMiladi = endTimeToMiladi.Value.AddHours(23).AddMinutes(59).AddSeconds(59).AddMilliseconds(999);
 
-            whereStr += " AND EndTime <= @3";
+            whereStr += " AND EndTime <= @4";
+        }
+
+        DateTime? insertDateFromMiladi = null;
+        if (!string.IsNullOrEmpty(filterInsertDateFrom))
+        {
+            filterInsertDateFrom =
+                filterInsertDateFrom.Replace("۰", "0")
+                                    .Replace("۱", "1")
+                                    .Replace("۲", "2")
+                                    .Replace("۳", "3")
+                                    .Replace("۴", "4")
+                                    .Replace("۵", "5")
+                                    .Replace("۶", "6")
+                                    .Replace("۷", "7")
+                                    .Replace("۸", "8")
+                                    .Replace("۹", "9");
+            PersianDateTime shamsiInsertDateFrom = PersianDateTime.Parse(filterInsertDateFrom);
+            insertDateFromMiladi = shamsiInsertDateFrom.ToDateTime();
+            whereStr += " AND InsertDate >= @5";
+        }
+
+        DateTime? insertDateToMiladi = null;
+        if (!string.IsNullOrEmpty(filterInsertDateTo))
+        {
+            filterInsertDateTo =
+                filterInsertDateTo.Replace("۰", "0")
+                                  .Replace("۱", "1")
+                                  .Replace("۲", "2")
+                                  .Replace("۳", "3")
+                                  .Replace("۴", "4")
+                                  .Replace("۵", "5")
+                                  .Replace("۶", "6")
+                                  .Replace("۷", "7")
+                                  .Replace("۸", "8")
+                                  .Replace("۹", "9");
+            PersianDateTime shamsiInsertDateTo = PersianDateTime.Parse(filterInsertDateTo);
+            insertDateToMiladi = shamsiInsertDateTo.ToDateTime();
+
+            insertDateToMiladi = insertDateToMiladi.Value.AddHours(23).AddMinutes(59).AddSeconds(59).AddMilliseconds(999);
+
+            whereStr += " AND InsertDate <= @6";
         }
 
         if (!string.IsNullOrEmpty(filterDurationMinutes))
@@ -270,8 +306,8 @@ public class JobAnnouncement_Exam_Service : IJobAnnouncement_Exam_Service
 
         var dbModelList = new List<JobAnnouncement_Exam>();
 
-        dbModelList = _table.Where(whereStr, startTimeFromMiladi, startTimeToMiladi,
-                                   endTimeFromMiladi, endTimeToMiladi)
+        dbModelList = _table.Where(whereStr, filterExamTitle, startTimeFromMiladi, startTimeToMiladi,
+                                   endTimeFromMiladi, endTimeToMiladi, insertDateFromMiladi, insertDateToMiladi)
                             .Include(x => x.Exam)
                             .Include(x => x.JobAnnouncement)
                             .ToList();

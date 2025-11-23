@@ -1,0 +1,123 @@
+﻿@model IEnumerable<ExamQuestionOptionViewModel>
+
+@{
+    ViewData["PageTitle"] = $"لیست گزینه های سوال {ViewBag.ExamQuestionOrder} آزمون {ViewBag.ExamTitle}";
+}
+
+<div class="accordion" id="custom-accordion-one" style="margin-top:-14px;">
+    <div class="k-rtl" style="margin-top:20px;">
+        <div style="height:100%;">
+            @(
+                        Html.Kendo().Grid<ExamQuestionOptionViewModel>().Name("Grid").Columns(columns =>
+                        {
+                            columns.Bound(c => c.Order).Width(250);
+                            columns.Bound(c => c.Title).Width(250);
+                            columns.Bound(c => c.IsCorrectAnswerStr).Width(250);
+                            columns.Command(command =>
+                            {
+                                command.Custom("ویرایش").Click("editRow").HtmlAttributes(new { @class = "command-btn-yellow" });
+
+                                command.Custom("حذف").Click("deleteRow").HtmlAttributes(new { @class = "command-btn-red" });
+
+                            }).Width(400);
+                        })
+                        .HtmlAttributes(new { style = "height: 550px;border-radius:0.25rem;" })
+                        .Filterable(ftb => ftb.Mode(GridFilterMode.Menu))
+                        .Scrollable(scrollable => scrollable.Virtual(true))
+                        .Sortable()
+                        .Pageable(pageable => pageable
+                        .Refresh(true)
+                        .PageSizes(true)
+                        .ButtonCount(5))
+                        .DataSource(dataSource => dataSource
+                        .Ajax()
+                        .Events(events => events.Error("error_handler"))
+                        .Model(model =>
+                        {
+                            model.Id(x => x.ExamQuestionOptionId);
+                        })
+                        .Read(read => read.Action("Grid_Data_Read", "ExamQuestionOption", new { Area = "Admin" })
+                        .Data("getFilterDataParams"))
+                        .PageSize(20)
+                        )
+                        )
+        </div>
+    </div>
+    <div class="row" style="margin-top:20px;">
+        <div class="col-xs-6 col-sm-6 col-md-6">
+            <a href="@Url.Action("Create", "ExamQuestionOption", new { Area = "Admin", examQuestionId = ViewBag.ExamQuestionId })" class="btn btn-success form-command-btn" style="display:inline-block;float:right;">
+                <span><i class="fa fa-plus"></i><span>&nbsp;</span>ثبت جدید</span>
+            </a>
+        </div>
+        <div class="col-xs-6 col-sm-6 col-md-6 text-left">
+            <a href="@Url.Action("Index", "ExamQuestion", new {examId = @ViewBag.ExamId})" class="btn btn-info form-command-btn" style="float:left;">
+            <span class="btn-label"><i class="fa fa-reply"></i><span>&nbsp;</span>بازگشت</span>
+            </a>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    function editRow(e) {
+        e.preventDefault();
+        var dataItem = this.dataItem(jQuery(e.currentTarget).closest("tr"));
+        window.location.href = "/Admin/ExamQuestionOption/Edit/" + dataItem.ExamQuestionOptionId;
+    }
+
+    var getFilterDataParams = function (e) {
+        var result = {
+            filterTitle: $('#FilterTitle').val(),
+            filterExamQuestionId: @ViewBag.ExamQuestionId,
+        }
+        return result;
+    };
+
+    function filterData() {
+        $("#Grid").data("kendoGrid").dataSource.read();
+    }
+
+    function deleteRow(e) {
+        e.preventDefault();
+        var dataItem = this.dataItem(jQuery(e.currentTarget).closest("tr"));
+
+        showConfirmModalMessage(
+            "danger",
+            "عملیات حذف",
+            "آیا از حذف اطمینان دارید؟",
+            "انصراف",
+            "حذف",
+            "danger",
+            "Confirm",
+            dataItem.ExamQuestionOptionId,
+            "Cancel",
+            null
+        );
+    }
+
+    function Confirm(examQuestionOptionId) {
+        $.ajax({
+            url: '/Admin/ExamQuestionOption/Delete',
+            type: "GET",
+            data: {
+                id: examQuestionOptionId
+            }
+        }).done(function (dresult) {
+            if (dresult == true) {
+                var reqGrid = $("#Grid").data("kendoGrid");
+                reqGrid.dataSource.read();
+                showSimpleModalMessage('success', 'عملیات انجام شد', 'اطلاعات موردنظر حذف شد', '');
+            }
+            else {
+                showSimpleModalMessage('danger', 'خطا', 'امکان حذف این اطلاعات وجود ندارد', '');
+            }
+        }).fail(function (xhr) {
+            showSimpleModalMessage('danger', 'خطا', 'در ارسال درخواست خطا رخ داد: ' + (xhr.responseText || xhr.statusText), '');
+        });
+    }
+
+    function Cancel(x) {
+
+    }
+
+</script>

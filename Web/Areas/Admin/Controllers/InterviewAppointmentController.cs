@@ -1,28 +1,38 @@
-﻿using Web.Model;
-using System.Linq;
+﻿using DbEntities;
 using Kendo.Mvc.UI;
-using Web.Controllers;
-using Web.Service.Interface;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System.Linq;
+using Web.Controllers;
+using Web.Model;
+using Web.Service.Interface;
 
 namespace Web.Areas.Admin.Controllers
 {
     [Area("Admin")]
     [Route("Admin/[controller]")]
     [Authorize(Roles = "Manager,Admin")]
-    public class InterviewAppointmentController(IInterviewAppointmentService interviewAppointmentService) : BaseController
+    public class InterviewAppointmentController(IInterviewAppointmentService interviewAppointmentService, IJobAnnouncementService jobAnnouncementService) : BaseController
     {
         [Route("Index/{jobAnnouncementId}")]
         public IActionResult Index(int jobAnnouncementId)
         {
-            ViewBag.JobAnnouncementId = jobAnnouncementId;
+            var jobAnnouncementViewModel = jobAnnouncementService.Get(jobAnnouncementId);
+
+            if (jobAnnouncementViewModel == null)
+            {
+                ShowDangerToast(null, "آگهی یافت نشد.");
+            }
+
+            ViewBag.JobAnnouncementId = jobAnnouncementViewModel.JobAnnouncementId;
+            ViewBag.JobAnnouncementTitle = jobAnnouncementViewModel.Title;
             return View();
         }
 
         [Route("Grid_Data_Read")]
         public IActionResult Grid_Data_Read([DataSourceRequest] DataSourceRequest request, string filterJobAnnouncementId,
-                                            string filterApplicantId, string filterStatus, string filterInsertDateFrom, string filterInsertDateTo)
+                                            string filterApplicantId, string filterApplicantFirstName, string filterApplicantLastName, 
+                                            string filterStatus, string filterInsertDateFrom, string filterInsertDateTo)
         {
             //Paging and Sorting
 
@@ -31,8 +41,8 @@ namespace Web.Areas.Admin.Controllers
 
             var result = new DataSourceResult()
             {
-                Data = interviewAppointmentService.GetAllFiltered(filterJobAnnouncementId,  filterApplicantId,
-                                                                   filterStatus,  filterInsertDateFrom, filterInsertDateTo, 
+                Data = interviewAppointmentService.GetAllFiltered(filterJobAnnouncementId, filterApplicantId,filterApplicantFirstName, filterApplicantLastName,
+                                                                   filterStatus, filterInsertDateFrom, filterInsertDateTo,
                                                                    currentPage, pageSize, out int totalRecord),
                 Total = totalRecord // Total number of records
             };
@@ -41,16 +51,17 @@ namespace Web.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        [Route("Create")]
-        public IActionResult Create()
+        [Route("Create/{jobAnnouncementId}")]
+        public IActionResult Create(int jobAnnouncementId)
         {
+            ViewBag.JobAnnouncementId = jobAnnouncementId;
             return View();
         }
 
         [HttpPost]
-        [Route("Create")]
+        [Route("Create/{jobAnnouncementId}")]
         [ValidateAntiForgeryToken]
-        public virtual ActionResult Create(InterviewAppointmentViewModel model)
+        public IActionResult Create(InterviewAppointmentViewModel model, int jobAnnouncementId)
         {
             if (ModelState.IsValid)
             {
@@ -58,7 +69,7 @@ namespace Web.Areas.Admin.Controllers
                 {
                     ShowSuccessToast("عملیات انجام شد", "اطلاعات با موفقیت ذخیره شد");
 
-                    return RedirectToAction("Index");
+                    return RedirectToAction("Index", new { jobAnnouncementId = jobAnnouncementId });
                 }
                 else
                 {
@@ -88,7 +99,7 @@ namespace Web.Areas.Admin.Controllers
         [HttpPost]
         [Route("Edit/{id}")]
         [ValidateAntiForgeryToken]
-        public virtual ActionResult Edit(InterviewAppointmentViewModel model)
+        public IActionResult Edit(InterviewAppointmentViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -96,7 +107,7 @@ namespace Web.Areas.Admin.Controllers
                 {
                     ShowSuccessToast("عملیات انجام شد", "اطلاعات با موفقیت ذخیره شد");
 
-                    return RedirectToAction("Index");
+                    return RedirectToAction("Index", new { jobAnnouncementId = model.JobAnnouncementId });
                 }
                 else
                 {

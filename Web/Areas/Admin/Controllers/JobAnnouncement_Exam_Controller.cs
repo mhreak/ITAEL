@@ -1,35 +1,46 @@
-﻿using Web.Model;
-using System.Linq;
-using Kendo.Mvc.UI;
-using Web.Controllers;
-using Web.Service.Interface;
-using Microsoft.AspNetCore.Mvc;
+﻿using Kendo.Mvc.UI;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Linq;
+using Web.Controllers;
+using Web.Model;
+using Web.Service;
+using Web.Service.Interface;
 
 namespace Web.Areas.Admin.Controllers
 {
     [Area("Admin")]
     [Route("Admin/[controller]")]
     [Authorize(Roles = "Manager,Admin")]
-    public class JobAnnouncement_Exam_Controller(IJobAnnouncement_Exam_Service ja_Exam_Service) : BaseController
+    public class JobAnnouncement_Exam_Controller(IJobAnnouncement_Exam_Service ja_Exam_Service, IJobAnnouncementService jobAnnouncementService) : BaseController
     {
         [Route("Index/{jobAnnouncementId}")]
         public IActionResult Index(int jobAnnouncementId)
         {
-            ViewBag.jobAnnouncementId = jobAnnouncementId;
+            var jobAnnouncementViewModel = jobAnnouncementService.Get(jobAnnouncementId);
+
+            if (jobAnnouncementViewModel == null)
+            {
+                ShowDangerToast(null, "آگهی یافت نشد.");
+            }
+
+            ViewBag.JobAnnouncementId = jobAnnouncementViewModel.JobAnnouncementId;
+            ViewBag.JobAnnouncementTitle = jobAnnouncementViewModel.Title;
             return View();
         }
 
         [Route("Grid_Data_Read")]
         public IActionResult Grid_Data_Read([DataSourceRequest] DataSourceRequest request,
-                                            string filterJobAnnouncementId, string filterExamId,
+                                            string filterJobAnnouncementId, string filterExamId ,string filterExamTitle,
                                             string filterStartTimeFrom, string filterStartTimeTo,
-                                            string filterEndTimeFrom, string filterEndTimeTo)
+                                            string filterEndTimeFrom, string filterEndTimeTo,
+                                            string filterInsertDateFrom, string filterInsertDateTo)
         {
-            var jobAnnouncement_Exam_ViewModelList = ja_Exam_Service.GetAllFiltered(filterJobAnnouncementId, filterExamId,
+            var jobAnnouncement_Exam_ViewModelList = ja_Exam_Service.GetAllFiltered(filterJobAnnouncementId, filterExamId, filterExamTitle,
                                                                                     filterStartTimeFrom, filterStartTimeTo,
                                                                                     filterEndTimeFrom, filterEndTimeTo,
+                                                                                    filterInsertDateFrom, filterInsertDateTo,
                                                                                     null, null, null, null,
                                                                                     request.Page, request.PageSize, out int totalRecord);
 
@@ -43,22 +54,32 @@ namespace Web.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        [Route("Create")]
-        public IActionResult Create()
+        [Route("Create/{jobAnnouncementId}")]
+        public IActionResult Create(int jobAnnouncementId)
         {
+            var jobAnnouncementViewModel = jobAnnouncementService.Get(jobAnnouncementId);
+
+            if (jobAnnouncementViewModel == null)
+            {
+                ShowDangerToast(null, "آگهی یافت نشد.");
+            }
+
+            ViewBag.JobAnnouncementId = jobAnnouncementViewModel.JobAnnouncementId;
+            ViewBag.JobAnnouncementTitle = jobAnnouncementViewModel.Title;
+
             return View();
         }
-
+            
         [HttpPost]
-        [Route("Create")]
+        [Route("Create/{jobAnnouncementId}")]
         [ValidateAntiForgeryToken]
-        public virtual ActionResult Create(JobAnnouncement_Exam_ViewModel model)
-        {
+        public IActionResult Create(JobAnnouncement_Exam_ViewModel model, int jobAnnouncementId)
+            {
             if (ModelState.IsValid)
             {
                 if (!ja_Exam_Service.IsDuplicate(model.JobAnnouncementId, model.ExamId))
                 {
-                    if (ja_Exam_Service.Add(model.JobAnnouncementId, model.ExamId))
+                    if (ja_Exam_Service.Add(model))
                     {
                         ShowSuccessToast("عملیات انجام شد", "اطلاعات با موفقیت ذخیره شد");
 
@@ -71,7 +92,7 @@ namespace Web.Areas.Admin.Controllers
                 }
                 else
                 {
-                    ShowDangerToast(null, "یک مهارت دیگر با این نام وجود دارد");
+                    ShowDangerToast(null, "یک آزمون دیگر برای این کاربر وجود دارد");
                 }
             }
             else
@@ -90,14 +111,22 @@ namespace Web.Areas.Admin.Controllers
         [Route("Edit/{jobAnnouncementId}/{examId}")]
         public IActionResult Edit(int jobAnnouncementId, int examId)
         {
-            var model = ja_Exam_Service.Get(jobAnnouncementId, examId);
-            return View(model);
+            var jobAnnouncementExamViewModel = ja_Exam_Service.Get(jobAnnouncementId, examId);
+
+            if (jobAnnouncementExamViewModel == null)
+            {
+                ShowDangerToast("", "آزمون یافت نشد.");
+            }
+
+            ViewBag.JobAnnouncementTitle = jobAnnouncementExamViewModel.JobAnnouncementTitle;
+
+            return View(jobAnnouncementExamViewModel);
         }
 
         [HttpPost]
-        [Route("Edit")]
+        [Route("Edit/{jobAnnouncementId}/{examId}")]
         [ValidateAntiForgeryToken]
-        public virtual ActionResult Edit(JobAnnouncement_Exam_ViewModel model)
+        public IActionResult Edit(JobAnnouncement_Exam_ViewModel model)
         {
             if (ModelState.IsValid)
             {

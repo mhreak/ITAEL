@@ -5,7 +5,7 @@ namespace Web.Service.Interface
 {
     public interface IJobAnnouncement_Exam_Service
     {
-        bool Add(int jobAnnouncementId, int examId);
+        bool Add(JobAnnouncement_Exam_ViewModel uiModel);
 
         bool Edit(JobAnnouncement_Exam_ViewModel uiModel);
 
@@ -19,11 +19,21 @@ namespace Web.Service.Interface
 
         IList<JobAnnouncement_Exam_ViewModel> GetAllByExamId(int examId);
 
-        IList<JobAnnouncement_Exam_ViewModel> GetAllFiltered(string filterJobAnnouncementId, string filterExamId, 
-                                                             string filterStartTimeFrom, string filterStartTimeTo,
-                                                             string filterEndTimeFrom, string filterEndTimeTo,
-                                                             string filterDurationMinutes, string filterRandomizeQuestions,
-                                                             string filterRandomizeOptions, string filterAllowNavigateToPreviousQuestion,
-                                                             int currentPage, int pageSize, out int totalRecord);
+        IList<JobAnnouncement_Exam_ViewModel> GetAllFiltered(string filterJobAnnouncementId,
+                                                             string filterExamId,
+                                                             string filterExamTitle,
+                                                             string filterStartTimeFrom,
+                                                             string filterStartTimeTo,
+                                                             string filterEndTimeFrom,
+                                                             string filterEndTimeTo,
+                                                             string filterInsertDateFrom,
+                                                             string filterInsertDateTo,
+                                                             string filterDurationMinutes,
+                                                             string filterRandomizeQuestions,
+                                                             string filterRandomizeOptions,
+                                                             string filterAllowNavigateToPreviousQuestion,
+                                                             int currentPage,
+                                                             int pageSize,
+                                                             out int totalRecord);
     }
 }

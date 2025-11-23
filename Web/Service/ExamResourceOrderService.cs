@@ -100,6 +100,24 @@ namespace Web.Service
             return uiModel;
         }
 
+        public IList<ExamResourceOrderViewModel> GetAll()
+        {
+            var dbModel = _table.Include(x => x.Applicant)
+                                .Include(x => x.ExamResource)
+                                .ToList();
+
+            if (dbModel == null)
+            {
+                return null;
+            }
+
+            var uiModel = new List<ExamResourceOrderViewModel>();
+
+            _mapper.Map(dbModel, uiModel);
+
+            return uiModel;
+        }
+
         public IList<ExamResourceOrderViewModel> GetAllFiltered(string filterApplicantId,
                                                                 string filterExamResourceId,
                                                                 string filterStatus,

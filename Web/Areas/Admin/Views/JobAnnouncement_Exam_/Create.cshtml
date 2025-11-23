@@ -1,0 +1,121 @@
+﻿@model Web.Model.JobAnnouncement_Exam_ViewModel
+
+@{
+    ViewData["PageTitle"] = $"ثبت آزمون برای آگهی {ViewBag.JobAnnouncementTitle}";
+}
+
+<style>
+    .k-multiselect {
+        border: 1px solid #c8c9ce !important;
+        border-radius: 8px !important;
+        background: white;
+    }
+
+    .k-chip-label {
+        font-family: IranSans;
+    }
+
+    .k-selection-multiple input {
+        font-size: 14px;
+    }
+</style>
+
+<div style="margin-top:-14px;">
+    @using (Html.BeginForm(null, null, FormMethod.Post, new { name = "my-form", id = "my-form" }))
+    {
+        @Html.HiddenFor(m => m.JobAnnouncementId)
+
+        <div class="container-card padding30" style="padding-top:45px;">
+            <div class="form-horizontal">
+
+                <div class="row form-group" style="margin-top:30px;">
+                    @Html.Label(null, "آزمون", htmlAttributes: new { @class = "control-label col-md-2 col-sm-3 form-input-label" })
+                    <div class="col-md-3 col-sm-4">
+                        @Html.Hidden("ExamId")
+                        @Html.TextBox("Title", "", new { @readonly = "readonly", @class = "form-control" })
+                    </div>
+                    <div class="col-md-1 col-sm-2" style="margin-right:-20px;">
+                        <a class="btn btn-info modal-link" href=@Url.Action("ShowExamSearchDialog",
+                                                                            "Exam", new { Area = "Admin", valueElementId = "ExamId",
+                                                                                            displayElementId = "Title" })
+                           style="box-shadow:none;border-radius:0.4rem;height:40px;font-size:20px;padding-top:6px;">
+                            <i class="uil-search"></i>
+                        </a>
+                    </div>
+                    <div class="col-md-2 col-sm-2 col-12">
+                        <span style="color:red;font-size:20px;">*</span>
+                    </div>
+                </div>
+                
+                <div class="row form-group" style="margin-top:30px;">
+                    @Html.LabelFor(model => model.StartTime, htmlAttributes: new { @class = "control-label col-md-2 col-sm-3 form-input-label" })
+                    <div class="col-md-3 col-sm-4">
+                        @Html.EditorFor(model => model.StartTime)
+                        @Html.ValidationMessageFor(model => model.StartTime, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-md-7 col-sm-5">
+                        <span style="color:red;font-size:20px;">*</span>
+                    </div>
+                </div>
+                
+                <div class="row form-group" style="margin-top:30px;">
+                    @Html.LabelFor(model => model.EndTime, htmlAttributes: new { @class = "control-label col-md-2 col-sm-3 form-input-label" })
+                    <div class="col-md-3 col-sm-4">
+                        @Html.EditorFor(model => model.EndTime)
+                        @Html.ValidationMessageFor(model => model.EndTime, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-md-7 col-sm-5">
+                        <span style="color:red;font-size:20px;">*</span>
+                    </div>
+                </div>
+
+                <div class="row form-group" style="margin-top:30px;">
+                    @Html.LabelFor(model => model.DurationMinutes, htmlAttributes: new { @class = "control-label col-md-2 col-sm-3 form-input-label" })
+                    <div class="col-md-3 col-sm-4">
+                        @Html.EditorFor(model => model.DurationMinutes, new { htmlAttributes = new { @type = "number", @min = "0", @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.DurationMinutes, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-md-7 col-sm-5">
+                        <span style="color:red;font-size:20px;">*</span>
+                    </div>
+                </div>
+                
+                <div class="row form-group" style="margin-top:30px;">
+                    @Html.Label(null, "اجازه برگشتن به سوال قبل", htmlAttributes: new { @class = "control-label col-md-2 col-sm-3 form-input-label" })
+                    <div class="col-md-3 col-sm-4" style="padding-right:6px;">
+                        <input type="checkbox" asp-for="@Model.AllowNavigateToPreviousQuestion" checked data-switch="success" />
+                        <label for="AllowNavigateToPreviousQuestion" data-on-label="بله" data-off-label="خیر" style="margin-right:8px;"></label>
+                    </div>
+                </div>
+                
+                <div class="row form-group" style="margin-top:30px;">
+                    @Html.Label(null, "ترتیب رندوم سوالات", htmlAttributes: new { @class = "control-label col-md-2 col-sm-3 form-input-label" })
+                    <div class="col-md-3 col-sm-4" style="padding-right:6px;">
+                        <input type="checkbox" asp-for="@Model.RandomizeQuestions" checked data-switch="success" />
+                        <label for="RandomizeQuestions" data-on-label="بله" data-off-label="خیر" style="margin-right:8px;"></label>
+                    </div>
+                </div>
+                
+                <div class="row form-group" style="margin-top:30px;">
+                    @Html.Label(null, "ترتیب رندوم گزینه ها", htmlAttributes: new { @class = "control-label col-md-2 col-sm-3 form-input-label" })
+                    <div class="col-md-3 col-sm-4" style="padding-right:6px;">
+                        <input type="checkbox" asp-for="@Model.RandomizeOptions" checked data-switch="success" />
+                        <label for="RandomizeOptions" data-on-label="بله" data-off-label="خیر" style="margin-right:8px;"></label>
+                    </div>
+                </div>
+            </div>
+
+            <hr style="margin-top:45px;color:orangered;" />
+
+            <div class="row" style="margin-top:12px;">
+                <div class="col-md-6 col-sm-12">
+                    <input type="submit" class="btn btn-success form-command-btn" value="ذخیره" style="float:right;" />
+                </div>
+                <div class="col-md-6 col-sm-12">
+                    <a href="@Url.Action("Index", "JobAnnouncement_Exam_", new { Area = "Admin", jobAnnouncementId = @ViewBag.JobAnnouncementId })"
+                       class="btn btn-danger form-command-btn" style="float:left;">بازگشت</a>
+                </div>
+            </div>
+        </div>
+        }
+</div>

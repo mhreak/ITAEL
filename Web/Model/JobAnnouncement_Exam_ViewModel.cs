@@ -40,6 +40,7 @@ namespace Web.Model
 
         [Display(Name = "طول آزمون (دقیقه)")]
         [Required(ErrorMessage = "این فیلد الزامی است")]
+        [Range(0, int.MaxValue, ErrorMessage = "عدد باید ۰ یا بزرگتر باشد.")]
         public int DurationMinutes { get; set; }
 
         //سوالات رندوم

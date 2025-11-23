@@ -13,6 +13,8 @@ namespace Web.Service.Interface
 
         ExamResourceViewModel Get(int id);
 
+        IList<ExamResourceViewModel> GetAll();
+
         public IList<ExamResourceViewModel> GetAllFiltered(string filterResourceName, string filterDescription,
                                                            string filterType, string filterPriceFrom, string filterPriceTo,
                                                            string filterInsertDateFrom, string filterInsertDateTo,

@@ -1,0 +1,65 @@
+﻿@model Web.Model.ExamQuestionOptionViewModel
+@{
+    ViewData["PageTitle"] = "ویرایش گزینه سوال آزمون";
+}
+
+<div style="margin-top:-14px;">
+    @using (Html.BeginForm(null, null, FormMethod.Post, new { name = "my-form", id = "my-form" }))
+    {
+        @Html.HiddenFor(m => m.ExamQuestionOptionId)
+        @Html.HiddenFor(m => m.ExamQuestionId)
+        @Html.HiddenFor(m => m.IsCorrectAnswerStr)
+
+        <div class="container-card padding30" style="padding-top:45px;">
+            <div class="form-horizontal">
+
+                <div class="row form-group" style="margin-top:30px;">
+                    @Html.LabelFor(m => m.Title, htmlAttributes: new { @class = "control-label col-md-2 col-sm-3 form-input-label" })
+
+                    <div class="col-md-3 col-sm-4">
+                        @Html.EditorFor(m => m.Title)
+                        @Html.ValidationMessageFor(m => m.Title, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="col-md-7 col-sm-5">
+                        <span style="color:red;font-size:20px;">*</span>
+                    </div>
+                </div>
+
+                <div class="row form-group" style="margin-top:30px;">
+                    @Html.LabelFor(m => m.Order, htmlAttributes: new { @class = "control-label col-md-2 col-sm-3 form-input-label" })
+
+                    <div class="col-md-3 col-sm-4">
+                        @Html.EditorFor(m => m.Order, new { htmlAttributes = new { @type = "number", @min = "0", @class = "form-control" } })
+                        @Html.ValidationMessageFor(m => m.Order, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="col-md-7 col-sm-5">
+                        <span style="color:red;font-size:20px;">*</span>
+                    </div>
+                </div>
+
+                <div class="row form-group" style="margin-top:30px;">
+                    @Html.LabelFor(m => m.IsCorrectAnswer, "آیا گزینه صحیح است؟", htmlAttributes: new { @class = "control-label col-md-2 col-sm-3 form-input-label" })
+                    @Html.CheckBoxFor(m => m.IsCorrectAnswer, new { data_switch = "success", id = "IsCorrectAnswer" })
+                    <label for="IsCorrectAnswer" data-on-label="بله" data-off-label="خیر" style="margin-right:8px;"></label>
+                </div>
+
+
+            </div>
+
+            <hr style="margin-top:45px;color:orangered;" />
+
+            <div class="row" style="margin-top:12px;">
+                <div class="col-md-6 col-sm-12">
+                    <input type="submit" class="btn btn-success form-command-btn" value="ذخیره" style="float:right;" />
+                </div>
+                <div class="col-md-6 col-sm-12">
+                    <a href="@Url.Action("Index", "ExamQuestionOption", new { Area = "Admin", examQuestionId = Model.ExamQuestionId })"
+                       class="btn btn-danger form-command-btn" style="float: left;">بازگشت</a>
+
+                </div>
+            </div>
+        </div>
+    }
+</div>

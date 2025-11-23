@@ -17,8 +17,8 @@ namespace Web.Controllers
 
         public IActionResult Index()
         {
-            return View();
-            //return RedirectToAction("Login", "Account");
+            //return View();
+            return RedirectToAction("Index", "Dashboard", new { Area = "Admin" });
         }
 
         [Route("GetAnnouncements")]

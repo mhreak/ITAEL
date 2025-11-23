@@ -18,6 +18,7 @@ namespace Web.Model
 
         [Display(Name = "ترتیب")]
         [Required(ErrorMessage = "این فیلد الزامی است")]
+        [Range(0, int.MaxValue, ErrorMessage = "عدد باید ۰ یا بزرگتر باشد.")]
         public short Order { get; set; }
 
         [Display(Name = "آیا جواب درست است؟")]

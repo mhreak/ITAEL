@@ -1,0 +1,168 @@
+﻿    @model Web.Model.ExamResourceViewModel
+
+    @{
+        ViewData["PageTitle"] = "ثبت منبع آزمون جدید";
+    }
+
+    <style>
+        .k-multiselect {
+            border: 1px solid #c8c9ce !important;
+            border-radius: 8px !important;
+            background: white;
+        }
+
+        .k-chip-label {
+            font-family: IranSans;
+        }
+
+
+        .k-selection-multiple input {
+            font-size: 14px;
+        }
+    </style>
+
+    <div style="margin-top:-14px;">
+        @using (Html.BeginForm(null, null, FormMethod.Post, new { name = "my-form", id = "my-form" }))
+        {
+            <div class="container-card padding30" style="padding-top:45px;">
+                <div class="form-horizontal">
+                    <div class="row form-group" style="margin-top:30px;">
+                        @Html.LabelFor(model => model.ResourceName, htmlAttributes: new { @class = "control-label col-md-2 col-sm-3 form-input-label" })
+                        <div class="col-md-3 col-sm-4">
+                            @Html.EditorFor(model => model.ResourceName)
+                            @Html.ValidationMessageFor(model => model.ResourceName, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="col-md-7 col-sm-5">
+                            <span style="color:red;font-size:20px;">*</span>
+                        </div>
+                    </div>
+
+                    <div class="row form-group" style="margin-top:30px;">
+                        @Html.LabelFor(model => model.Type, htmlAttributes: new { @class = "control-label col-md-2 col-sm-3 form-input-label" })
+                        <div class="col-md-3 col-sm-4">
+                            @(Html.Kendo().DropDownList()
+                                  .Name("Type")
+                                  .DataTextField("Text")
+                                  .DataValueField("Value")
+                                  .HtmlAttributes(new { style = "width: 100%" })
+                                  .BindTo(new List<SelectListItem>() {
+                                                                         new SelectListItem() {
+                                                                                                  Text = "فیزیکی",
+                                                                                                  Value = "1"
+                                                                                              },
+                                                                         new SelectListItem() {
+                                                                                                  Text = "مجازی",
+                                                                                                  Value = "2"
+                                                                                              }
+                                                                     }))
+                            @Html.ValidationMessageFor(model => model.Type, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="col-md-7 col-sm-5">
+                            <span style="color:red;font-size:20px;">*</span>
+                        </div>
+                    </div>
+
+                    <div class="row form-group" id="downloadRow" style="margin-top:30px;">
+                        @Html.LabelFor(model => model.DownloadLink, htmlAttributes: new { @class = "control-label col-md-2 col-sm-3 form-input-label" })
+                        <div class="col-md-3 col-sm-4">
+                            @Html.EditorFor(model => model.DownloadLink)
+                            @Html.ValidationMessageFor(model => model.DownloadLink, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="col-md-7 col-sm-5">
+                            <span style="color:red;font-size:20px;">*</span>
+                        </div>
+                    </div>
+                    
+                    <div class="row form-group" style="margin-top:30px;">
+                        @Html.LabelFor(model => model.Price, htmlAttributes: new { @class = "control-label col-md-2 col-sm-3 form-input-label" })
+                        <div class="col-md-3 col-sm-4" style="display: flex; align-items: center; gap: 5px;">
+                            @Html.EditorFor(model => model.Price, new { htmlAttributes = new { @class = "form-control price-input", style = "flex:1;" } })
+                            <span>تومان</span>
+                        </div>
+                        @Html.ValidationMessageFor(model => model.Price, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="row form-group" style="margin-top:30px;">
+                        @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2 col-sm-3 form-input-label" })
+                        <div class="col-md-8 col-sm-12 col-12">
+                            <div class="col-12 k-rtl" style="margin-top:22px;">
+                                @(Html.Kendo().EditorFor(model => model.Description)
+                                      .HtmlAttributes(new { style = "width: 100%; height:360px;font-family:'IranSans';", aria_label = "editor" })
+                                      .Encoded(false)
+                                      .Tools(tools => tools
+                                                      .Clear()
+                                                      .Bold().Italic().Underline()
+                                                      .JustifyLeft().JustifyCenter().JustifyRight().JustifyFull()
+                                                      .InsertOrderedList()
+                                                      .InsertUnorderedList()
+                                                      .Outdent().Indent()
+                                                      .CreateLink().Unlink()
+                                                      .FontSize()
+                                      )
+                                )
+                                @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="col-md-7 col-sm-5">
+                        </div>
+                    </div>
+
+                    <hr style="margin-top:45px;color:orangered;" />
+                    <div class="row" style="margin-top:12px;">
+                        <div class="col-md-6 col-sm-12">
+                            <input type="submit" class="btn btn-success form-command-btn" value="ذخیره" style="float:right;" />
+                        </div>
+                        <div class="col-md-6 col-sm-12">
+                            <a href=@Url.Action("Index", "ExamResource", new { Area = "Admin" }) class="btn btn-danger form-command-btn" style="float: left;">بازگشت</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+    
+    <script>
+    $(document).ready(function () {
+
+        var ddl = $("#Type").data("kendoDropDownList");
+
+        ddl.bind("change", function () {
+            toggleDownloadField();
+        });
+
+        toggleDownloadField();
+
+        function toggleDownloadField() {
+            var value = ddl.value();
+
+            if (value == "2") {
+                $("#downloadRow").show();
+            } else {
+                $("#downloadRow").hide();
+                $("#DownloadLink").val("");
+            }
+        }
+    });
+
+           $(document).on("input", ".price-input", function () {
+        let value = $(this).val();
+
+        value = value.replace(/[^0-9.]/g, "");
+
+        let parts = value.split(".");
+        if (parts.length > 2) {
+            value = parts[0] + "." + parts[1];
+        }
+
+        let integer = parts[0].replace(/,/g, "");
+        let decimal = parts.length > 1 ? "." + parts[1] : "";
+
+        if (integer) {
+            integer = Number(integer).toLocaleString();
+        }
+
+        $(this).val(integer + decimal);
+    });
+
+</script>

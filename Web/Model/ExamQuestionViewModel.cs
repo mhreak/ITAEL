@@ -32,6 +32,8 @@ namespace Web.Model
 
         [Display(Name = "ترتیب سوال")]
         [Required(ErrorMessage = "این فیلد الزامی است")]
+        [Range(0, int.MaxValue, ErrorMessage = "عدد باید ۰ یا بزرگتر باشد.")]
+
         public int QuestionOrder { get; set; }
 
         public List<ExamQuestionOptionViewModel>? ExamQuestionOptionViewModelList { get; set; }

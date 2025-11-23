@@ -1,12 +1,15 @@
-﻿using System;
-using Web.Model;
-using AutoMapper;
-using DbEntities;
-using System.Linq;
+﻿using AutoMapper;
 using DbConnection;
-using Web.Service.Interface;
-using System.Collections.Generic;
+using DbEntities;
+using MD.PersianDateTime;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Dynamic.Core;
+
+using Web.Model;
+using Web.Service.Interface;
 
 namespace Web.Service
 {
@@ -142,6 +145,82 @@ namespace Web.Service
 
             _mapper.Map(dbModelList, uiModelList);
 
+            return uiModelList;
+        }
+
+        public IList<Skill_ExamResource_ViewModel> GetAllFiltered(string filterSkillId,
+                                                                  string filterExamResourceId,
+                                                                  string filterInsertDateFrom,
+                                                                  string filterInsertDateTo,
+                                                                  int currentPage,
+                                                                  int pageSize,
+                                                                  out int totalRecord)
+        {
+            string whereStr = "ExamResourceId > 0 AND SkillId > 0";
+
+            if (!string.IsNullOrEmpty(filterSkillId))
+            {
+                whereStr += " AND SkillId = " + filterSkillId;
+            }
+
+            if (!string.IsNullOrEmpty(filterExamResourceId))
+            {
+                whereStr += " AND ExamResourceId = " + filterExamResourceId;
+            }
+
+            DateTime? insertDateFromMiladi = null;
+            if (!string.IsNullOrEmpty(filterInsertDateFrom))
+            {
+                filterInsertDateFrom =
+                    filterInsertDateFrom.Replace("۰", "0")
+                                        .Replace("۱", "1")
+                                        .Replace("۲", "2")
+                                        .Replace("۳", "3")
+                                        .Replace("۴", "4")
+                                        .Replace("۵", "5")
+                                        .Replace("۶", "6")
+                                        .Replace("۷", "7")
+                                        .Replace("۸", "8")
+                                        .Replace("۹", "9");
+                PersianDateTime shamsiInsertDateFrom = PersianDateTime.Parse(filterInsertDateFrom);
+                insertDateFromMiladi = shamsiInsertDateFrom.ToDateTime();
+                whereStr += " AND InsertDate >= @0";
+            }
+
+            DateTime? insertDateToMiladi = null;
+            if (!string.IsNullOrEmpty(filterInsertDateTo))
+            {
+                filterInsertDateTo =
+                    filterInsertDateTo.Replace("۰", "0")
+                                      .Replace("۱", "1")
+                                      .Replace("۲", "2")
+                                      .Replace("۳", "3")
+                                      .Replace("۴", "4")
+                                      .Replace("۵", "5")
+                                      .Replace("۶", "6")
+                                      .Replace("۷", "7")
+                                      .Replace("۸", "8")
+                                      .Replace("۹", "9");
+                PersianDateTime shamsiInsertDateTo = PersianDateTime.Parse(filterInsertDateTo);
+                insertDateToMiladi = shamsiInsertDateTo.ToDateTime();
+
+                insertDateToMiladi = insertDateToMiladi.Value.AddHours(23).AddMinutes(59).AddSeconds(59).AddMilliseconds(999);
+
+                whereStr += " AND InsertDate <= @1";
+            }
+
+            var dbModelList = new List<Skill_ExamResource>();
+
+            dbModelList = _table.Include(x => x.ExamResource).Where(whereStr, insertDateFromMiladi, insertDateToMiladi).ToList();
+
+            totalRecord = dbModelList.Count();
+
+            dbModelList = dbModelList
+                          .OrderByDescending(x => x.InsertDate)
+                          .Skip((currentPage - 1) * pageSize).Take(pageSize).ToList();
+
+            var uiModelList = new List<Skill_ExamResource_ViewModel>();
+            _mapper.Map(dbModelList, uiModelList);
             return uiModelList;
         }
     }

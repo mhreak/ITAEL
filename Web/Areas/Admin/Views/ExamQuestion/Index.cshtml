@@ -77,7 +77,10 @@
 
                                 command.Custom("حذف").Click("deleteRow").HtmlAttributes(new { @class = "command-btn-red" });
 
-                                command.Custom("نمایش گزینه ها").Click("showQuestionOptionRow").HtmlAttributes(new { @class = "command-btn-blue" });
+                                command.Custom("نمایش گزینه ها")
+                                       .Click("showQuestionOptionRow")
+                                       .HtmlAttributes(new { @class = "command-btn-blue" })
+                                       .Visible("function(dataItem) { return dataItem.Type != 2; }");
 
                             }).Width(400);
                         })
@@ -110,9 +113,9 @@
             </a>
         </div>
         <div class="col-xs-6 col-sm-6 col-md-6 text-left">
-            @* <a href="@Url.Action("Index", "Dashboard")" class="btn btn-info form-command-btn" style="float:left;">
+            <a href="@Url.Action("Index", "Exam")" class="btn btn-info form-command-btn" style="float:left;">
             <span class="btn-label"><i class="fa fa-reply"></i><span>&nbsp;</span>بازگشت</span>
-            </a> *@
+            </a>
         </div>
     </div>
 </div>
@@ -139,12 +142,29 @@
     }
 
     function deleteRow(e) {
+        e.preventDefault();
         var dataItem = this.dataItem(jQuery(e.currentTarget).closest("tr"));
+
+        showConfirmModalMessage(
+            "danger",
+            "عملیات حذف",
+            "آیا از حذف اطمینان دارید؟",
+            "انصراف",
+            "حذف",
+            "danger",
+            "Confirm",
+            dataItem.ExamQuestionId,
+            "Cancel",
+            null
+        );
+    }
+
+    function Confirm(examQuestionId) {
         $.ajax({
             url: '/Admin/ExamQuestion/Delete',
             type: "GET",
             data: {
-                id: dataItem.ExamQuestionId
+                id: examQuestionId
             }
         }).done(function (dresult) {
             if (dresult == true) {
@@ -155,10 +175,16 @@
             else {
                 showSimpleModalMessage('danger', 'خطا', 'امکان حذف این اطلاعات وجود ندارد', '');
             }
-        })
+        }).fail(function (xhr) {
+            showSimpleModalMessage('danger', 'خطا', 'در ارسال درخواست خطا رخ داد: ' + (xhr.responseText || xhr.statusText), '');
+        });
     }
 
-        function showQuestionOptionRow(e) {
+    function Cancel(x) {
+
+    }
+
+    function showQuestionOptionRow(e) {
         e.preventDefault();
         var dataItem = this.dataItem(jQuery(e.currentTarget).closest("tr"));
         window.location.href = "/Admin/ExamQuestionOption/Index/" + dataItem.ExamQuestionId;

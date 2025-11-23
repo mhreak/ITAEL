@@ -144,6 +144,18 @@ namespace Web.Service
             return uiModel;
         }
 
+        public IList<ApplicantViewModel> GetAll()
+        {
+
+            var dbModel = _table.ToList();
+
+            var uiModel = new List<ApplicantViewModel>();
+
+            _mapper.Map(dbModel, uiModel);
+
+            return uiModel;
+        }
+
         public IList<ApplicantViewModel> GetAllFiltered(
             string filterFirstName, string filterLastName,
             string filterFullName, string filterGender, string filterNationalCode,
@@ -175,12 +187,12 @@ namespace Web.Service
 
             if (!String.IsNullOrEmpty(filterNationalCode))
             {
-                whereStr += " AND NationalCode.Equals(@3)";
+                whereStr += " AND NationalCode.Contains(@3)";
             }
 
             if (!String.IsNullOrEmpty(filterMobile))
             {
-                whereStr += " AND Mobile.Equals(@4)";
+                whereStr += " AND Mobile.Contains(@4)";
             }
 
             DateTime? birthDateFromMiladi = null;

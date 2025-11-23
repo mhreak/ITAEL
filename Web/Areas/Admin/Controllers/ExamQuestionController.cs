@@ -1,10 +1,9 @@
 ﻿using Kendo.Mvc.UI;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using Web.Controllers;
 using Web.Model;
-using Web.Service;
+using Microsoft.AspNetCore.Authorization;
 using Web.Service.Interface;
 
 namespace Web.Areas.Admin.Controllers
@@ -53,13 +52,13 @@ namespace Web.Areas.Admin.Controllers
         [HttpGet]
         [Route("Create/{examId}")]
         public IActionResult Create(int examId)
-        {
+        {   
             var examViewModel = examService.Get(examId);
 
             if (examViewModel == null)
             {
                 ShowDangerToast("", "آزمون یافت نشد.");
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", new { examId = examId });
             }
 
             ViewBag.ExamId = examId;
@@ -67,9 +66,9 @@ namespace Web.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        [Route("Create")]
+        [Route("Create/{examId}")]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(ExamQuestionViewModel model)
+        public IActionResult Create(ExamQuestionViewModel model, int examId)
         {
             if (ModelState.IsValid)
             {
@@ -77,7 +76,7 @@ namespace Web.Areas.Admin.Controllers
                 {
                     ShowSuccessToast("عملیات انجام شد", "اطلاعات با موفقیت ذخیره شد");
 
-                    return RedirectToAction("Index");
+                    return RedirectToAction("Index", new { examId = examId });
                 }
                 else
                 {
@@ -93,6 +92,8 @@ namespace Web.Areas.Admin.Controllers
 
                 ShowDangerToast(null, "اطلاعات واردشده معتبر نیست");
             }
+
+            ViewBag.ExamId = examId;
             return View(model);
         }
 
@@ -100,14 +101,21 @@ namespace Web.Areas.Admin.Controllers
         [Route("Edit/{id}")]
         public IActionResult Edit(int id)
         {
-            var model = examQuestionService.Get(id);
-            return View(model);
+            var examQuestionViewModel = examQuestionService.Get(id);
+
+            if (examQuestionViewModel == null)
+            {
+                ShowDangerToast("", "سوال آزمون یافت نشد.");
+                return RedirectToAction("Index", new { examId = id });
+            }
+
+            return View(examQuestionViewModel);
         }
 
         [HttpPost]
         [Route("Edit/{id}")]
         [ValidateAntiForgeryToken]
-        public virtual ActionResult Edit(ExamQuestionViewModel model)
+        public IActionResult Edit(ExamQuestionViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -115,7 +123,7 @@ namespace Web.Areas.Admin.Controllers
                 {
                     ShowSuccessToast("عملیات انجام شد", "اطلاعات با موفقیت ذخیره شد");
 
-                    return RedirectToAction("Index");
+                    return RedirectToAction("Index", new { examId = model.ExamId });
                 }
                 else
                 {

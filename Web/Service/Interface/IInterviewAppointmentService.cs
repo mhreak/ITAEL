@@ -16,6 +16,8 @@ namespace Web.Service.Interface
 
         IList<InterviewAppointmentViewModel> GetAllFiltered(string filterJobAnnouncementId,
                                                             string filterApplicantId,
+                                                            string filterApplicantFirstName,
+                                                            string filterApplicantLastName,
                                                             string filterStatus,
                                                             string filterInsertDateFrom,
                                                             string filterInsertDateTo,

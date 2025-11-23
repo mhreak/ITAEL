@@ -79,6 +79,12 @@ namespace Web.Service
         public string Get(string settingKey)
         {
             var dbModel = _table.Where(x => x.SettingKey == settingKey).FirstOrDefault();
+
+            if (dbModel == null)
+            {
+                return null;
+            }
+
             var uiModel = new SettingViewModel();
             _mapper.Map(dbModel, uiModel);
             return uiModel.SettingValue;

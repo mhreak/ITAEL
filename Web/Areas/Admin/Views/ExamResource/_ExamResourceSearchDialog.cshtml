@@ -1,0 +1,109 @@
+﻿<script>
+    $("body").on("click", ".exam-filter-grid .k-checkbox", FilterExamResourceGridOnRowClick);
+
+    var selectedExamResourceId = 0;
+    var selectedResourceName = "";
+
+
+    var getExamResourceFilterDataParams = function (e) {
+        var result = {
+            filterResourceName: $('#FilterResourceNameDialog').val(),
+        }
+
+        return result;
+    };
+
+    function filterExamResourceData() {
+        $("#ExamResource_Filter_Grid").data("kendoGrid").dataSource.read();
+    }
+
+    function FilterExamResourceGridOnRowClick(e) {
+        selectedExamResourceId = 0;
+        selectedResourceName = "";
+        var grid = $("#ExamResource_Filter_Grid").data("kendoGrid");
+        var row = $(e.target).closest("tr");
+
+        if (row.hasClass("k-state-selected")) {
+            grid.clearSelection();
+            grid.select(row);
+            selectedExamResourceId = grid.dataItem(row).ExamResourceId;
+
+            if (grid.dataItem(row).ResourceName != null && grid.dataItem(row).ResourceName != '' && grid.dataItem(row).ResourceName != ' ') {
+                selectedResourceName = grid.dataItem(row).ResourceName;
+            }
+        }
+    }
+
+    function selectExamResource() {
+        if (selectedExamResourceId != 0) {
+            $('#' + '@ViewBag.DisplayElementId').val(selectedResourceName);
+            $('#clearExamResourceFilterLink').show();
+            $('#' + '@ViewBag.ValueElementId').val(selectedExamResourceId).trigger('change');
+            closeModalDialog();
+        }
+    }
+
+    $(document).ready(function () {
+        $('.k-grid-content').css("height", "271px");
+    });
+</script>
+<div>
+    <div style="text-align:center">
+        <div class="modal-dialog-title">جستجوی آزمون ها</div>
+    </div>
+
+    <div style="padding:20px;">
+        <div class="row">
+            <div class="col-md-6 col-sm-12">
+                <div class="row form-group">
+                    @Html.Label(null, "نام منبع آزمون", htmlAttributes: new { @class = "control-label col-md-3 col-sm-12 modal-dialog-label", style = "text-align:right;" })
+                    <div class="col-md-9 col-sm-12">
+                        @Html.Editor("FilterResourceNameDialog", new { htmlAttributes = new { @class = "modal-dialog-editor" } })
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div style="margin-top:10px;">
+            <a class="btn btn-info" style="float:left;box-shadow:none;" onclick="filterExamResourceData()">فیلتر اطلاعات</a>
+        </div>
+        <div class="k-rtl exam-filter-grid" style="margin-top:48px;">
+            <div id="report-grid" style="height:100%;">
+                @(Html.Kendo().Grid<Web.Model.ExamResourceViewModel>().Name("ExamResource_Filter_Grid").Columns(columns =>
+                                {
+                                    columns.Select().Width(50).ClientHeaderTemplate(" ");
+                                    columns.Bound(c => c.ResourceName);
+                                })
+                                .HtmlAttributes(new { style = "height: 370px;" })
+                                .Filterable(ftb => ftb.Mode(GridFilterMode.Menu))
+                                .Scrollable()
+                                .Sortable()
+                                .Pageable(pageable => pageable
+                                .Refresh(true)
+                                .PageSizes(true)
+                                .ButtonCount(5))
+                                .DataSource(dataSource => dataSource
+                                .Ajax()
+                                .Model(model =>
+                                {
+                                    model.Id(p => p.ExamResourceId);
+                                })
+                                .Read(read => read.Action("Grid_Data_Read", "ExamResource", new { Area = "Admin" }).Data("getExamResourceFilterDataParams"))
+                                .PageSize(20)
+
+                                ))
+            </div>
+        </div>
+        <div class="row" style="margin-top:20px;">
+            <div class="col-xs-6 col-sm-6 col-md-6">
+                <a onclick="selectExamResource()" class="btn btn-success form-command-btn">
+                    <span><i class="fa fa-check"></i><span>&nbsp;</span>انتخاب</span>
+                </a>
+            </div>
+            <div class="col-xs-6 col-sm-6 col-md-6 text-left">
+                <button type="button" class="btn btn-danger form-command-btn" style="float:left;" data-bs-dismiss="modal">
+                    <span class="btn-label"><i class="fa fa-reply"></i><span>&nbsp;</span>لغو</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

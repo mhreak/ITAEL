@@ -6,9 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Dynamic.Core;
-
 using MD.PersianDateTime;
-
 using Web.Model;
 using Web.Service.Interface;
 
@@ -33,6 +31,8 @@ namespace Web.Service
         {
             var dbModel = new ExamResource();
             _mapper.Map(source: uiModel, destination: dbModel);
+
+            dbModel.InsertDate = DateTime.Now;
 
             _table.Add(dbModel);
 
@@ -104,6 +104,23 @@ namespace Web.Service
             return uiModel;
         }
 
+        public IList<ExamResourceViewModel> GetAll()
+        {
+            
+            var dbModel = _table.ToList();
+
+            if (dbModel == null)
+            {
+                return null;
+            }
+
+            var uiModel = new List<ExamResourceViewModel>();
+
+            _mapper.Map(dbModel, uiModel);
+
+            return uiModel;
+        }
+
         public IList<ExamResourceViewModel> GetAllFiltered(string filterResourceName, string filterDescription,
                                                            string filterType, string filterPriceFrom, string filterPriceTo,
                                                            string filterInsertDateFrom, string filterInsertDateTo,
@@ -126,13 +143,17 @@ namespace Web.Service
                 whereStr += " AND Type = " + filterType;
             }
 
+            int? priceFrom = null;
             if (!string.IsNullOrEmpty(filterPriceFrom))
             {
+                priceFrom = int.Parse(filterPriceFrom);
                 whereStr += " AND Price >= @2";
             }
 
+            int? priceTo = null;
             if (!string.IsNullOrEmpty(filterPriceTo))
             {
+                priceTo = int.Parse(filterPriceTo);
                 whereStr += " AND Price <= @3";
             }
 
@@ -180,9 +201,8 @@ namespace Web.Service
 
             var dbModelList = new List<ExamResource>();
 
-            dbModelList = _table.Where(whereStr, filterResourceName, filterDescription,
-                                       filterType, filterPriceFrom, filterPriceTo, 
-                                       filterInsertDateFrom, filterInsertDateTo).ToList();
+            dbModelList = _table.Where(whereStr, filterResourceName, filterDescription, priceFrom, priceTo,
+                                       insertDateFromMiladi, insertDateToMiladi).ToList();
 
             totalRecord = dbModelList.Count();
 

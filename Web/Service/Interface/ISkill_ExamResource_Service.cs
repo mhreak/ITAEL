@@ -18,5 +18,13 @@ namespace Web.Service.Interface
         IList<Skill_ExamResource_ViewModel> GetAllByExamResourceId(int examResourceId);
 
         IList<Skill_ExamResource_ViewModel> GetAllBySkillId(int skillId);
+
+        IList<Skill_ExamResource_ViewModel> GetAllFiltered(string filterSkillId,
+                                                           string filterExamResourceId,
+                                                           string filterInsertDateFrom,
+                                                           string filterInsertDateTo,
+                                                           int currentPage,
+                                                           int pageSize,
+                                                           out int totalRecord);
     }
 }

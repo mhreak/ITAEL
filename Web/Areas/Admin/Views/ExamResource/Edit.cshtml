@@ -1,0 +1,139 @@
+﻿@model Web.Model.ExamResourceViewModel
+
+@{
+    ViewData["PageTitle"] = "ویرایش منبع آزمون";
+}
+
+<div style="margin-top:-14px;">
+    @using (Html.BeginForm(null, null, FormMethod.Post, new { name = "my-form", id = "my-form" }))
+    {
+        @Html.HiddenFor(model => model.ExamResourceId)
+
+        <div class="container-card padding30" style="padding-top:45px;">
+            <div class="form-horizontal">
+                <div class="row form-group" style="margin-top:30px;">
+                    @Html.LabelFor(model => model.ResourceName, htmlAttributes: new { @class = "control-label col-md-2 col-sm-3 form-input-label" })
+                    <div class="col-md-3 col-sm-4">
+                        @Html.EditorFor(model => model.ResourceName)
+                        @Html.ValidationMessageFor(model => model.ResourceName, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-md-7 col-sm-5">
+                        <span style="color:red;font-size:20px;">*</span>
+                    </div>
+                </div>
+
+                <div class="row form-group" style="margin-top:30px;">
+                    @Html.LabelFor(model => model.Type, htmlAttributes: new { @class = "control-label col-md-2 col-sm-3 form-input-label" })
+                    <div class="col-md-3 col-sm-4">
+                        @(Html.Kendo().DropDownListFor(m => m.Type)        
+                              .DataTextField("Text")
+                              .DataValueField("Value")
+                              .OptionLabel("فیزیکی  / مجازی")
+                              .HtmlAttributes(new { style = "width: 100%" })
+                              .BindTo(new List<SelectListItem>() {
+                                 new SelectListItem() { Text = "فیزیکی", Value = "1" },
+                                 new SelectListItem() { Text = "مجازی",  Value = "2" }
+                              })
+                              .Value(Model.Type.ToString())                
+                        )
+                        @Html.ValidationMessageFor(model => model.Type, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-md-7 col-sm-5">
+                        <span style="color:red;font-size:20px;">*</span>
+                    </div>
+                </div>
+
+                <div class="row form-group" id="downloadRow" style="margin-top:30px;">
+                    @Html.LabelFor(model => model.DownloadLink, htmlAttributes: new { @class = "control-label col-md-2 col-sm-3 form-input-label" })
+                    <div class="col-md-3 col-sm-4">
+                        @Html.TextBoxFor(m => m.DownloadLink, new { @id = "DownloadLink", @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.DownloadLink, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-md-7 col-sm-5">
+                        <span style="color:red;font-size:20px;">*</span>
+                    </div>
+                </div>
+                
+                <div class="row form-group" style="margin-top:30px;">
+                    @Html.LabelFor(model => model.Price, htmlAttributes: new { @class = "control-label col-md-2 col-sm-3 form-input-label" })
+                    <div class="col-md-3 col-sm-4">
+                        @Html.EditorFor(model => model.Price)
+                        @Html.ValidationMessageFor(model => model.Price, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="row form-group" style="margin-top:30px;">
+                    @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2 col-sm-3 form-input-label" })
+                    <div class="col-md-8 col-sm-12 col-12">
+                        <div class="col-12 k-rtl" style="margin-top:22px;">
+                            @(Html.Kendo().EditorFor(model => model.Description)
+                                  .HtmlAttributes(new { style = "width: 100%; height:360px;font-family:'IranSans';", aria_label = "editor" })
+                                  .Encoded(false)
+                                  .Tools(tools => tools
+                                                  .Clear()
+                                                  .Bold().Italic().Underline()
+                                                  .JustifyLeft().JustifyCenter().JustifyRight().JustifyFull()
+                                                  .InsertOrderedList()
+                                                  .InsertUnorderedList()
+                                                  .Outdent().Indent()
+                                                  .CreateLink().Unlink()
+                                                  .FontSize()
+                                  )
+                            )
+                            @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="col-md-7 col-sm-5">
+                    </div>
+                </div>
+                <hr style="margin-top:45px;color:orangered;" />
+                <div class="row" style="margin-top:12px;">
+                    <div class="col-md-6 col-sm-12">
+                        <input type="submit" class="btn btn-success form-command-btn" value="ذخیره" style="float:right;" />
+                    </div>
+                    <div class="col-md-6 col-sm-12">
+                        <a href=@Url.Action("Index", "ExamResource", new { Area = "Admin" }) class="btn btn-danger form-command-btn" style="float: left;">بازگشت</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<script>
+    $(document).ready(function () {
+        var ensureDdl = function () {
+            var ddl = $("#Type").data("kendoDropDownList");
+            if (!ddl) {
+                setTimeout(ensureDdl, 50);
+                return;
+            }
+
+            ddl.bind("change", function () {
+                toggleDownloadField(ddl.value());
+            });
+
+            var initialVal = ddl.value();
+            if (!initialVal) {
+                initialVal = "@(Model.Type.ToString())";
+            }
+
+            toggleDownloadField(initialVal);
+        };
+
+        function toggleDownloadField(value) {
+            value = (value || "").toString().trim();
+
+            if (value === "2") {
+                $("#downloadRow").show();
+                $("#DownloadLink").prop("required", true);
+            } else {
+                $("#downloadRow").hide();
+                $("#DownloadLink").prop("required", false);
+            }
+        }
+
+        ensureDdl();
+    });
+</script>

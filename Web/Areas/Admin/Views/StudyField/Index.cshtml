@@ -71,7 +71,8 @@
                 columns.Command(command =>
                 {
                     command.Custom("ویرایش").Click("editRow").HtmlAttributes(new { @class = "command-btn-yellow" });
-                    command.Custom("حذف").Click("deleteRow").HtmlAttributes(new { @class = "command-btn-red" });
+                        command.Custom("حذف").Click("deleteRow").HtmlAttributes(new { @class = "command-btn-red" });
+                        command.Custom("لیست منابع").Click("examResourceRow").HtmlAttributes(new { @class = "command-btn-blue" });
                 }).Width(400);
             })
             .HtmlAttributes(new { style = "height: 550px;border-radius:0.25rem;" })
@@ -146,5 +147,11 @@
                 showSimpleModalMessage('danger', 'خطا', 'امکان حذف این اطلاعات وجود ندارد', '');
             }
         })
+    }
+
+        function examResourceRow(e) {
+        e.preventDefault();
+        var dataItem = this.dataItem(jQuery(e.currentTarget).closest("tr"));
+        window.location.href = "/Admin/StudyField_ExamResource_/Index/" + dataItem.StudyFieldId;
     }
 </script>

@@ -145,15 +145,30 @@ public class CollaboratorService : ICollaboratorService
         return uiModel;
     }
 
-    public IList<CollaboratorViewModel> GetAllFiltered(
-        string filterReferralCodeName, string filterActive,
-        int currentPage, int pageSize, out int totalRecord)
+    public IList<CollaboratorViewModel> GetAllFiltered(string filterFirstName, string filterLastName,
+                                                       string filterPhoneNumber, string filterReferralCode, 
+                                                       string filterActive, int currentPage, int pageSize, out int totalRecord)
     {
-        string whereStr = "ReferralCodeId > 0 ";
+        string whereStr = "CollaboratorId > 0 ";
 
-        if (!String.IsNullOrEmpty(filterReferralCodeName))
+        if (!String.IsNullOrEmpty(filterFirstName))
         {
-            whereStr += " AND ReferralCodeName.Contains(@0)";
+            whereStr += " AND FirstName.Contains(@0)";
+        }
+
+        if (!String.IsNullOrEmpty(filterLastName))
+        {
+            whereStr += " AND LastName.Contains(@1)";
+        }
+
+        if (!String.IsNullOrEmpty(filterPhoneNumber))
+        {
+            whereStr += " AND PhoneNumber.Equals(@2)";
+        }
+
+        if (!String.IsNullOrEmpty(filterReferralCode))
+        {
+            whereStr += " AND ReferralCode.Contains(@3)";
         }
 
         if (!String.IsNullOrEmpty(filterActive))
@@ -204,7 +219,8 @@ public class CollaboratorService : ICollaboratorService
 
         var dbModelList = new List<Collaborator>();
 
-        dbModelList = _table.Where(whereStr, filterReferralCodeName).ToList();
+        dbModelList = _table.Where(whereStr, filterFirstName, filterLastName,
+                                   filterPhoneNumber, filterReferralCode).ToList();
 
         totalRecord = dbModelList.Count();
 

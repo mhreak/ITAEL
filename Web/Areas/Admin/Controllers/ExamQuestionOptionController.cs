@@ -1,22 +1,33 @@
-﻿using Web.Model;
-using System.Linq;
+﻿using DbEntities;
 using Kendo.Mvc.UI;
-using Web.Controllers;
-using Web.Service.Interface;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System.Linq;
+using Web.Controllers;
+using Web.Model;
+using Web.Service.Interface;
 
 namespace Web.Areas.Admin.Controllers
 {
     [Area("Admin")]
     [Route("Admin/[controller]")]
     [Authorize(Roles = "Manager,Admin")]
-    public class ExamQuestionOptionController(IExamQuestionOptionService examQuestionOptionService) : BaseController
+    public class ExamQuestionOptionController(IExamQuestionOptionService examQuestionOptionService, IExamQuestionService examQuestionService) : BaseController
     {
         [Route("Index/{examQuestionId}")]
         public IActionResult Index(int examQuestionId)
         {
+            var examQuestionViewModel = examQuestionService.Get(examQuestionId);
+
+            if (examQuestionViewModel == null)
+            {
+                ShowDangerToast("", "سوال آزمون یافت نشد.");
+            }
+
+            ViewBag.ExamId = examQuestionViewModel.ExamId;
             ViewBag.ExamQuestionId = examQuestionId;
+            ViewBag.ExamQuestionOrder = examQuestionViewModel.QuestionOrder;
+            ViewBag.ExamTitle = examQuestionViewModel.ExamTitle;
             return View();
         }
 
@@ -39,28 +50,48 @@ namespace Web.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        [Route("Create")]
-        public IActionResult Create()
+        [Route("Create/{examQuestionId}")]
+        public IActionResult Create(int examQuestionId)
         {
+            var examViewModel = examQuestionService.Get(examQuestionId);
+
+            if (examViewModel == null)
+            {
+                ShowDangerToast("", "آزمون یافت نشد.");
+                return RedirectToAction("Index", new { examQuestionId = examQuestionId });
+            }
+
+            ViewBag.ExamQuestionId = examQuestionId;
             return View();
         }
 
         [HttpPost]
-        [Route("Create")]
+        [Route("Create/{examQuestionId}")]
         [ValidateAntiForgeryToken]
-        public virtual ActionResult Create(ExamQuestionOptionViewModel model)
+        public IActionResult Create(ExamQuestionOptionViewModel model, int examQuestionId)
         {
             if (ModelState.IsValid)
             {
+                if (model.IsCorrectAnswer)
+                {
+                    var examQuestionOptionViewModel = examQuestionOptionService.GetCorrectAnswerByExamQuestionId(examQuestionId);
+
+                    if (examQuestionOptionViewModel != null)
+                    {
+                        ShowSuccessToast(null, "قبلا گزینه صحیح انتخاب شده است.");
+                        return RedirectToAction("Index", new { examQuestionId = model.ExamQuestionId });
+                    }
+                }
+                
                 if (examQuestionOptionService.Add(model) != -1)
                 {
                     ShowSuccessToast("عملیات انجام شد", "اطلاعات با موفقیت ذخیره شد");
-
-                    return RedirectToAction("Index");
+                    return RedirectToAction("Index", new { examQuestionId = examQuestionId });
                 }
                 else
                 {
                     ShowDangerToast(null, "خطا هنگام ذخیره اطلاعات");
+                    return RedirectToAction("Index", new { examQuestionId = model.ExamQuestionId });
                 }
             }
             else
@@ -72,6 +103,8 @@ namespace Web.Areas.Admin.Controllers
 
                 ShowDangerToast(null, "اطلاعات واردشده معتبر نیست");
             }
+
+            ViewBag.ExamQuestionId = examQuestionId;
             return View(model);
         }
 
@@ -79,22 +112,39 @@ namespace Web.Areas.Admin.Controllers
         [Route("Edit/{id}")]
         public IActionResult Edit(int id)
         {
-            var model = examQuestionOptionService.Get(id);
-            return View(model);
+            var examQuestionOptionViewModel = examQuestionOptionService.Get(id);
+
+            if (examQuestionOptionViewModel == null)
+            {
+                ShowDangerToast("", "گزینه سوال آزمون یافت نشد.");
+                return RedirectToAction("Index", new { examQuestionId = id });
+            }
+            return View(examQuestionOptionViewModel);
         }
 
         [HttpPost]
         [Route("Edit/{id}")]
         [ValidateAntiForgeryToken]
-        public virtual ActionResult Edit(ExamQuestionOptionViewModel model)
+        public IActionResult Edit(ExamQuestionOptionViewModel model)
         {
             if (ModelState.IsValid)
             {
+                if (model.IsCorrectAnswer)
+                {
+                    var examQuestionOptionViewModel = examQuestionOptionService.GetCorrectAnswerByExamQuestionId(model.ExamQuestionId);
+
+                    if (examQuestionOptionViewModel != null)
+                    {
+                        ShowWarningToast(null, "قبلا گزینه صحیح انتخاب شده است.");
+                        return RedirectToAction("Index", new { examQuestionId = model.ExamQuestionId });
+                    }
+                }
+
                 if (examQuestionOptionService.Edit(model))
                 {
                     ShowSuccessToast("عملیات انجام شد", "اطلاعات با موفقیت ذخیره شد");
 
-                    return RedirectToAction("Index");
+                    return RedirectToAction("Index", new { examQuestionId = model.ExamQuestionId });
                 }
                 else
                 {
@@ -110,6 +160,7 @@ namespace Web.Areas.Admin.Controllers
 
                 ShowDangerToast(null, "اطلاعات واردشده معتبر نیست");
             }
+
             return View(model);
         }
 

@@ -1,0 +1,54 @@
+﻿@model Web.Model.JobAnnouncementViewModel
+
+<style>
+    .footer-drawer-item-title {
+        text-align: center;
+        font-weight: bold;
+        color: #193A60;
+        font-family: IranSans;
+        font-size: 16px;
+        margin-top: 10px;
+    }
+</style>
+<div class="row" style="margin-top:30px;">
+    <div class="col-md-2 col-sm-6 col-xs-6" style="text-align:center;padding:30px;padding-top:0px;">
+        <a href=@Url.Action("Edit", "JobAnnouncement", new { Area = "Admin", id = Model.JobAnnouncementId })>
+            <div style="border:1px #ddd solid;border-radius:12px;">
+                <div style="padding:20px;">
+                    <img src="/image/edit-icon.png" style="width:50px;height:50px;margin-top:10px;" />
+                </div>
+                <div style="border-top:1px #ddd solid;margin-top:14px;"><h4 class="footer-drawer-item-title">ویرایش</h4></div>
+            </div>
+        </a>
+    </div>
+    <div class="col-md-2 col-sm-6 col-xs-6" style="text-align:center;padding:30px;padding-top:0px;">
+        <a href=@Url.Action("Index", "InterviewAppointment", new { Area = "Admin", jobAnnouncementId = Model.JobAnnouncementId })>
+            <div style="border:1px #ddd solid;border-radius:12px;">
+                <div style="padding:20px;">
+                    <img src="/image/interview-appointment-icon.png" style="width:50px;height:50px;margin-top:10px;" />
+                </div>
+                <div style="border-top:1px #ddd solid;margin-top:14px;"><h4 class="footer-drawer-item-title">نمایش قرار های مصاحبه</h4></div>
+            </div>
+        </a>
+    </div>
+    <div class="col-md-2 col-sm-6 col-xs-6" style="text-align:center;padding:30px;padding-top:0px;">
+        <a href=@Url.Action("Index", "JobAnnouncement_Exam_", new { Area = "Admin", jobAnnouncementId = Model.JobAnnouncementId })>
+            <div style="border:1px #ddd solid;border-radius:12px;">
+                <div style="padding:20px;">
+                    <img src="/image/exam-icon.png" style="width:50px;height:50px;margin-top:10px;" />
+                </div>
+                <div style="border-top:1px #ddd solid;margin-top:14px;"><h4 class="footer-drawer-item-title">نمایش آزمون ها</h4></div>
+            </div>
+        </a>
+    </div>
+    <div class="col-md-2 col-sm-6 col-xs-6" style="text-align:center;padding:30px;padding-top:0px;">
+        <a href=@Url.Action("Index", "JobAnnouncement_ExamResource_", new { Area = "Admin", jobAnnouncementId = Model.JobAnnouncementId })>
+            <div style="border:1px #ddd solid;border-radius:12px;">
+                <div style="padding:20px;">
+                    <img src="/image/exam-resource-icon.png" style="width:50px;height:50px;margin-top:10px;" />
+                </div>
+                <div style="border-top:1px #ddd solid;margin-top:14px;"><h4 class="footer-drawer-item-title">نمایش منابع آزمون</h4></div>
+            </div>
+        </a>
+    </div>
+</div>
