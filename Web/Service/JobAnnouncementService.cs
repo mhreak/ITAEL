@@ -92,15 +92,31 @@ namespace Web.Service
         {
             if (id == 0) { return null; }
 
-            var dbModel = _table.
-                Where(x => x.JobAnnouncementId == id)
-                .FirstOrDefault();
+            var dbModel = _table
+                          .Where(x => x.IsDeleted == false && x.Active)
+                          .Include(x => x.City)
+                          .Include(x => x.Company)
+                .FirstOrDefault(x => x.JobAnnouncementId == id);
 
             var uiModel = new JobAnnouncementViewModel();
 
             _mapper.Map(dbModel, uiModel);
 
             return uiModel;
+        }
+
+        public List<JobAnnouncementViewModel> GetAllLast(int count)
+        {
+
+            var dbModelList = _table.Where(x => x.IsDeleted == false && x.Active).OrderByDescending(x => x.InsertDate)
+                                .Take(count)
+                                .ToList();
+
+            var uiModelList = new List<JobAnnouncementViewModel>();
+
+            _mapper.Map(dbModelList, uiModelList);
+
+            return uiModelList;
         }
 
         public IList<JobAnnouncementViewModel> GetAllFiltered(
@@ -112,7 +128,7 @@ namespace Web.Service
             string filterActive, string filterJobType, string filterJobTime,
             int currentPage, int pageSize, out int totalRecord)
         {
-            string whereStr = "JobAnnouncementId > 0 ";
+            string whereStr = "JobAnnouncementId > 0 AND IsDeleted = false AND Active = true";
 
             if (!String.IsNullOrEmpty(filterTitle))
             {
@@ -232,12 +248,16 @@ namespace Web.Service
 
             if (!String.IsNullOrEmpty(filterJobTime))
             {
-                whereStr += " AND JobTime = " + filterJobTime.ToLower();
+                whereStr += " AND JobTimeType = " + filterJobTime.ToLower();
             }
 
             var dbModelList = new List<JobAnnouncement>();
 
-            dbModelList = _table.Where(whereStr, filterTitle, filterPublishDateFrom, filterPublishDateTo,
+            dbModelList = _table
+                          .Where(x => x.IsDeleted == false && x.Active)
+                          .Include(x => x.City)
+                          .Include(x => x.Company)
+                          .Where(whereStr, filterTitle, filterPublishDateFrom, filterPublishDateTo,
                 filterExamDateFrom, filterExamDateTo).ToList();
 
             totalRecord = dbModelList.Count();
@@ -248,30 +268,6 @@ namespace Web.Service
 
             var uiModelList = new List<JobAnnouncementViewModel>();
             _mapper.Map(dbModelList, uiModelList);
-
-            PersianCalendar pc = new PersianCalendar();
-
-            foreach (var uiModelItem in uiModelList)
-            {
-                uiModelItem.ShamsiPublishDate = pc.GetYear((DateTime)uiModelItem.PublishDate).ToString("0000/") +
-                    pc.GetMonth((DateTime)uiModelItem.PublishDate).ToString("00/") +
-                    pc.GetDayOfMonth((DateTime)uiModelItem.PublishDate).ToString("00");
-
-                uiModelItem.ShamsiInsertDate = pc.GetYear(uiModelItem.InsertDate).ToString("0000/") +
-                    pc.GetMonth(uiModelItem.InsertDate).ToString("00/") +
-                    pc.GetDayOfMonth(uiModelItem.InsertDate).ToString("00");
-
-                if(uiModelItem.ExamDate != null)
-                {
-                    uiModelItem.ShamsiExamDate = pc.GetYear((DateTime)uiModelItem.ExamDate).ToString("0000/") +
-                    pc.GetMonth((DateTime)uiModelItem.ExamDate).ToString("00/") +
-                    pc.GetDayOfMonth((DateTime)uiModelItem.ExamDate).ToString("00");
-                }
-                else
-                {
-                    uiModelItem.ShamsiExamDate = "-";
-                }
-            }
 
             return uiModelList;
         }

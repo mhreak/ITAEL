@@ -22,14 +22,14 @@
              aria-labelledby="headingOne" data-bs-parent="#accordionExample">
             <div class="card-body">
                 <div class="row" style="margin-top:22px;">
-                    <div class="col-md-6 col-sm-12">
+                    @* <div class="col-md-6 col-sm-12">
                         <div class="row form-group">
                             @Html.Label(null, "نام منبع", htmlAttributes: new { @class = "form-input-label col-md-3 col-sm-12", style = "float:right;text-align:right;margin-top:8px;" })
                             <div class="col-md-6 col-sm-12">
                                 @Html.Editor("FilterResourceName")
                             </div>
                         </div>
-                    </div>
+                    </div> *@
 
                     <div class="col-md-6 col-sm-12">
                         <div class="row form-group">
@@ -177,7 +177,7 @@
             @(
                         Html.Kendo().Grid<ExamResourceOrderViewModel>().Name("Grid").Columns(columns =>
                         {
-                            columns.Bound(c => c.ResourceName).Width(250);
+                            columns.Bound(c => c.TotalPrice);
                             columns.Bound(c => c.ShamsiOrderDate).Width(250);
                             columns.Bound(c => c.ShamsiDeliveryDate).Width(250);
                             columns.Bound(c => c.StatusStr).Width(250);
@@ -187,9 +187,11 @@
 
                                 command.Custom("حذف").Click("deleteRow").HtmlAttributes(new { @class = "command-btn-red" });
 
+                                command.Custom("نمایش آیتم ها").Click("showItems").HtmlAttributes(new { @class = "command-btn-red" });
+
                             }).Width(400);
                         })
-                        .HtmlAttributes(new { style = "height: 550px;border-radius:0.25rem;" })
+                        .HtmlAttributes(new { style = "height: 550px;border-radius:5px;" })
                         .Filterable(ftb => ftb.Mode(GridFilterMode.Menu))
                         .Scrollable(scrollable => scrollable.Virtual(true))
                         .Sortable()
@@ -202,7 +204,7 @@
                         .Events(events => events.Error("error_handler"))
                         .Model(model =>
                         {
-                            model.Id(x => x.ExamResourceId);
+                            model.Id(x => x.ExamResourceOrderId);
                         })
                         .Read(read => read.Action("Grid_Data_Read", "ExamResourceOrder", new { Area = "Admin" })
                         .Data("getFilterDataParams"))
@@ -236,7 +238,7 @@
     var getFilterDataParams = function (e) {
         var result = {
             filterApplicantId: @ViewBag.ApplicantId,
-            filterExamResourceId: null,
+            // filterExamResourceId: null,
             filterStatus: $('#FilterStatus').val(),
             filterTotalPriceFrom: $('#FilterTotalPriceFrom').val(),
             filterTotalPriceTo: $('#FilterTotalPriceTo').val(),
@@ -293,6 +295,12 @@
 
     function Cancel(x) {
 
+    }
+
+    function showItems(e){
+                e.preventDefault();
+        var dataItem = this.dataItem(jQuery(e.currentTarget).closest("tr"));
+        window.location.href = "/Admin/ExamResourceOrderItem/Index/" + dataItem.ExamResourceOrderId;
     }
 
 </script>

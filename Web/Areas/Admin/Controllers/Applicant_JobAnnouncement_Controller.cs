@@ -11,47 +11,52 @@ namespace Web.Areas.Admin.Controllers
     [Area("Admin")]
     [Route("Admin/[controller]")]
     [Authorize(Roles = "Manager,Admin")]
-    public class Applicant_JobAnnouncement_Controller(IApplicant_JobAnnouncement_Service a_ja_service) : BaseController
+    public class Applicant_JobAnnouncement_Controller(IApplicant_JobAnnouncement_Service a_ja_service, IJobAnnouncementService jobAnnouncementService, IApplicantService applicantService) : BaseController
     {
         [Route("ApplicantIndex/{applicantId}")]
         public IActionResult ApplicantIndex(int applicantId)
         {
-            ViewBag.ApplicantId = applicantId;
-            return View();
-        }
+            var applicantViewModel = applicantService.Get(applicantId);
 
-        [Route("ApplicantIndex_Grid_Data_Read")]
-        public IActionResult ApplicantIndex_Grid_Data_Read([DataSourceRequest] DataSourceRequest request,
-            int applicantId)
-        {
-            var ja_sf_list = a_ja_service.GetAllByApplicantId(applicantId).ToList();
-
-            var result = new DataSourceResult()
+            if (applicantViewModel == null)
             {
-                Data = ja_sf_list,
-                Total = ja_sf_list.Count // Total number of records
-            };
+                ShowDangerToast("", "داوطلب یافت نشد");
+                return RedirectToAction("Index", "Applicant", new {Area = "Admin"});
+            }
 
-            return Json(result);
+            ViewBag.ApplicantId = applicantViewModel.ApplicantId;
+            ViewBag.ApplicantFullName = applicantViewModel.FullName;
+
+            return View();
         }
 
         [Route("JAIndex/{jobAnnouncementId}")]
         public IActionResult JAIndex(int jobAnnouncementId)
         {
-            ViewBag.JobAnnouncementId = jobAnnouncementId;
+            var jobAnnouncementViewModel = jobAnnouncementService.Get(jobAnnouncementId);
+
+            if (jobAnnouncementViewModel == null)
+            {
+                ShowDangerToast("", "آگهی یافت نشد.");
+                return RedirectToAction("Index", "JobAnnouncement", new { Area = "Admin" });
+            }
+
+            ViewBag.JobAnnouncementId = jobAnnouncementViewModel.JobAnnouncementId;
+            ViewBag.JobAnnouncementTitle = jobAnnouncementViewModel.Title;
+
             return View();
         }
 
-        [Route("JAIndex_Grid_Data_Read")]
-        public IActionResult JAIndex_Grid_Data_Read([DataSourceRequest] DataSourceRequest request,
-            int jobAnnouncementId)
+        [Route("Grid_Data_Read")]
+        public IActionResult Grid_Data_Read([DataSourceRequest] DataSourceRequest request, string filterJobAnnouncementId, 
+                                                    string filterApplicantId, string filterInsertDateFrom, string filterInsertDateTo)
         {
-            var ja_sf_list = a_ja_service.GetAllByJobAnnouncementId(jobAnnouncementId).ToList();
-
             var result = new DataSourceResult()
             {
-                Data = ja_sf_list,
-                Total = ja_sf_list.Count // Total number of records
+                Data = a_ja_service.GetAllFiltered(filterJobAnnouncementId, filterApplicantId,
+                                                   filterInsertDateFrom, filterInsertDateTo,
+                                                   request.Page, request.PageSize, out int totalRecord).ToList(),
+                Total = totalRecord // Total number of records
             };
 
             return Json(result);
@@ -61,21 +66,30 @@ namespace Web.Areas.Admin.Controllers
         [Route("Create/{jobAnnouncementId}")]
         public IActionResult Create(int jobAnnouncementId)
         {
-            ViewBag.JobAnnouncementId = jobAnnouncementId;
+            var jobAnnouncementViewModel = jobAnnouncementService.Get(jobAnnouncementId);
+
+            if (jobAnnouncementViewModel == null)
+            {
+                ShowDangerToast("", "آگهی یافت نشد.");
+                return RedirectToAction("Index", "JobAnnouncement", new { Area = "Admin" });
+            }
+
+            ViewBag.JobAnnouncementId = jobAnnouncementViewModel.JobAnnouncementId;
+            ViewBag.JobAnnouncementTitle = jobAnnouncementViewModel.Title;
 
             return View();
         }
 
         [HttpPost]
-        [Route("Create")]
+        [Route("Create/{jobAnnouncementId}")]
         [ValidateAntiForgeryToken]
-        public virtual ActionResult Create(Applicant_JobAnnouncement_ViewModel model)
+        public IActionResult Create(Applicant_JobAnnouncement_ViewModel model)
         {
             if (ModelState.IsValid)
             {
                 if (!a_ja_service.IsDuplicate(model.ApplicantId, model.JobAnnouncementId))
                 {
-                    if (a_ja_service.Add(model.ApplicantId, model.JobAnnouncementId))
+                    if (a_ja_service.Add(model))
                     {
                         ShowSuccessToast("عملیات انجام شد", "اطلاعات با موفقیت ذخیره شد");
 
@@ -107,14 +121,25 @@ namespace Web.Areas.Admin.Controllers
         [Route("Edit/{jobAnnouncementId}/{applicantId}")]
         public IActionResult Edit(int jobAnnouncementId, int applicantId)
         {
+            var jobAnnouncementViewModel = jobAnnouncementService.Get(jobAnnouncementId);
+
+            if (jobAnnouncementViewModel == null)
+            {
+                ShowDangerToast("", "آگهی یافت نشد.");
+                return RedirectToAction("Index", "JobAnnouncement", new { Area = "Admin" });
+            }
+
+            ViewBag.JobAnnouncementId = jobAnnouncementViewModel.JobAnnouncementId;
+            ViewBag.JobAnnouncementTitle = jobAnnouncementViewModel.Title;
+                
             var model = a_ja_service.Get(applicantId, jobAnnouncementId);
             return View(model);
         }
 
         [HttpPost]
-        [Route("Edit")]
+        [Route("Edit/{jobAnnouncementId}/{applicantId}")]
         [ValidateAntiForgeryToken]
-        public virtual ActionResult Edit(Applicant_JobAnnouncement_ViewModel model)
+        public IActionResult Edit(Applicant_JobAnnouncement_ViewModel model)
         {
             if (ModelState.IsValid)
             {

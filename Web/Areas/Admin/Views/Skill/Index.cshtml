@@ -75,7 +75,7 @@
                         command.Custom("لیست منابع").Click("examResourceRow").HtmlAttributes(new { @class = "command-btn-blue" });
                 }).Width(400);
             })
-            .HtmlAttributes(new { style = "height: 550px;border-radius:0.25rem;" })
+            .HtmlAttributes(new { style = "height: 550px;border-radius:5px;" })
             .Filterable(ftb => ftb.Mode(GridFilterMode.Menu))
             .Scrollable(scrollable => scrollable.Virtual(true))
             .Sortable()
@@ -130,12 +130,29 @@
     }
 
     function deleteRow(e) {
-        var dataItem = this.dataItem(jQuery(e.currentTarget).closest("tr"));
+            e.preventDefault();
+            var dataItem = this.dataItem(jQuery(e.currentTarget).closest("tr"));
+
+            showConfirmModalMessage(
+                "danger",
+                "عملیات حذف",
+                "آیا از حذف اطمینان دارید؟",
+                "انصراف",
+                "حذف",
+                "danger",
+                "Confirm",
+                dataItem.SkillId,
+                "Cancel",
+                null
+            );
+    }
+
+    function Confirm(skillId) {
         $.ajax({
             url: '/Admin/Skill/Delete',
             type: "GET",
             data: {
-                id: dataItem.SkillId
+                id: skillId
             }
         }).done(function (dresult) {
             if (dresult == true) {
@@ -146,10 +163,16 @@
             else {
                 showSimpleModalMessage('danger', 'خطا', 'امکان حذف این اطلاعات وجود ندارد', '');
             }
-        })
+        }).fail(function (xhr) {
+            showSimpleModalMessage('danger', 'خطا', 'در ارسال درخواست خطا رخ داد: ' + (xhr.responseText || xhr.statusText), '');
+        });
     }
 
-        function examResourceRow(e) {
+    function Cancel(x) {
+
+    }
+
+    function examResourceRow(e) {
         e.preventDefault();
         var dataItem = this.dataItem(jQuery(e.currentTarget).closest("tr"));
         window.location.href = "/Admin/Skill_ExamResource_/Index/" + dataItem.SkillId;

@@ -1,0 +1,319 @@
+﻿
+@{
+    ViewData["PageTitle"] = "لیست تراکنش های آنلاین";
+}
+
+<div class="accordion" id="custom-accordion-one" style="margin-top:-14px;">
+    <div class="card mb-0">
+        <div class="card-header" id="headingOne" style="max-height:40px;padding-top:0px;border-radius:4px;">
+            <h5 class="m-0">
+                <a class="custom-accordion-title d-block pt-2 pb-2 collapsed"
+                   data-bs-toggle="collapse" href="#collapseOne"
+                   aria-expanded="true" aria-controls="collapseOne">
+                    <i class="uil uil-filter" style="color:orangered;"></i>
+                    <b style="font-size:16px;margin-right:5px;">فیلتر اطلاعات</b>
+                    <i class="mdi mdi-chevron-up accordion-arrow" style="float:left;color:orangered;"></i>
+                </a>
+            </h5>
+        </div>
+
+        <div id="collapseOne" class="collapse"
+             aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+            <div class="card-body">
+                <div class="row" style="margin-top:10px;">
+                    <div class="col-md-6 col-sm-12">
+                        <div class="row form-group">
+                            @Html.Label(null, "داوطلب", htmlAttributes: new { @class = "control-label col-md-3 col-sm-12 form-input-label" })
+                            <div class="col-md-5 col-sm-10">
+                                @Html.Hidden("ApplicantId")
+                                @Html.TextBox("ApplicantFullName", "", new { @readonly = "readonly", @class = "form-control" })
+                            </div>
+                            <div class="col-md-1 col-sm-2" style="margin-right:-20px;">
+                                <a class="btn btn-info modal-link" href=@Url.Action("ShowApplicantSearchDialog", "Applicant", new { Area = "Admin", valueElementId = "ApplicantId", displayElementId = "ApplicantFullName"  }) style="box-shadow:none;border-radius:0.4rem;height:40px;font-size:20px;padding-top:6px;"><i class="uil-search"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-sm-12">
+                        <div class="row form-group">
+                            @Html.Label(null, "منبع", htmlAttributes: new { @class = "control-label col-md-3 col-sm-12 form-input-label" })
+                            <div class="col-md-5 col-sm-10">
+                                @Html.Hidden("ExamResourceId")
+                                @Html.TextBox("ResourceName", "", new { @readonly = "readonly", @class = "form-control" })
+                            </div>
+                            <div class="col-md-1 col-sm-2" style="margin-right:-20px;">
+                                <a class="btn btn-info modal-link" href=@Url.Action("ShowExamResourceSearchDialog", "ExamResource", new { Area = "Admin",
+                                                                       valueElementId = "ExamResourceId", displayElementId = "ResourceName"  }) style="box-shadow:none;border-radius:0.4rem;height:40px;font-size:20px;padding-top:6px;"><i class="uil-search"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" style="margin-top:22px;">
+                    <div class="col-md-6 col-sm-12">
+                        <div class="row form-group">
+                            @Html.Label(null, "مبلغ از (ریال)", htmlAttributes: new { @class = "form-input-label col-md-3 col-sm-12", style = "float:right;text-align:right;margin-top:8px;" })
+                            <div class="col-md-6 col-sm-12">
+                                <input type="text" id="FilterAmountFrom" class="form-control" onkeyup="formatAmount(this)">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-sm-12">
+                        <div class="row form-group">
+                            @Html.Label(null, "تا مبلغ (ریال)", htmlAttributes: new { @class = "form-input-label col-md-3 col-sm-12", style = "float:right;text-align:right;margin-top:8px;" })
+                            <div class="col-md-6 col-sm-12">
+                                <input type="text" id="FilterAmountTo" class="form-control" onkeyup="formatAmount(this)">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" style="margin-top:22px;">
+                    <div class="col-md-6 col-sm-12">
+                        <div class="row form-group">
+                            @Html.Label(null, "از تاریخ", htmlAttributes: new { @class = "form-input-label col-md-3 col-sm-12", style = "float:right;text-align:right;margin-top:8px;" })
+                            <div class="col-md-6 col-sm-12">
+                                <div>
+                                    <div style="display:inline-block;width:100%;">
+                                        <input type="text" class="form-control" id="FilterDateFrom" name="FilterDateFrom"
+                                               data-ha-datetimepicker="#FilterDateFrom" data-ha-dp-issolar="true"
+                                               data-ha-dp-disabletime="true" data-ha-dp-resultinsolar="true"
+                                               data-ha-dp-resultformat="{year}/{month}/{day}" value="" style="display:inline;" />
+                                    </div>
+                                    <div style="display:inline-block;margin-right:-30px;">
+                                        <i class="fa fa-calendar" style="color: #034ea2;"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-sm-12">
+                        <div class="row form-group">
+                            @Html.Label(null, "تا تاریخ", htmlAttributes: new { @class = "form-input-label col-md-3 col-sm-12", style = "float:right;text-align:right;margin-top:8px;" })
+                            <div class="col-md-6 col-sm-12">
+                                <div>
+                                    <div style="display:inline-block;width:100%;">
+                                        <input type="text" class="form-control" id="FilterDateTo" name="FilterDateTo"
+                                               data-ha-datetimepicker="#FilterDateTo" data-ha-dp-issolar="true"
+                                               data-ha-dp-disabletime="true" data-ha-dp-resultinsolar="true"
+                                               data-ha-dp-resultformat="{year}/{month}/{day}" value="" style="display:inline;" />
+                                    </div>
+                                    <div style="display:inline-block;margin-right:-30px;">
+                                        <i class="fa fa-calendar" style="color: #034ea2;"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" style="margin-top:22px;">
+                    <div class="col-md-6 col-sm-12">
+                        <div class="row form-group">
+                            @Html.Label(null, "وضعیت", htmlAttributes: new { @class = "form-input-label col-md-3 col-sm-12", style = "float:right;text-align:right;margin-top:8px;" })
+                            <div class="col-md-6 col-sm-12">
+                                @(Html.Kendo().DropDownList()
+                                            .Name("FilterState")
+                                            .DataTextField("Text")
+                                            .DataValueField("Value")
+                                            .OptionLabel("همه")
+                                            .HtmlAttributes(new { style = "width: 100%" })
+                                            .BindTo(new List<SelectListItem>() {
+                                                        new SelectListItem() {
+                                                            Text = "موفق",
+                                                            Value = "1"
+                                                        },
+                                                        new SelectListItem() {
+                                                            Text = "ناموفق",
+                                                            Value = "-1"
+                                                        }
+                                                    }))
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-sm-12">
+                            <div class="row form-group">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <hr />
+                <a class="btn btn-info" style="float:left;margin-bottom:10px;" onclick="filterTransactionData()">فیلتر اطلاعات</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="k-rtl" style="margin-top:20px;">
+    <div style="height:100%;">
+        @(Html.Kendo().Grid<OnlineTransactionViewModel>().Name("Grid").Columns(columns =>
+        {
+            columns.Bound(c => c.ApplicantFullName);
+            @* columns.Bound(c => c.ExamResourceName); *@
+            columns.Bound(c => c.Amount);
+            columns.Bound(c => c.ShamsiInsertDate);
+            columns.Bound(c => c.StateStr);
+            columns.Command(command =>
+            {
+                command.Custom("جزئیات").Click("showDetail").HtmlAttributes(new { @class = "command-btn-blue" });
+            });
+        })
+                              .HtmlAttributes(new { style = "height: 550px;border-radius:5px;" })
+                              .Filterable(ftb => ftb.Mode(GridFilterMode.Menu))
+                              .Scrollable(scrollable => scrollable.Virtual(true))
+                              .Events(events => events.ExcelExport("onExcelExport"))
+                              .Sortable()
+                              .Pageable(pageable => pageable
+                                  .Refresh(true)
+                                  .PageSizes(true)
+                                  .ButtonCount(5))
+                              .DataSource(dataSource => dataSource
+                                  .Ajax()
+                                  .Events(events => events.Error("error_handler"))
+                                  .Model(model =>
+                                  {
+                                      model.Id(x => x.ExamResourceOrderId);
+                                  })
+                                  .Read(read => read.Action("Grid_Data_Read", "OnlineTransaction", new { Area = "Admin" })
+                                  .Data("getTransactionsFilterDataParams"))
+                                  .PageSize(20)
+                              ))
+    </div>
+</div>
+<div class="row" style="margin-top:20px;">
+    <div class="col-xs-6 col-sm-6 col-md-6">
+        <a class="btn btn-light form-command-btn" onclick="ExportOnlineTransactionGridDataAsExcel()" style="display:inline-block;width:auto;background-color:orange;color:white;">
+            <span><i class="fa fa-file-excel-o"></i><span>&nbsp;</span>دانلود فایل اکسل</span>
+        </a>
+    </div>
+    <div class="col-xs-6 col-sm-6 col-md-6 text-left">
+        <a href="@Url.Action("Index", "Dashboard")" class="btn btn-info form-command-btn" style="float:left;">
+            <span class="btn-label"><i class="fa fa-reply"></i><span>&nbsp;</span>بازگشت</span>
+        </a>
+    </div>
+</div>
+
+<script type="text/javascript">
+    function showDetail(e) {
+        e.preventDefault();
+        var dataItem = this.dataItem(jQuery(e.currentTarget).closest("tr"));
+        window.location.href = "/Admin/OnlineTransaction/Detail/" + dataItem.OnlineTransactionId;
+    }
+
+    function formatAmount(input) {
+        var nStr = input.value + '';
+        nStr = nStr.replace(/\,/g, "");
+        var x = nStr.split('.');
+        var x1 = x[0];
+        var amount = x[0];
+        var x2 = x.length > 1 ? '.' + x[1] : '';
+        var rgx = /(\d+)(\d{3})/;
+        while (rgx.test(x1)) {
+            x1 = x1.replace(rgx, '$1' + ',' + '$2');
+        }
+        input.value = x1 + x2;
+    }
+
+    var getTransactionsFilterDataParams = function (e) {
+        var result = {
+            filterPassengerId: $('#FilterApplicantId').val(),
+            filterShuttleServiceId: $('#FilterExamResourceId').val(),
+            filterAmountFrom: $('#FilterAmountFrom').val(),
+            filterAmountTo: $('#FilterAmountTo').val(),
+            filterDateFrom: $('#FilterDateFrom').val(),
+            filterDateTo: $('#FilterDateTo').val(),
+            filterState: $('#FilterState').val(),
+        }
+        return result;
+    };
+
+    function filterTransactionData() {
+        $("#Grid").data("kendoGrid").dataSource.read();
+    }
+</script>
+<script>
+    
+    function ExportOnlineTransactionGridDataAsExcel() {
+        var grid = $("#Grid").data("kendoGrid");
+        grid.setOptions({
+                excel: {
+                    allPages: true,
+                    filterable: true,
+                    fileName: "لیست-تراکنش-آنلاین.xlsx"
+                }
+            });
+
+            grid.saveAsExcel();
+        }
+
+    function generateExcelColumns(item) {
+        var columnNames = Object.keys(item.toJSON());
+        columnNames.splice(columnNames.indexOf("OnlineTransactionId"), 1);
+        columnNames.splice(columnNames.indexOf("ExamResourceOrderId"), 1);
+        columnNames.splice(columnNames.indexOf("ExamResourceId"), 1);
+        columnNames.splice(columnNames.indexOf("ApplicantId"), 1);
+        columnNames.splice(columnNames.indexOf("BankGatewayId"), 1);
+        columnNames.splice(columnNames.indexOf("State"), 1);
+        columnNames.splice(columnNames.indexOf("InsertDate"), 1);
+        columnNames.splice(columnNames.indexOf("VerifyDate"), 1);
+
+        return columnNames.map(function (name) {
+            var farsiTitle = '';
+            switch (name) {
+                case "ApplicantFullName":
+                    farsiTitle = 'داوطلب';
+                    break;
+                case "ExamResourceName":
+                    farsiTitle = 'نام منبع';
+                    break;
+                case "BankGatewayName":
+                    farsiTitle = 'درگاه پرداخت';
+                    break;
+                case "Amount":
+                    farsiTitle = 'مبلغ';
+                    break;
+                case "ReferenceNumber":
+                    farsiTitle = 'شماره مرجع';
+                    break;
+                case "StateStr":
+                    farsiTitle = 'وضعیت تراکنش';
+                    break;
+                case "TransactionCmnt":
+                    farsiTitle = 'شرح تراکنش';
+                    break;
+                case "ShamsiInsertDate":
+                    farsiTitle = 'زمان انجام تراکنش';
+                    break;
+            }
+            return {
+                field: name,
+                width: 180,
+                title: farsiTitle
+            };
+        });
+    }
+
+    function onExcelExport(e) {
+        e.workbook.rtl = true;
+        var sheet = e.workbook.sheets[0];
+        var data = e.data;
+        var columnsToExport = generateExcelColumns(data[0]);
+        var columns = columnsToExport.map(function (col) {
+            return {
+                value: col.title ? col.title : col.field,
+                autoWidth: true,
+                background: "#7a7a7a",
+                color: "#fff"
+            };
+        });
+
+        var rows = [{ cells: columns, type: "header" }];
+
+        for (var i = 0; i < data.length; i++) {
+            var rowCells = [];
+            for (var j = 0; j < columnsToExport.length; j++) {
+
+                var cellValue = data[i][columnsToExport[j].field];
+                rowCells.push({ value: cellValue });
+            }
+            rows.push({ cells: rowCells, type: "data" });
+        }
+        sheet.rows = rows;
+    }
+</script>
+

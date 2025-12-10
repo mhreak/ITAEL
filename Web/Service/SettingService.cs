@@ -100,7 +100,7 @@ namespace Web.Service
 
         public string GetValueByKey(string settingKey)
         {
-            return _table.Where(x => x.SettingKey == settingKey).FirstOrDefault().SettingValue;
+            return _table.FirstOrDefault(x => x.SettingKey == settingKey)?.SettingValue;
         }
 
         public bool SetSettingValue(string key, string value)

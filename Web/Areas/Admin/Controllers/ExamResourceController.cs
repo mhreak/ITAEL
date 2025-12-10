@@ -1,18 +1,26 @@
-﻿using Web.Model;
-using System.Linq;
+﻿using DbEntities;
 using Kendo.Mvc.UI;
-using Web.Controllers;
-using Web.Service.Interface;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System.IO;
+using System.Linq;
+using Web.Controllers;
+using Web.Model;
+using Web.Service;
+using Web.Service.Interface;
 
 namespace Web.Areas.Admin.Controllers
 {
     [Area("Admin")]
     [Route("Admin/[controller]")]
     [Authorize(Roles = "Manager,Admin")]
-    public class ExamResourceController(IExamResourceService examResourceService) : BaseController
+    public class ExamResourceController(
+        IUtilService utilService,
+        IWebHostEnvironment webHostEnvironment,
+        IExamResourceService examResourceService) : BaseController
     {
         [Route("Index")]
         public IActionResult Index()
@@ -32,9 +40,9 @@ namespace Web.Areas.Admin.Controllers
 
             var result = new DataSourceResult()
             {
-                Data = examResourceService.GetAllFiltered(filterResourceName,  null,
-                                                           filterType,  filterPriceFrom,  filterPriceTo,
-                                                           filterInsertDateFrom,  filterInsertDateTo, 
+                Data = examResourceService.GetAllFiltered(filterResourceName, null,
+                                                           filterType, filterPriceFrom, filterPriceTo,
+                                                           filterInsertDateFrom, filterInsertDateTo,
                                                            currentPage, pageSize, out int totalRecord),
                 Total = totalRecord // Total number of records
             };
@@ -52,12 +60,47 @@ namespace Web.Areas.Admin.Controllers
         [HttpPost]
         [Route("Create")]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(ExamResourceViewModel model)
+        public IActionResult Create(ExamResourceViewModel model, IFormFile ImageFile)
         {
             if (ModelState.IsValid)
             {
-                if (examResourceService.Add(model) != -1)
+                int examResourceId = examResourceService.Add(model);
+                if (examResourceId != -1)
                 {
+                    string directoryPath = webHostEnvironment.WebRootPath + "\\Upload\\ExamResourceDocument\\" + examResourceId.ToString();
+
+                    if (Directory.Exists(directoryPath))
+                    {
+                        Directory.Delete(directoryPath, true);
+                    }
+
+                    Directory.CreateDirectory(directoryPath);
+
+                    if (ImageFile != null && ImageFile.Length > 0)
+                    {
+                        string uploadedFileName = ImageFile.FileName;
+                        string[] splittedFileName = uploadedFileName.Split('.').ToArray();
+                        string uploadedFileExtention = ImageFile.FileName.Split('.')[splittedFileName.Length - 1];
+                        string generatedFileName = utilService.GenerateRandomString(15) + "." + uploadedFileExtention;
+
+                        string filePath = directoryPath + "\\" + generatedFileName;
+
+                        while (System.IO.File.Exists(filePath))
+                        {
+                            generatedFileName = utilService.GenerateRandomString(15) + "." + uploadedFileExtention;
+                            filePath = directoryPath + "\\" + generatedFileName;
+                        }
+
+                        using (var stream = new FileStream(filePath, FileMode.Create))
+                        {
+                            ImageFile.CopyTo(stream);
+
+                            examResourceService.SetImageFileName(examResourceId, generatedFileName);
+
+                            stream.Close();
+                        }
+                    }
+
                     ShowSuccessToast("عملیات انجام شد", "اطلاعات با موفقیت ذخیره شد");
 
                     return RedirectToAction("Index");
@@ -90,14 +133,47 @@ namespace Web.Areas.Admin.Controllers
         [HttpPost]
         [Route("Edit/{id}")]
         [ValidateAntiForgeryToken]
-        public virtual ActionResult Edit(ExamResourceViewModel model)
+        public IActionResult Edit(ExamResourceViewModel model, IFormFile ImageFile)
         {
             if (ModelState.IsValid)
             {
                 if (examResourceService.Edit(model))
                 {
-                    ShowSuccessToast("عملیات انجام شد", "اطلاعات با موفقیت ذخیره شد");
+                    string directoryPath = webHostEnvironment.WebRootPath + "\\Upload\\ExamResourceDocument\\" + model.ExamResourceId.ToString();
 
+                    if (Directory.Exists(directoryPath))
+                    {
+                        Directory.Delete(directoryPath, true);
+                    }
+
+                    Directory.CreateDirectory(directoryPath);
+
+                    if (ImageFile != null && ImageFile.Length > 0)
+                    {
+                        string uploadedFileName = ImageFile.FileName;
+                        string[] splittedFileName = uploadedFileName.Split('.').ToArray();
+                        string uploadedFileExtention = ImageFile.FileName.Split('.')[splittedFileName.Length - 1];
+                        string generatedFileName = utilService.GenerateRandomString(15) + "." + uploadedFileExtention;
+
+                        string filePath = directoryPath + "\\" + generatedFileName;
+
+                        while (System.IO.File.Exists(filePath))
+                        {
+                            generatedFileName = utilService.GenerateRandomString(15) + "." + uploadedFileExtention;
+                            filePath = directoryPath + "\\" + generatedFileName;
+                        }
+
+                        using (var stream = new FileStream(filePath, FileMode.Create))
+                        {
+                            ImageFile.CopyTo(stream);
+
+                            examResourceService.SetImageFileName(model.ExamResourceId, generatedFileName);
+
+                            stream.Close();
+                        }
+                    }
+
+                    ShowSuccessToast("عملیات انجام شد", "اطلاعات با موفقیت ذخیره شد");
                     return RedirectToAction("Index");
                 }
                 else

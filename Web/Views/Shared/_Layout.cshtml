@@ -1,12 +1,28 @@
-﻿<!DOCTYPE html>
+﻿@using Web.Service.Interface
+@inject ISettingService SettingService;
+
+@{
+    string landLine = SettingService.GetValueByKey("ContactUs_PrimaryLandline");
+    string email = SettingService.GetValueByKey("ContactUs_Email");
+    string address = SettingService.GetValueByKey("ContactUs_Address");
+    string whatsAppNumber = SettingService.GetValueByKey("ContactUs_WhatsAppNumber");
+    string telegramID = SettingService.GetValueByKey("ContactUs_TelegramID");
+}
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"]</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.min.css">
     <link rel="stylesheet" href="~/css/font-farsi.css" />
+    <link rel="shortcut icon" href="~/favicon.ico">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@@majidh1/jalalidatepicker/dist/jalalidatepicker.min.css" />
+    <link rel="stylesheet" href="~/css/style/homestyle.css">
+
     <style>
         * {
             font-family: IRANSans, Arial, sans-serif !important;
@@ -14,20 +30,261 @@
     </style>
 </head>
 <body>
+<main role="main" class="pb-3">
+    <!--Navbar-->
     <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
+        <nav class="navbar navbar-expand-lg navbar-light bg-transparent border-bottom shadow-sm sticky-top">
+            <div class="container-fluid">
+                <a href="/" class="navbar-brand">
+                    <img src="~/image/ITAEL-logo.png" alt="ایتائل" class="site-logo">
+                </a>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2022 - Shodamad - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                <button class="navbar-toggler" type="button"
+                        data-bs-toggle="collapse" data-bs-target="#mainNavbar"
+                        aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="mainNavbar">
+                    <ul class="navbar-nav flex-row flex-wrap gap-2 ms-lg-3 ms-auto">
+                        <li class="nav-item">
+                            <a asp-area="" asp-controller="Home" asp-action="Index"
+                               class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "active" : "")">
+                                لیست آگهی ها
+                            </a>
+                        </li>
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <li class="nav-item">
+                                <a asp-area="Applicant" asp-controller="Dashboard" asp-action="Index"
+                                   class="nav-link @(ViewContext.RouteData.Values["area"]?.ToString() == "Applicant" && ViewContext.RouteData.Values["controller"]?.ToString() == "Dashboard" ? "active" : "")">
+                                    حساب کاربری من
+                                </a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a asp-area="Applicant" asp-controller="Account" asp-action="Login"
+                                   class="nav-link @(ViewContext.RouteData.Values["area"]?.ToString() == "Applicant" && ViewContext.RouteData.Values["controller"]?.ToString() == "Dashboard" ? "active" : "")">
+                                    حساب کاربری من
+                                </a>
+                            </li>
+                        }
+
+                        <li class="nav-item">
+                            <a asp-area="" asp-controller="Home" asp-action="ContactUs"
+                               class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" && ViewContext.RouteData.Values["action"]?.ToString() == "ContactUs"
+                                                     ? "active" : "")">
+                                تماس با ما
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a asp-area="" asp-controller="Home" asp-action="AboutUs"
+                               class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" && ViewContext.RouteData.Values["action"]?.ToString() == "AboutUs" ? "active" : "")">
+                                درباره ما
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <div class="d-flex gap-2 align-items-center">
+                        <a asp-area="Applicant" asp-controller="Account" asp-action="LogOut" class="btn btn-outline-danger">خروج</a>
+                    </div>
+                }
+                else
+                {
+                    <div class="d-flex gap-2 align-items-center">
+                        <a asp-area="Applicant" asp-controller="Account" asp-action="Login" class="btn btn-outline-primary">ورود</a>
+                        <a asp-area="Applicant" asp-controller="Account" asp-action="SignUp" class="btn btn-primary">ثبت نام</a>
+                    </div>
+                }
+            </div>
+        </nav>
+    </div>
+        
+    @* ---------- Global Alerts (Error + Success) ---------- *@
+    <div class="container mt-3">
+        @* 1) TempData Error (برای Redirect ها) *@
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show global-alert" role="alert" aria-live="assertive" aria-atomic="true">
+                @TempData["ErrorMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="بستن"></button>
+            </div>
+        }
+
+        @* 2) Model-level errors (AddModelError("", "...")) *@
+        @if (ViewData.ModelState[string.Empty]?.Errors.Count > 0)
+        {
+            <div class="alert alert-danger alert-dismissible fade show global-alert" role="alert" aria-live="assertive" aria-atomic="true">
+                @foreach (var err in ViewData.ModelState[string.Empty].Errors)
+                {
+                    <div>@err.ErrorMessage</div>
+                }
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="بستن"></button>
+            </div>
+        }
+
+        @* 3) TempData Success (برای پیام‌های موفقیت بعد از Redirect) *@
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show global-alert" role="alert" aria-live="polite" aria-atomic="true">
+                @TempData["SuccessMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="بستن"></button>
+            </div>
+        }
+    </div>
+    @* ---------- End Global Alerts ---------- *@   
+
+    @RenderBody()
+</main>
+
+<footer id="footer" class="site-footer" dir="rtl">
+    <div class="container">
+
+        <div class="footer-grid">
+            <div class="f-col brand">
+                <div class="f-brand">
+
+                    <a class="footer-logo" asp-area="" asp-controller="Home" asp-action="Index" aria-label="لوگو">
+                        <img src="~/image/itael-logo-white.png" alt="لوگو ایتائل" class="logo">
+                    </a>
+                </div>
+
+                @if (!string.IsNullOrEmpty(address))
+                {
+                    <p class="footer-address-label mb-1">آدرس شرکت :</p>
+                    <p class="footer-address-text mb-3">@Html.Raw(address)</p>
+                }
+
+                <ul class="f-social">
+                    @if (!string.IsNullOrEmpty(whatsAppNumber))
+                    {
+                        <li>
+                            <a href="#" aria-label="Whatsapp">
+                                <i class="bi bi-whatsapp"></i>
+                            </a>
+                        </li>
+                    }
+                    @if (!string.IsNullOrEmpty(telegramID))
+                    {
+                        <li>
+                            <a href="#" aria-label="Telegram">
+                                <i class="bi bi-telegram"></i>
+                            </a>
+                        </li>
+                    }
+                </ul>
+            </div>
+
+
+            <div class="f-col">
+                <h4 class="f-title">دسترسی سریع</h4>
+                <ul class="f-links">
+                    <li><a asp-area="" asp-controller="Home" asp-action="Index">لیست آگهی ها</a></li>
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <li><a asp-area="Applicant" asp-controller="Dashboard" asp-action="Index">حساب کاربری من</a></li>
+                    }
+                    else
+                    {
+                        <li><a asp-area="Applicant" asp-controller="Account" asp-action="Login">حساب کاربری من</a></li>
+                    }
+                    <li><a asp-area="" asp-controller="Home" asp-action="ContactUs">تماس با ما</a></li>
+                    <li><a asp-area="" asp-controller="Home" asp-action="AboutUs">درباره ما</a></li>
+                </ul>
+            </div>
+
+            <div class="f-col">
+                <h4 class="f-title">حساب کاربری من</h4>
+                <ul class="f-links">
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <li>
+                            <a asp-area="Applicant" asp-controller="Dashboard" asp-action="Index">پروفایل من</a>
+                        </li>
+                        <li>
+                            <a asp-area="Applicant" asp-controller="Profile" asp-action="UpdateProfile">ویرایش اطلاعات</a>
+                        </li>
+                    }
+                    else
+                    {
+                        <li>
+                            <a asp-area="Applicant" asp-controller="Account" asp-action="Login">پروفایل من</a>
+                        </li>
+                        <li>
+                            <a asp-area="Applicant" asp-controller="Account" asp-action="Login">ویرایش اطلاعات</a>
+                        </li>
+                    }
+                </ul>
+            </div>
+
+            @if (!string.IsNullOrEmpty(address) && !string.IsNullOrEmpty(landLine) && !string.IsNullOrEmpty(email))
+            {
+                <div class="f-col">
+                    <h4 class="f-title">تماس</h4>
+                    <ul class="f-contact">
+                        @if (!string.IsNullOrEmpty(address))
+                        {
+                            <li>
+                                <i class="bi bi-geo-alt"></i>
+                                <span>@Html.Raw(address)</span>
+                            </li>
+                        }
+                        @if (!string.IsNullOrEmpty(landLine))
+                        {
+                            <li>
+                                <i class="bi bi-telephone"></i>
+                                <a href="tel:@landLine">@landLine</a>
+                            </li>
+                        }
+                        @if (!string.IsNullOrEmpty(email))
+                        {
+                            <li>
+                                <i class="bi bi-envelope"></i>
+                                <a href="mailto:@email">@email</a>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            }
         </div>
-    </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    @RenderSection("Scripts", required: false)
+        <div class="footer-bottom">
+            <p class="copy">
+                <span id="y"></span> <strong>ایتائل</strong> — تمامی این حقوق محفوظ است.
+            </p>
+        </div>
+
+    </div>
+</footer>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="~/js/site.js" asp-append-version="true"></script>
+
+    <script>
+        // Auto dismiss alerts after 5 seconds, و اسکرول به اولین alert
+        document.addEventListener("DOMContentLoaded", function () {
+            const alerts = document.querySelectorAll(".global-alert");
+            if (alerts.length > 0) {
+                // Scroll to first alert (smooth)
+                alerts[0].scrollIntoView({ behavior: "smooth", block: "center" });
+
+                // Auto hide after 5s (5000ms)
+                setTimeout(() => {
+                    alerts.forEach(a => {
+                        // Bootstrap alert disposal: trigger close by removing 'show' (fade will hide)
+                        a.classList.remove("show");
+                        // fully remove from DOM after animation (300ms)
+                        setTimeout(() => a.remove(), 350);
+                    });
+                }, 5000);
+            }
+
+            // optional: close button already handled by bootstrap data-bs-dismiss
+        });
+    </script>
+@RenderSection("Scripts", required: false)
 </body>
 </html>

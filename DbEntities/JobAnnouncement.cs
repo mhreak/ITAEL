@@ -16,7 +16,6 @@
         [MaxLength(100)]
         public string Title { get; set; }
 
-        [MaxLength(3000)]
         public string Description { get; set; }
 
         [Required]
@@ -50,9 +49,26 @@
         [Required]
         public DateTime InsertDate { get; set; }
 
+        public DateTime? JobAnnouncementApplicationDeadlineDateFrom { get; set; }
+
+        public string? ShamsiJobAnnouncementApplicationDeadlineDateFrom { get; set; }
+
+        public DateTime? JobAnnouncementApplicationDeadlineDateTo { get; set; }
+
+        public string? ShamsiJobAnnouncementApplicationDeadlineDateTo { get; set; }
+
+        public decimal? Salary { get; set; }
+
         [Required]
         public bool IsDeleted { get; set; }
 
+        [Required]
+        public int CityId { get; set; }
+
+        [ForeignKey("CityId")]
+        public City City { get; set; }
+
+        public decimal? Price { get; set; }
 
         public virtual ICollection<InterviewAppointment> InterviewAppointmentList { get; set; } = [];
         public virtual ICollection<JobAnnouncement_Exam> JobAnnouncement_Exam_List { get; set; } = [];

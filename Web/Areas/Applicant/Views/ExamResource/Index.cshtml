@@ -1,0 +1,170 @@
+﻿@model Web.Areas.Applicant.Controllers.ShowExamResourceViewModel
+
+<!-- Header -->
+<div class="section-box col-lg-6 order-2 mb-2">
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mt-3">
+        <div>
+            <h5 class="m-0"><b>منابع آزمون آگهی @Model.JobAnnouncementViewModel.Title</b></h5>
+        </div>
+        <div class="order-badge">
+            <a asp-area="Applicant"
+               asp-controller="ExamResource"
+               asp-action="Order"
+               asp-route-jobAnnouncementId="@Model.JobAnnouncementViewModel.JobAnnouncementId"
+               class="btn btn-outline-secondary">
+                <i class="bi bi-cart ms-1"></i> ثبت سفارش
+            </a>    
+        </div>
+    </div>
+    <div class="res2-grid d-none d-lg-grid mt-3 mb-3">
+        @foreach (var item in Model.ExamResourceViewModelList)
+        {
+            <article class="prod-card digital" dir="rtl">
+
+                @if (!item.Price.HasValue && item.Type == 2)
+                {
+                    <a href="@item.DownloadLink" class="dl-badge">
+                        <i class="bi bi-download ms-1"></i>دانلود
+                    </a>
+                }
+                    
+                <br>
+                <button class="eye-btn" type="button" title="مشاهده بیشتر">
+                    <i class="bi bi-eye"></i>
+                </button>
+                @if (!string.IsNullOrEmpty(item.ImageFileName))
+                {
+                    <div class="prod-media frame">
+                        <img src="~/Upload/ExamResourceDocument/@item.ExamResourceId/@item.ImageFileName" alt="پک آموزشی دانلودی">
+                    </div>
+                }
+                else
+                {
+                    <div class="prod-media frame">
+                        <img src="~/image/default-exam-resource.jpg" alt="پک آموزشی دانلودی">
+                    </div>
+                }
+                
+                <div class="prod-body text-center">
+                    <h5 class="prod-title">@item.ResourceName</h5>
+                    <p class="prod-meta">@item.TypeStr</p>
+                    <div class="prod-foot">
+                        @if (item.Price != null && item.Price.HasValue)
+                        {
+                            <span class="price">@item.Price.Value تومان</span>
+                        }
+                        else
+                        {
+                            <span class="price">رایگان! </span>
+                        }
+
+                    </div>
+                </div>
+            </article>
+        }
+    </div>
+
+    <!-- Mobile -->
+    <div class="res-mobile d-lg-none mt-3" dir="rtl">
+        <div class="section-box card p-3 p-md-4">
+            <!-- Header -->
+            <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-3">
+                <div>
+                    <h5 class="m-0">منابع آزمون آگهی @Model.JobAnnouncementViewModel.Title</h5>
+                    @* <small class="text-body-secondary">منابع پیشنهادی بر اساس آگهی های ارسال شده</small> *@
+                </div>
+                <div class="company-badge d-inline-flex align-items-center gap-1">
+                    <i class="bi bi-building text-primary"></i>
+                    <span id="res-company" class="fw-semibold">@Model.JobAnnouncementViewModel.CompanyName</span>
+                </div>
+            </div>
+            @foreach (var item in Model.ExamResourceViewModelList)
+            {
+                <article class="res-m-card digital">
+                    <div class="m-media">
+                        <img src="~/Upload/ExamResourceDocument/@item.ExamResourceId/@item.ImageFileName" alt="پک دانلودی">
+                    </div>
+                    <div class="m-body">
+                        <h6 class="m-title">@item.ResourceName</h6>
+                        <div class="m-meta">@item.TypeStr</div>
+                        <div class="m-foot">
+                            @if (item.Price.HasValue)
+                            {
+                                <span class="m-price">@item.Price.Value</span>
+                            }
+                            else
+                            {
+                                <a href="@item.DownloadLink" class="m-btn dl">
+                                    <i class="bi bi-download ms-1"></i> دانلود
+                                </a>
+                            }
+
+                        </div>
+                    </div>
+                </article>
+            }
+
+            @foreach (var item in Model.ExamResourceViewModelList)
+            {
+                <article class="res-m-card physical">
+                    <div class="m-media">
+                        <img src="~/Upload/ExamResourceDocument/@item.ExamResourceId/@item.ImageFileName" alt="@item.ResourceName">
+                    </div>
+                    <div class="m-body">
+                        <h6 class="m-title">@item.ResourceName</h6>
+                        <div class="m-meta">@item.TypeStr • @item.Description</div>
+                        <div class="m-foot">
+                            @if (item.Price.HasValue)
+                            {
+                                <span class="m-price">@item.Price.Value</span>
+                            }
+                            else
+                            {
+                                <span class="rs-price">رایگان!</span>
+                            }
+                        </div>
+                    </div>
+                </article>
+            }
+        </div>
+    </div>
+</div>
+
+<script>
+    const checks = document.querySelectorAll('.rs-check');
+    const totalEl = document.getElementById('rs-total');
+    const countEl = document.getElementById('rs-count');
+    const payBtn = document.getElementById('rs-pay');
+
+    let total = 0;
+    let count = 0;
+
+    checks.forEach(ch => {
+        ch.addEventListener('change', () => {
+            const price = parseInt(ch.closest('.rs-item').dataset.price);
+
+            if (ch.checked) {
+            total += price;
+            count++;
+            ch.closest('.rs-item').classList.add('active');
+            } else {
+            total -= price;
+            count--;
+            ch.closest('.rs-item').classList.remove('active');
+            }
+
+            // به‌روزرسانی نمایش
+            totalEl.textContent = total.toLocaleString('fa-IR');
+            countEl.textContent = count;
+
+            // فعال/غیرفعال شدن دکمه
+            payBtn.disabled = count === 0;
+        });
+    });
+
+    // رویداد ثبت
+    payBtn.addEventListener('click', () => {
+    alert(`📚 ${count} مورد انتخاب شد. مجموع: ${total.toLocaleString('fa-IR')} تومان`);
+    });
+</script>
+

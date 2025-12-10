@@ -17,6 +17,12 @@
         [ForeignKey("JobAnnouncementId")]
         public virtual JobAnnouncement JobAnnouncement { get; set; }
 
+        //-1 -> رد شده
+        //0 -> نامشخص
+        //1 -> قبول شده
+        [Required]
+        public short Status { get; set; }
+
         [Required]
         public DateTime InsertDate { get; set; }
     }

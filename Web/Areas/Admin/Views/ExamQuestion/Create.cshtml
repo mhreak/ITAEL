@@ -25,7 +25,7 @@
     @using (Html.BeginForm(null, null, FormMethod.Post, new { name = "my-form", id = "my-form" }))
     {
 
-        <input type="hidden" name="ExamId" id="ExamId" value="@ViewBag.ExamId"/>
+        <input type="hidden" name="ExamId" id="ExamId" value="@ViewBag.ExamId" />
 
         <div class="container-card padding30" style="padding-top:45px;">
             <div class="form-horizontal">
@@ -52,30 +52,58 @@
                 </div>
 
                 <div class="row form-group" style="margin-top:30px;">
+                    @Html.LabelFor(model => model.Grade, htmlAttributes: new { @class = "control-label col-md-2 col-sm-3 form-input-label" })
+                    <div class="col-md-3 col-sm-4">
+                        @Html.EditorFor(model => model.Grade, new { htmlAttributes = new { @type = "number", @min = "0", @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Grade, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-md-7 col-sm-5">
+                        <span style="color:red;font-size:20px;">*</span>
+                    </div>
+                </div>
+
+                <div class="row form-group" style="margin-top:30px;">
                     @Html.LabelFor(model => model.Type, htmlAttributes: new { @class = "control-label col-md-2 col-sm-3 form-input-label" })
                     <div class="col-md-3 col-sm-4">
                         @(Html.Kendo().DropDownList()
-                                            .Name("Type")
-                                            .DataTextField("Text")
-                                            .DataValueField("Value")
-                                            .OptionLabel("همه")
-                                            .HtmlAttributes(new { style = "width: 100%" })
-                                            .BindTo(new List<SelectListItem>() {
-                                        new SelectListItem() {
-                                        Text = "چندگزینه ای",
-                                        Value = "1"
-                                        },
-                                        new SelectListItem() {
-                                        Text = "تشریحی",
-                                        Value = "2"
-                                        }
-                                            }))
-                    @Html.ValidationMessageFor(model => model.Type, "", new { @class = "text-danger" })
+                              .Name("Type")
+                              .DataTextField("Text")
+                              .DataValueField("Value")
+                              .OptionLabel("همه")
+                              .HtmlAttributes(new { style = "width: 100%" })
+                              .BindTo(new List<SelectListItem>() {
+                                                                     new SelectListItem() {
+                                                                                              Text = "چندگزینه ای",
+                                                                                              Value = "1"
+                                                                                          },
+                                                                     new SelectListItem() {
+                                                                                              Text = "تشریحی",
+                                                                                              Value = "2"
+                                                                                          }
+                                                                 })
+                              .Events(e => e.Change("onTypeChange"))
+                        )
+                        @Html.ValidationMessageFor(model => model.Type, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-md-7 col-sm-5">
+                        <span style="color:red;font-size:20px;">*</span>
+                    </div>
+
+
                 </div>
-                <div class="col-md-7 col-sm-5">
-                    <span style="color:red;font-size:20px;">*</span>
+
+                <div id="answer-text-wrapper" style="display:none;">
+                    <div class="row form-group" style="margin-top:30px;">
+                        @Html.LabelFor(model => model.AnswerText, htmlAttributes: new { @class = "control-label col-md-2 col-sm-3 form-input-label" })
+                        <div class="col-md-3 col-sm-4">
+                            @Html.EditorFor(model => model.AnswerText)
+                            @Html.ValidationMessageFor(model => model.AnswerText, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="col-md-7 col-sm-5">
+                            <span style="color:red;font-size:20px;">*</span>
+                        </div>
+                    </div>
                 </div>
-            </div>
 
                 <div class="col-md-7 col-sm-5">
                 </div>
@@ -90,5 +118,19 @@
                 </div>
             </div>
         </div>
-        }
+    }
 </div>
+
+<script>
+    function onTypeChange(e) {
+        const value = this.value();
+
+        if (value === "2") {
+            // تشریحی → AnswerText را نشان بده
+            $("#answer-text-wrapper").show();
+        } else {
+            // چندگزینه ای → AnswerText را مخفی کن
+            $("#answer-text-wrapper").hide();
+        }
+    }
+</script>

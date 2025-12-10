@@ -206,5 +206,26 @@ namespace Web.Service
                 return _table.Any(x => x.CompanyName == companyName);
             }
         }
+
+        public bool SetCompanyLogoFileName(int companyId, string fileName)
+        {
+            var dbModel = _table.SingleOrDefault(x => x.CompanyId == companyId);
+
+            dbModel.CompanyLogoFileName = fileName;
+
+            _table.Attach(dbModel);
+
+            _database.Entry(dbModel).State = EntityState.Modified;
+
+            try
+            {
+                _database.SaveChanges();
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
     }
 }

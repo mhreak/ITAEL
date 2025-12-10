@@ -7,7 +7,9 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using System.IO;
 using System.Linq;
 using Web.Controllers;
+using Web.Helper;
 using Web.Model;
+using Web.Service;
 using Web.Service.Identity.Interface;
 using Web.Service.Interface;
 
@@ -67,7 +69,7 @@ namespace Web.Areas.Admin.Controllers
         [HttpPost]
         [Route("Create")]
         [ValidateAntiForgeryToken]
-        public virtual ActionResult Create(ApplicantViewModel model,
+        public IActionResult Create(ApplicantViewModel model,
             IFormFile PersonalImageFile, IFormFile EducationalCertificateFile,
             IFormFile NationalCardFrontFile, IFormFile NationalCardBackFile,
             IFormFile IdentityCertificateFirstPageFile, IFormFile IdentityCertificateSecondPageFile
@@ -79,16 +81,16 @@ namespace Web.Areas.Admin.Controllers
                 {
                     if (!applicantService.IsDuplicateByMobile(null, model.Mobile))
                     {
-                        var cityList = cityService.GetAllByProvinceId(model.ProvinceId);
+                        var cityList = cityService.GetAllByProvinceId(model.ProvinceId.Value);
                         model.CityId = cityList.First().CityId;
-                        int applicantId = applicantService.Add(model);
+                        int applicantId = applicantService.Add(model, PasswordGenerator.GenerateIdentityPassword());
                         if (applicantId != -1)
                         {
                             string directoryPath = webHostEnvironment.WebRootPath + "\\Upload\\ApplicantDocument\\" + applicantId.ToString();
 
                             if (Directory.Exists(directoryPath))
                             {
-                                Directory.Delete(directoryPath);
+                                Directory.Delete(directoryPath, true);
                             }
 
                             Directory.CreateDirectory(directoryPath);
@@ -284,9 +286,9 @@ namespace Web.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        [Route("Edit")]
+        [Route("Edit/{id}")]
         [ValidateAntiForgeryToken]
-        public virtual ActionResult Edit(ApplicantViewModel model,
+        public IActionResult Edit(ApplicantViewModel model,
             IFormFile PersonalImageFile, IFormFile EducationalCertificateFile,
             IFormFile NationalCardFrontFile, IFormFile NationalCardBackFile,
             IFormFile IdentityCertificateFirstPageFile, IFormFile IdentityCertificateSecondPageFile)
@@ -303,7 +305,7 @@ namespace Web.Areas.Admin.Controllers
 
                             if (Directory.Exists(directoryPath))
                             {
-                                Directory.Delete(directoryPath);
+                                Directory.Delete(directoryPath, true);
                             }
 
                             Directory.CreateDirectory(directoryPath);
@@ -508,6 +510,14 @@ namespace Web.Areas.Admin.Controllers
             return Json(DataList);
         }
 
+        [Route("ShowOperationMenuDrawer/{applicantId}")]
+        public virtual ActionResult ShowOperationMenuDrawer(int applicantId)
+        {
+            var model = applicantService.Get(applicantId);
+
+            return PartialView("_ApplicantOprationDrawer", model);
+        }
+
         [Route("ShowApplicantSearchDialog")]
         public virtual ActionResult ShowApplicantSearchDialog(string valueElementId, string displayElementId)
         {
@@ -515,6 +525,15 @@ namespace Web.Areas.Admin.Controllers
             ViewBag.DisplayElementId = displayElementId;
 
             return PartialView("_ApplicantSearchDialog");
+        }
+
+        [Route("ShowApplicantsSearchDialog")]
+        public virtual ActionResult ShowApplicantsSearchDialog(string valueElementId, string displayElementId)
+        {
+            ViewBag.ValueElementId = valueElementId;
+            ViewBag.DisplayElementId = displayElementId;
+
+            return PartialView("_ApplicantsSearchDialog");
         }
     }
 }

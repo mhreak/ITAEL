@@ -1,0 +1,75 @@
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model List<Web.Areas.Applicant.Controllers.ApplicantDashboardViewModel>
+
+<style>
+    .company-logo {
+        max-width: 120px; /* یا هر اندازه‌ای که میخوای */
+        max-height: 120px;
+        object-fit: contain; /* عکس بدون کشیدگی و بهم‌ریختگی */
+    }
+</style>
+<!--Dashbord Moshkasat-->
+<!-- کاروسل شرکت‌ها-->
+<div class="col-lg-8 order-2 order-lg-2">
+    <div class="card h-100">
+        <div class="card-header bg-white d-flex justify-content-between align-items-center">
+            <h6 class="m-0">شرکت‌هایی که رزومه ارسال کرده‌اید</h6>
+        </div>
+
+        @if (Model.Count == 0)
+        {
+            <p class="small mb-3">موردی یافت نشد.</p>
+        }
+        else
+        {
+            @foreach (var item in Model)
+            {
+                <div id="appsCarousel" class="carousel slide" data-bs-ride="false">
+                    <div class="carousel-inner p-3">
+                        <div class="carousel-item active">
+                            <div class="card job-card">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-start gap-3">
+                                        <img src="~/Upload/CompanyDocument/@item.JobAnnouncementViewModel.CityId/@item.JobAnnouncementViewModel.CompanyLogoFileName"
+                                             alt="لوگو شرکت"
+                                             class="rounded-3 border company-logo"
+                                             onerror="this.onerror=null;this.src='/image/ITAEL-logo.png';" />
+
+                                        <div class="flex-grow-1">
+                                            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center align-items-start job-header">
+                                                <h6 class="fw-bold mb-1 mb-md-0 text-dark">@item.JobAnnouncementViewModel.CompanyName</h6>
+                                                @if (item.JobAnnouncementViewModel.HasEmploymentExam)
+                                                {
+                                                    <span class="badge status-badge mt-1 mt-md-0">دعوت به آزمون</span>
+                                                }
+                                            </div>
+
+                                            <div class="small text-body mb-2">@item.JobAnnouncementViewModel.CityName • @item.JobAnnouncementViewModel.JobTimeTypeStr</div>
+                                            @foreach (var item2 in item.JobAnnouncementStudyFieldViewModelList)
+                                            {
+                                                <div class="small text-body mb-2">@item2.StudyFieldName</div>
+                                            }
+                                            <p class="small mb-3">@item.JobAnnouncementViewModel.Title</p>
+                                            <div class="d-flex flex-wrap gap-2">
+                                                @if (item.HasExamResource)
+                                                {
+                                                    <a asp-area="Applicant" asp-controller="ExamResource" asp-action="Index" asp-route-jobAnnouncementId="@item.JobAnnouncementViewModel.JobAnnouncementId" class="btn btn-warning btn-sm w-sm-100">منابع آزمون</a>
+                                                }
+                                                @if (item.JobAnnouncementViewModel.HasEmploymentExam)
+                                                {
+                                                    <a asp-area="Applicant" asp-controller="Exam" asp-action="Index" asp-route-jobAnnouncementId="@item.JobAnnouncementViewModel.JobAnnouncementId" class="btn btn-warning btn-sm w-sm-100">شرکت در آزمون</a>
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            }
+        }
+
+    </div>
+</div>

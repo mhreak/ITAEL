@@ -1,84 +1,371 @@
-﻿@* @model ExamQuestionViewModel 
+﻿@model SubmitAnswerViewModel
+@{
+    Layout = "_Layout"; // یا layout خودت
+}
+
+<head>
+    <style>
+        /* fixed-width timer digits: prevents layout shift when value length changes */
+        .aside-card .time-left {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.375rem;
+        }
+
+            /* the numeric part */
+            .aside-card .time-left span#time-left {
+                /* reserve a fixed/min width so the container won't change size */
+                min-width: 64px; /* adjust if you want wider/narrower */
+                display: inline-block;
+                text-align: center;
+                /* use tabular numbers so each digit has identical width (no layout jump) */
+                font-variant-numeric: tabular-nums;
+                /* optional: use monospace font for digits if you prefer */
+                /* font-family: ui-monospace, "SFMono-Regular", Menlo, Monaco, "Roboto Mono", monospace; */
+            }
+
+        /* ensure timer icon and label don't wrap or move */
+        .aside-card .timer-head {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            white-space: nowrap;
+        }
+
+    </style>
+</head>
 
 <section id="exam-section" class="mt-4">
     <div class="section-box card p-3 p-md-4">
         <div class="d-flex flex-grid justify-content-between align-items-center mb-3">
-            <h5 class="m-0">آزمون شرکت گُلارن</h5>
+            <h5 class="m-0">@Model.ExamQuestionViewModel?.ExamTitle</h5>
         </div>
-        @if (Model.Type == 1)
-        {
-            <form asp-controller="Exam" asp-action="Index">
 
-            </form>
+        <form asp-area="Applicant" asp-controller="Exam" asp-action="TakeExam" method="post">
+            @Html.AntiForgeryToken()
+            <div asp-validation-summary="All" class="text-danger"></div>
+
+            @* Hidden fields for binding *@
+            <input type="hidden" name="JobAnnouncementId" value="@Model.JobAnnouncementId" />
+            <input type="hidden" name="ExamId" value="@Model.ExamId" />
+            <input type="hidden" name="ExamQuestionId" id="ExamQuestionId" value="@Model.ExamQuestionId" />
+            <input type="hidden" name="ApplicantExamAttemptId" value="@Model.ApplicantExamAttemptId" />
+            <input type="hidden" name="NavigationAction" id="NavigationAction" value="" />
+
             <div class="exam-container">
                 <div class="exam-main">
-                    <div class="question-card" id="q-card">
-                        <div class="q-title">سوال 3</div>
-                        <div class="q-body">
-                            @Model.Text
+                    <div class="question-card" id="q-card" data-job="@Model.JobAnnouncementId" data-exam="@Model.ExamId" data-question="@Model.ExamQuestionId" data-endtime="@ViewBag.EndTimeUtc">
+                        @* <div class="q-title" id="q-title">سوال @Model.ExamQuestionViewModel.QuestionOrder</div> *@
+
+                        <div class="q-body" id="q-body">
+                            @Html.Raw(Html.Encode(Model.ExamQuestionViewModel?.Text ?? "در حال بارگذاری..."))
                         </div>
-                        <div class="options">
-                            <label class="option">
-                                <input type="radio" name="q3" value="A">
-                                <span class="o-text">7</span>
-                            </label>
-                            <label class="option">
-                                <input type="radio" name="q3" value="B">
-                                <span class="o-text">52</span>
-                            </label>
-                            <label class="option">
-                                <input type="radio" name="q3" value="C">
-                                <span class="o-text">Wrong Time Error</span>
-                            </label>
-                            <label class="option">
-                                <input type="radio" name="q3" value="D">
-                                <span class="o-text">undefined</span>
-                            </label>
+
+                        <div class="options" id="options-container" data-loaded="false"
+                             data-selected="@Model.SelectedOptionId"
+                             data-user-answer="@Html.Encode(Model.AnswerText ?? "")">
+                            <div id="options-loading" class="text-center py-2">در حال بارگذاری گزینه‌ها...</div>
                         </div>
-                        <div class="q-nav">
-                            <button class="btn btn-outline" id="prevQ">سؤال قبلی</button>
-                            <button class="btn btn-primary" id="nextQ">سؤال بعدی</button>
+
+                        <div class="q-nav mt-3">
+                            @if (Model.AllowNavigateToPreviousQuestion && Model.PrevQuestionId.HasValue)
+                            {
+                                <a asp-area="Applicant" asp-controller="Exam" asp-action="TakeExam" asp-route-questionId="@Model.PrevQuestionId"
+                                   asp-route-jobAnnouncementId="@Model.JobAnnouncementId" asp-route-examId="@Model.ExamId" class="btn btn-outline" id="prevQ">سؤال قبلی</a>
+                            }
+                            @if (Model.NextQuestionId.HasValue)
+                            {
+                                <a asp-area="Applicant" asp-controller="Exam" asp-action="TakeExam" asp-route-questionId="@Model.NextQuestionId"
+                                   asp-route-jobAnnouncementId="@Model.JobAnnouncementId" asp-route-examId="@Model.ExamId" class="btn btn-primary" id="nextQ">سؤال بعدی</a>
+                            }
+
                         </div>
                     </div>
                 </div>
+
                 <aside class="exam-aside">
                     <div class="aside-card timer">
                         <div class="timer-head">
                             <i class="bi bi-clock-history"></i>
-                            <small class="time-left">زمان باقیمانده:<span id="time-left"></span></small>
+                            <small class="time-left">زمان باقیمانده: <span id="time-left"></span></small>
                         </div>
-                        <small class="text-body-secondary">زمان کل آزمون : 45:00</small>
+                        <small class="text-body-secondary">زمان کل آزمون : @ViewBag.DurationMinutes</small>
                     </div>
-                    <div class="aside-crd">
+
+                    <div class="aside-crd mt-3">
                         <div class="counter">
                             <span>سوال</span>
-                            <b><span id="q-now">3</span>/<span id="q-total">20</span></b>
+                            <b><span id="q-now">@Model.CurrentIndex</span>/<span id="q-total">@Model.QuestionsCount</span></b>
                         </div>
-                        <div class="progress"><span id="q-progress" style="width:15%"></span></div>
+                        <div class="progress mt-2">
+                            <span id="q-progress" style="display:block;width:@(Model.QuestionsCount > 0 ? (Model.CurrentIndex * 100 / Model.QuestionsCount) : 0)%"></span>
+                        </div>
                     </div>
-                    <button class="btn btn-muted" id="finishBtn" style="width:100%">پایان آزمون</button>
+
+                    <button type="submit" class="btn btn-muted mt-3" id="submitAnswer" style="width:100%">ثبت پاسخ و ادامه</button>
+                    <a asp-area="Applicant" asp-controller="Exam" asp-action="FinishExam" asp-route-jobAnnouncementId="@Model.JobAnnouncementId" asp-route-examId="@Model.ExamId" class="btn btn-danger mt-2" style="width:100%">پایان آزمون</a>
                 </aside>
             </div>
-        }
-        @if (Model.Type == 2)
-        {
-            <div class="exam-container">
-                <div class="exam-main">
-                    <div class="question-card" id="q-card">
-                        <div class="q-title">سوال 4</div>
-                        <div class="q-body">الگوریتم مرتب سازی درجی را شرح دهید.</div>
-
-                        <div class="answer-box" dir="rtl">
-                            <label class="answer-label" for="ans-q4">پاسخ شما</label>
-                            <textarea id="ans-q4" rows="6" maxlength="1200" placeholder="اینجا پاسخ خود را بنویسید..."></textarea>
-                        </div>
-                        <div class="q-nav">
-                            <button class="btn btn-outline" id="prevQ">سؤال قبلی</button>
-                            <button class="btn btn-primary" id="nextQ">سؤال بعدی</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        }
+        </form>
     </div>
-</section> *@
+</section>
+
+@section Scripts {
+    <script>
+        (function () {
+            // helper
+            function escapeHtml(s) {
+                if (s === undefined || s === null) return '';
+                return String(s).replace(/[&<>"']/g, function (m) { return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]; });
+            }
+
+            const optionsContainer = document.getElementById('options-container');
+            const qCard = document.getElementById('q-card');
+            if (!qCard) return;
+
+            const jobId = qCard.dataset.job;
+            const examId = qCard.dataset.exam;
+            const questionId = qCard.dataset.question;
+
+            const form = document.querySelector('form[asp-action="TakeExam"], form[action*="TakeExam"]') || document.querySelector('form');
+            if (!form) return;
+
+            const prevLink = document.getElementById('prevQ');
+            const nextLink = document.getElementById('nextQ');
+
+
+            function ensureSelectedHidden() {
+                const checked = optionsContainer.querySelector('input[type="radio"]:checked');
+                if (checked) {
+                    // ensure no duplicate hidden
+                    let hidden = document.getElementById('SelectedOptionHiddenField');
+                    if (!hidden) {
+                        hidden = document.createElement('input');
+                        hidden.type = 'hidden';
+                        hidden.name = 'SelectedOptionId';
+                        hidden.id = 'SelectedOptionHiddenField';
+                        form.appendChild(hidden);
+                    }
+                    hidden.value = checked.value;
+                } else {
+                    // remove hidden if exists
+                    const hidden = document.getElementById('SelectedOptionHiddenField');
+                    if (hidden) hidden.remove();
+                }
+            }
+
+                    function decodeHtml(html) {
+            if (!html) return '';
+            // create a text node via a temporarily DOM element to decode HTML entities
+            const txt = document.createElement('textarea');
+            txt.innerHTML = html;
+            return txt.value;
+        }
+
+          
+                    function loadOptions() {
+            if (!optionsContainer) return;
+
+            const loading = document.getElementById('options-loading');
+            const apiUrl = `/Applicant/Exam/GetQuestionOptions/${examId}/${questionId}`;
+
+            const preselected = optionsContainer.dataset.selected ? String(optionsContainer.dataset.selected) : null;
+
+            fetch(apiUrl, { headers: { 'Accept': 'application/json' } })
+                .then(res => {
+                    if (!res.ok) throw new Error('Network response was not ok');
+                    return res.json();
+                })
+                .then(list => {
+                    if (!Array.isArray(list) || list.length === 0) {
+                        // read prefilled answer from data attribute
+                        const prefilled = optionsContainer.dataset.userAnswer ?? '';
+
+                        // create textarea and set its value safely
+                        optionsContainer.innerHTML = `<div class="answer-box" dir="rtl">
+                            <label class="answer-label" for="AnswerText">پاسخ شما</label>
+                            <textarea name="AnswerText" id="AnswerText" rows="6" maxlength="4000" class="form-control"></textarea>
+                        </div>`;
+
+                        const ta = document.getElementById('AnswerText');
+                        if (ta) { ta.value = decodeHtml(prefilled); }
+
+                        // no radios to mirror, ensure hidden removed
+                        const hidden = document.getElementById('SelectedOptionHiddenField');
+                        if (hidden) hidden.remove();
+
+                        return;
+                    }
+
+                    // Build radios. Try several property names for id/title to be robust.
+                    function getId(opt) {
+                        return opt?.ExamQuestionOptionId ?? opt?.examQuestionOptionId ?? opt?.optionId ?? opt?.OptionId ?? opt?.Id ?? opt?.id ?? '';
+                    }
+                    function getTitle(opt) {
+                        return opt?.Title ?? opt?.title ?? opt?.text ?? opt?.Text ?? opt?.optionText ?? opt?.OptionText ?? '';
+                    }
+
+                    const radioName = 'SelectedOptionId';
+                    const html = list.map(opt => {
+                        const id = String(getId(opt));
+                        const title = getTitle(opt);
+                        // check if matches preselected
+                        const checked = (preselected && preselected === id) ? 'checked' : '';
+                        return `<label class="option d-block">
+                                    <input type="radio" name="${radioName}" value="${escapeHtml(id)}" ${checked}>
+                                    <span class="o-text ms-2">${escapeHtml(title)}</span>
+                                </label>`;
+                    }).join('');
+
+                    optionsContainer.innerHTML = html;
+
+                    // --- add uncheck-on-second-click behavior and keep hidden mirror in sync ---
+                    let lastChecked = null;
+                    const radios = optionsContainer.querySelectorAll(`input[name="${radioName}"]`);
+                    radios.forEach(r => {
+                        // initialize lastChecked if any radio is already checked from server preselected
+                        if (r.checked) lastChecked = r;
+
+                        // click handler: if click on already-checked -> uncheck; else select normally
+                        r.addEventListener('click', function (e) {
+                            if (this === lastChecked) {
+                                // user clicked same radio again => uncheck it
+                                this.checked = false;
+                                lastChecked = null;
+                                // update mirrored hidden field or remove
+                                const hidden = document.getElementById('SelectedOptionHiddenField');
+                                if (hidden) hidden.remove();
+                            } else {
+                                // normal selection
+                                lastChecked = this;
+                                ensureSelectedHidden();
+                            }
+                        });
+
+                        // also change handler to keep hidden updated when selection changes via keyboard etc.
+                        r.addEventListener('change', function () {
+                            if (this.checked) {
+                                lastChecked = this;
+                                ensureSelectedHidden();
+                            }
+                        });
+                    });
+
+                    // make sure hidden reflects preselected selection (if any)
+                    ensureSelectedHidden();
+                })
+                .catch(err => {
+                    console.error(err);
+                    if (loading) loading.innerHTML = '<div class="alert alert-danger">خطا در بارگذاری گزینه‌ها.</div>';
+                });
+        }
+
+            // intercept next/prev clicks: submit the form first so server saves answer, then server will redirect to the appropriate question
+        function interceptNav(linkEl, action) {
+            if (!linkEl) return;
+            linkEl.addEventListener('click', function (e) {
+                if (!this.href) return;
+                e.preventDefault();
+
+                // validation: اگر سوال چند گزینه‌ای است، انتخاب لازم است
+                const radios = document.querySelectorAll('#options-container input[type="radio"]');
+                if (radios && radios.length > 0) {
+                    const checked = document.querySelector('#options-container input[type="radio"]:checked');
+                    // if (!checked) {
+                    //     alert('لطفاً یک گزینه را انتخاب کنید.');
+                    //     return;
+                    // }
+                }
+
+                // set navigation action to "prev" or "next"
+                const navHidden = document.getElementById('NavigationAction');
+                if (navHidden) navHidden.value = action; // action is "prev" or "next"
+
+                // ensure mirrored hidden for SelectedOptionId if you use it
+                ensureSelectedHidden();
+
+                form.submit();
+            });
+        }
+
+            // attach interceptors
+            interceptNav(nextLink, 'next');
+            interceptNav(prevLink, 'prev');
+
+            // initial load
+            loadOptions();
+
+            // also update hidden before normal submit (pressing submitAnswer button)
+            const submitBtn = document.getElementById('submitAnswer');
+            if (submitBtn) {
+                    submitBtn.addEventListener('click', function () {
+            const navHidden = document.getElementById('NavigationAction');
+            if (navHidden) navHidden.value = 'next';
+            ensureSelectedHidden();
+        });
+            }
+
+        })();
+    </script>
+
+    <script>
+        (function () {
+            const qCard = document.getElementById('q-card');
+            const timeLeftEl = document.getElementById('time-left');
+            if (!qCard || !timeLeftEl) return;
+
+            const endIso = qCard.dataset.endtime;
+            if (!endIso) return;
+
+            const endTime = new Date(endIso);
+            if (isNaN(endTime.getTime())) {
+                console.error('Invalid endTime:', endIso);
+                return;
+            }
+
+            function updateTimerOnce() {
+                const now = new Date();
+                const diffMs = endTime.getTime() - now.getTime();
+                const diffSec = Math.floor(diffMs / 1000);
+
+                if (diffSec <= 0) {
+                    timeLeftEl.textContent = '00:00';
+                    // Try to submit form with NavigationAction = 'finish'
+                    const form = document.querySelector('form[asp-action="TakeExam"], form[action*="TakeExam"]') || document.querySelector('form');
+                    if (form) {
+                        const nav = document.getElementById('NavigationAction') || document.querySelector('input[name="NavigationAction"]');
+                        if (nav) nav.value = 'finish';
+                        try { form.submit(); }
+                        catch {
+                            // fallback redirect
+                            const job = qCard.dataset.job;
+                            const exam = qCard.dataset.exam;
+                            window.location.href = `/Applicant/Exam/FinishExam?jobAnnouncementId=${job}&examId=${exam}`;
+                        }
+                    } else {
+                        const job = qCard.dataset.job;
+                        const exam = qCard.dataset.exam;
+                        window.location.href = `/Applicant/Exam/FinishExam?jobAnnouncementId=${job}&examId=${exam}`;
+                    }
+                    clearInterval(timerInterval);
+                    return;
+                }
+
+                const hours = Math.floor(diffSec / 3600);
+                const mins = Math.floor((diffSec % 3600) / 60);
+                const secs = diffSec % 60;
+
+                let txt;
+                if (hours > 0) txt = `${hours}:${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`;
+                else txt = `${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`;
+
+                timeLeftEl.textContent = txt;
+            }
+
+            // initialize
+            updateTimerOnce();
+            const timerInterval = setInterval(updateTimerOnce, 1000);
+        })();
+    </script>
+
+}

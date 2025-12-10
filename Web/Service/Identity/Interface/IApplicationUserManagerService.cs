@@ -1,5 +1,7 @@
 ﻿using DbEntities.Identity;
 using System.Collections.Generic;
+
+using Web.Model;
 using Web.Model.Identity;
 
 namespace Web.Service.Identity.Interface
@@ -11,10 +13,16 @@ namespace Web.Service.Identity.Interface
 
         ApplicationUserViewModel Get(int id);
 
+        ApplicationUserViewModel GetByPhoneNumber(string phoneNumber);
+
+        int Add(ApplicationUserViewModel model, string password, string roleName);
+
         bool Edit(ApplicationUser model);
 
         bool SetOTP(int userId);
         bool ValidateOTP(int userId, string otp);
+
+        bool SendPassword(int userId, string password);
         ApplicationUserViewModel GetUserByApplicantId(int applicantId);
         IList<ApplicationUserViewModel> GetAllFiltered(
             string filterUserName, string filterName, string filterRoleId, int currentPage, int pageSize,

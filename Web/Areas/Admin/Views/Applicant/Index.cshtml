@@ -246,15 +246,13 @@
 
                     columns.Command(command =>
                     {
-                        command.Custom("ویرایش").Click("editRow").HtmlAttributes(new { @class = "command-btn-yellow" });
+                        command.Custom("منوی عملیات").Click("showApplicantOperationMenu").HtmlAttributes(new { @class = "command-btn-blue" });
 
                         command.Custom("حذف").Click("deleteRow").HtmlAttributes(new { @class = "command-btn-red" });
 
-                        command.Custom("سفارشات").Click("examResourceOrderListRow").HtmlAttributes(new { @class = "command-btn-blue" });
-
-                    }).Width(400);
+                    }).Width(500);
                 })
-                .HtmlAttributes(new { style = "height: 550px;border-radius:0.25rem;" })
+                .HtmlAttributes(new { style = "height: 550px;border-radius:5px;" })
                 .Filterable(ftb => ftb.Mode(GridFilterMode.Menu))
                 .Scrollable(scrollable => scrollable.Virtual(true))
                 .Sortable()
@@ -278,7 +276,7 @@
     </div>
     <div class="row" style="margin-top:20px;">
         <div class="col-xs-6 col-sm-6 col-md-6">
-            <a href="@Url.Action("Create", "Applicant")" class="btn btn-success form-command-btn" style="display:inline-block;float:right;">
+            <a href="@Url.Action("Create", "Applicant")" class="btn btn-success form-command-btn " style="display:inline-block;float:right;">
                 <span><i class="fa fa-plus"></i><span>&nbsp;</span>ثبت جدید</span>
             </a>
         </div>
@@ -331,7 +329,7 @@
         var dataItem = this.dataItem(jQuery(e.currentTarget).closest("tr"));
 
         showConfirmModalMessage(
-            "warning",
+            "danger",
             "عملیات حذف",
             "آیا از حذف اطمینان دارید؟",
             "انصراف",         
@@ -369,9 +367,10 @@
         
     }
         
-    function examResourceOrderListRow(e) {
-        e.preventDefault();
-        var dataItem = this.dataItem(jQuery(e.currentTarget).closest("tr"));
-        window.location.href = "/Admin/ExamResourceOrder/Index/" + dataItem.ApplicantId;
+    function showApplicantOperationMenu(e) {
+         e.preventDefault();
+         var dataItem = this.dataItem(jQuery(e.currentTarget).closest("tr"));
+
+        openBottomDrawer("/Admin/Applicant/ShowOperationMenuDrawer/" + dataItem.ApplicantId, 'عملیات داوطلب', '45', 'عملیات داوطلب', '#F4F8F9');
     }
 </script>

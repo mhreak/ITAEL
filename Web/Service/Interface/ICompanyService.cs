@@ -21,5 +21,7 @@ namespace Web.Service.Interface
             int currentPage, int pageSize, out int totalRecord);
 
         bool IsDuplicateByCompanyName(int? companyId, string companyName);
+
+        bool SetCompanyLogoFileName(int companyId, string fileName);
     }
 }

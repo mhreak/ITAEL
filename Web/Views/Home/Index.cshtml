@@ -1,168 +1,415 @@
-﻿@model Web.Model.JobAnnouncementViewModel
-@{
-    ViewData["Title"] = "آگهی های شغلی";
-    Layout = "_Layout";
-}
-<html lang="fa" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>آگهی های شغلی</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.min.css" rel="stylesheet">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
-</head>
-<body>
-    <div class="container-fluid mt-4">
-        <h2 class="mb-4">آگهی های شغلی</h2>
-        <div class="row mb-3">
-            <div class="col-md-2">
-                <label for="filterJobType">نوع شغل</label>
-                <select id="filterJobType" class="form-control">
-                    <option value="">همه</option>
-                    <option value="1">حضوری</option>
-                    <option value="2">دورکاری</option>
-                </select>
-            </div>
-            <div class="col-md-2">
-                <label for="filterJobTime">نوع ساعت کاری</label>
-                <select id="filterJobTime" class="form-control">
-                    <option value="">همه</option>
-                    <option value="1">تمام‌وقت</option>
-                    <option value="2">پاره‌وقت</option>
-                </select>
-            </div>
-            <div class="col-md-2">
-                <label for="CategoryMultiSelect">دسته‌بندی</label>
-                <select id="CategoryMultiSelect" class="form-control selectpicker" multiple data-live-search="true"></select>
-            </div>
-            <div class="col-md-2">
-                <label for="StudyFieldMultiSelect">رشته تحصیلی</label>
-                <select id="StudyFieldMultiSelect" class="form-control selectpicker" multiple data-live-search="true"></select>
-            </div>
-            <div class="col-md-2">
-                <label for="SkillMultiSelect">مهارت</label>
-                <select id="SkillMultiSelect" class="form-control selectpicker" multiple data-live-search="true"></select>
-            </div>
-            <div class="col-md-2 d-flex align-items-end">
-                <button id="filterBtn" class="btn btn-primary w-100">
-                    <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
-                    فیلتر
-                </button>
-            </div>
-        </div>
-        <div id="announcementCardBody" class="row"></div>
-        <div id="loadingSpinner" class="text-center mt-3 d-none">
-            <div class="spinner-border text-primary" role="status">
-                <span class="visually-hidden">در حال بارگذاری...</span>
+﻿
+<title>لیست آگهی ها | ایتائل</title>
+
+
+<style>
+    .loading-spinner {
+        display: flex;
+        align-items: center;
+        gap: .5rem;
+        justify-content: center;
+        padding: 1rem 0;
+    }
+
+    .no-results {
+        text-align: center;
+        padding: 1.5rem;
+        color: #666;
+    }
+
+    .job-card-row {
+        margin-bottom: 1rem;
+    }
+
+    .job-card-logo img {
+        width: 64px;
+        height: 64px;
+        object-fit: cover;
+        border-radius: 6px;
+    }
+</style>
+
+
+<!-- Hero -->
+<section class="jobs-hero">
+    <div class="hero-inner container">
+        <div class="hero-content-box">
+            <h1 class="hero-title mb-3">فرصت شغلی مناسب خود را پیدا کنید</h1>
+            <div class="d-flex flex-wrap gap-2">
+                <a href="#jobs-list" class="btn btn-primary hero-btn">جستجوی فرصت شغلی</a>
+                <a asp-area="Applicant" asp-controller="Account" asp-action="SignUp" class="btn hero-btn-outline">ساخت حساب کاربری</a>
             </div>
         </div>
     </div>
+</section>
 
-    <!-- Error Modal -->
-    <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title text-danger" id="errorModalLabel">خطا</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    خطایی در دریافت داده‌ها رخ داد. لطفاً دوباره تلاش کنید.
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">بستن</button>
+<section class="jobs-section pb-5">
+    <div class="container">
+        <div class="d-lg-none mb-3">
+            <button class="btn btn-outline-primary w-100" type="button"
+                    data-bs-toggle="collapse" data-bs-target="#filtersCollapse"
+                    aria-expanded="false" aria-controls="filtersCollapse">
+                نمایش فیلترها
+            </button>
+        </div>
+
+        <div id="filtersCollapse" class="collapse show">
+            <div class="filters-card card mb-4">
+                <div class="card-body">
+
+                    <div class="row g-3 align-items-end">
+
+                        <div class="col-12 col-md-4">
+                            <label class="form-label">نوع کار</label>
+                            <select class="form-select" id="filterJobType">
+                                <option value="">همه</option>
+                                <option value="1">حضوری</option>
+                                <option value="2">غیرحضوری</option>
+                            </select>
+                        </div>
+
+                        <div class="col-12 col-md-4">
+                            <label class="form-label">زمان کار</label>
+                            <select class="form-select" id="filterJobTime">
+                                <option value="">همه</option>
+                                <option value="1">پاره وقت</option>
+                                <option value="2">تمام وقت</option>
+                            </select>
+                        </div>
+
+                        <div class="col-12 col-md-4">
+                            <label class="form-label" data-placeholder="انتخاب دسته بندی شغلی ">دسته بندی</label>
+                            <div class="filter-multi" data-filter="category">
+                                <button type="button" class="filter-toggle w-100">
+                                    <span class="filter-label">انتخاب دسته‌بندی</span>
+                                </button>
+
+                                <div class="filter-dropdown">
+                                    <div class="filter-search-row">
+                                        <input type="text" class="filter-search" placeholder="جستجو...">
+                                        <i class="bi bi-search"></i>
+                                    </div>
+                                    <div class="filter-options">
+                                        <!-- محتوا توسط JS پر می‌شود -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-md-6">
+                            <label class="form-label" data-placeholder="انتخاب رشته تحصیلی">رشته تحصیلی</label>
+                            <div class="filter-multi" data-filter="major">
+                                <button type="button" class="filter-toggle w-100">
+                                    <span class="filter-label">انتخاب رشته</span>
+                                </button>
+
+                                <div class="filter-dropdown">
+                                    <div class="filter-search-row">
+                                        <input type="text" class="filter-search" placeholder="جستجو...">
+                                        <i class="bi bi-search"></i>
+                                    </div>
+                                    <div class="filter-options">
+                                        <!-- پر می‌شود -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-md-6">
+                            <label class="form-label" data-placeholder="انتخاب مهارت">مهارت‌ها</label>
+                            <div class="filter-multi" data-filter="skills">
+                                <button type="button" class="filter-toggle w-100">
+                                    <span class="filter-label">انتخاب مهارت</span>
+                                </button>
+
+                                <div class="filter-dropdown">
+                                    <div class="filter-search-row">
+                                        <input type="text" class="filter-search" placeholder="جستجو...">
+                                        <i class="bi bi-search"></i>
+                                    </div>
+                                    <div class="filter-options">
+                                        <!-- پر می‌شود -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col text-start">
+                            <button class="btn btn-primary px-5" id="applyFiltersBtn">
+                                اعمال فیلترها
+                            </button>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
     </div>
+</section>
 
-    <script>
-        $(document).ready(function () {
-            $('.selectpicker').selectpicker();
+<!-- Job Listing Section -->
+<section class="jobs-listing py-4" id="jobs-list">
+    <div class="container">
+        <div class="text-center mb-4">
+            <h2 class="jobs-list-title mb-2">لیست آگهی‌ها</h2>
+            <p class="jobs-list-subtitle">
+                فرصت‌های شغلی فعال که می‌تونی رزومه‌ات رو برای آن‌ها ارسال کنی.
+            </p>
+        </div>
 
-            function loadOptions(url, elementId) {
-                $.get(url)
-                    .done(function (data) {
-                        let options = '';
-                        data.forEach(item => {
-                            options += `<option value="${item.Value}">${item.Text}</option>`;
-                        });
-                        $(`#${elementId}`).html(options).selectpicker('refresh');
-                    })
-                    .fail(function () {
-                        console.error(`Error loading options for ${elementId}`);
-                    });
-            }
+        <div class="jobs-list-wrapper mx-auto" id="jobsListWrapper">
+            <!-- کارت‌ها توسط JS رندر می‌شوند -->
+        </div>
+    </div>
+</section>
 
-            loadOptions('/JobAnnouncementCategory/Fill_JobAnnouncementCategory_Combo?active=true', 'CategoryMultiSelect');
-            loadOptions('/StudyField/Fill_StudyField_Combo?active=true', 'StudyFieldMultiSelect');
-            loadOptions('/Skill/Fill_Skill_Combo?active=true', 'SkillMultiSelect');
 
-            $('#filterBtn').on('click', function () {
-                const filters = {
-                    filterJobType: $('#filterJobType').val(),
-                    filterJobTime: $('#filterJobTime').val(),
-                    filterCategoryId: $('#CategoryMultiSelect').val() ? $('#CategoryMultiSelect').val().join(',') : '',
-                    filterStudyFieldId: $('#StudyFieldMultiSelect').val() ? $('#StudyFieldMultiSelect').val().join(',') : '',
-                    filterSkillId: $('#SkillMultiSelect').val() ? $('#SkillMultiSelect').val().join(',') : ''
-                };
 
-                console.log(filters);
-                loadAnnouncements(filters);
-            });
+<script>
+    const apiBase = '';
 
-            function loadAnnouncements(filters = {}) {
-                $("#loadingSpinner").removeClass("d-none");
-                $("#filterBtn").prop("disabled", true).find(".spinner-border").removeClass("d-none");
+    const routes = {
+      skills: apiBase + 'Skill/Fill_Skill_Combo',
+      studyFields: apiBase + 'StudyField/Fill_StudyField_Combo',
+      categories: apiBase + 'JobAnnouncementCategory/Fill_JobAnnouncementCategory_Combo',
+      announcements: apiBase + 'Home/GetAnnouncements'
+    };
 
-                fetch(`/GetAnnouncements?${new URLSearchParams(filters)}`)
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error("پاسخ شبکه درست نبود");
-                        }
-                        return response.json();
-                    })
-                    .then(data => {
-                        $("#announcementCardBody").html("");
+    // --- کمکی: گرفتن مقدار از آبجکت با چند نام ممکن (fallback) ---
+    function getField(obj, keys) {
+      for (const k of keys) {
+        if (obj == null) continue;
+        if (obj[k] !== undefined && obj[k] !== null) return obj[k];
+      }
+      return '';
+    }
 
-                        if (data.length > 0) {
-                            data.forEach(job => {
-                                const card = `
-                                    <div class="col-12">
-                                        <div class="card mb-4">
-                                            <div class="card-body">
-                                                <h5 class="card-title">${job.Title}</h5>
-                                                <h6 class="card-subtitle mb-2 text-muted">${job.CompanyName}</h6>
-                                                <p><strong>تاریخ انتشار:</strong> ${job.ShamsiPublishDate}</p>
-                                                <p><strong>نوع شغل:</strong> ${job.JobTypeStr}</p>
-                                                <p><strong>نوع ساعت کاری:</strong> ${job.JobTimeTypeStr}</p>
-                                                <p><strong>ظرفیت:</strong> ${job.Capacity}</p>
-                                                <p><strong>جنسیت:</strong> ${job.GenderStr}</p>
-                                                <a href="#" class="btn btn-primary">مشاهده جزئیات</a>
-                                            </div>
-                                        </div>
-                                    </div>`;
-                                $("#announcementCardBody").append(card);
-                            });
-                        } else {
-                            $("#announcementCardBody").html(`<div class="col-12"><p class="text-center">داده‌ای برای نمایش موجود نیست</p></div>`);
-                        }
-                    })
-                    .catch(error => {
-                        console.error("خطا در دریافت داده‌ها:", error);
-                        $("#errorModal").modal('show');
-                    })
-                    .finally(() => {
-                        $("#loadingSpinner").addClass("d-none");
-                        $("#filterBtn").prop("disabled", false).find(".spinner-border").addClass("d-none");
-                    });
-            }
+    // --- رندر یک کارت آگهی از آبجکت دریافتی ---
+    function renderJobCard(job) {
+        debugger;
+      const title = getField(job, ['Title']);
+      const jobAnnouncementId = getField(job, ['JobAnnouncementId']);
+      const company = getField(job, ['CompanyName']);
+      const location = getField(job, ['CityName']);
+      const jobTime = getField(job, ['JobTimeTypeStr']); // 1/2
+      const jobType = getField(job, ['JobTypeStr']); // 1/2
+      let logo = 'image/ITAEL-logo.png';
 
-            loadAnnouncements();
+     const logoFile = getField(job, ['CompanyLogoFileName']);
+     const companyId = getField(job, ['CompanyId']);
+
+     if (logoFile) {
+         logo = `Upload/CompanyDocument/${companyId}/${logoFile}`;
+     }
+
+
+      const detailUrl = '/JobAnnouncement/Details/' + jobAnnouncementId;
+
+      const badgeTime = jobTime ? `<span class="badge job-badge-type">${jobTime}</span>` : '';
+      const badgeMode = jobType ? `<span class="badge job-badge-mode">${jobType}</span>` : '';
+
+      return `
+        <article class="job-card-row card">
+          <div class="card-body job-card-inner d-flex align-items-center justify-content-between flex-wrap">
+            <div class="job-card-logo me-3">
+              <img src="${logo}" alt="لوگو">
+            </div>
+            <div class="job-card-info flex-grow-1 px-3">
+              <div class="d-flex flex-wrap align-items-center gap-2 mb-1">
+                <h5 class="job-card-title mb-0">${title}</h5>
+              </div>
+              <div class="job-card-meta small d-flex flex-wrap gap-3">
+                <span><i class="bi bi-building ms-1"></i> ${company}</span>
+                <span><i class="bi bi-geo-alt ms-1"></i> ${location}</span>
+              </div>
+              <div class="mt-2">${badgeTime} ${badgeMode}</div>
+            </div>
+            <div class="job-card-action text-start">
+              <a href="${detailUrl}" class="btn btn-primary btn-sm job-card-btn">مشاهده جزئیات</a>
+            </div>
+          </div>
+        </article>
+      `;
+    }
+
+    // --- رندر لیست آگهی‌ها ---
+    function showAnnouncements(list) {
+      const wrap = document.getElementById('jobsListWrapper');
+      wrap.innerHTML = '';
+      if (!list || !list.length) {
+        wrap.innerHTML = `<div class="no-results">آگهی‌ای یافت نشد.</div>`;
+        return;
+      }
+      const html = list.map(renderJobCard).join('\n');
+      wrap.innerHTML = html;
+    }
+
+    // --- نمایش spinner هنگام لود ---
+    function showLoading() {
+      const wrap = document.getElementById('jobsListWrapper');
+      wrap.innerHTML = `<div class="loading-spinner"><div class="spinner-border" role="status"><span class="visually-hidden">Loading...</span></div><div>در حال دریافت آگهی‌ها...</div></div>`;
+    }
+
+    // --- فراخوانی API دریافت آگهی‌ها با پارامترها ---
+    async function loadAnnouncements({ filterJobType='', filterJobTime='', filterCategoryId='', filterStudyFieldId='', filterSkillId='' } = {}) {
+      try {
+
+        showLoading();
+        const params = new URLSearchParams();
+        if (filterJobType) params.append('filterJobType', filterJobType);
+        if (filterJobTime) params.append('filterJobTime', filterJobTime);
+        if (filterCategoryId) params.append('filterCategoryId', filterCategoryId);
+        if (filterStudyFieldId) params.append('filterStudyFieldId', filterStudyFieldId);
+        if (filterSkillId) params.append('filterSkillId', filterSkillId);
+
+        const url = routes.announcements + (params.toString() ? ('?' + params.toString()) : '');
+        const res = await fetch(url, { method: 'GET', credentials: 'same-origin' });
+        if (!res.ok) throw new Error('خطا در دریافت آگهی‌ها: ' + res.status);
+        const data = await res.json();
+        showAnnouncements(data);
+      } catch (err) {
+        console.error(err);
+        document.getElementById('jobsListWrapper').innerHTML = `<div class="no-results">خطا در دریافت آگهی‌ها. کنسول را چک کنید.</div>`;
+      }
+    }
+
+    // --- پر کردن یک فیلتر با داده‌های JSON برگشتی از سرور ---
+    async function populateFilter(route, filterName) {
+      try {
+
+        const res = await fetch(route, { method: 'GET', credentials: 'same-origin' });
+        if (!res.ok) {
+          console.warn('خطا در لود فیلتر', filterName, res.status);
+          return;
+        }
+        const data = await res.json(); // انتظار: [{ Text: "...", Value: "12" }, ...]
+        const container = document.querySelector(`.filter-multi[data-filter="${filterName}"] .filter-options`);
+        if (!container) return;
+        container.innerHTML = ''; // clear
+
+        data.forEach(item => {
+          // some backends might return {text,value} lowercase - tolerate both
+          const text = item.Text ?? item.text ?? item.SkillName ?? item.StudyFieldName ?? item.CategoryName ?? '';
+          const value = item.Value ?? item.value ?? item.SkillId ?? item.StudyFieldId ?? item.JobAnnouncementCategoryId ?? '';
+
+          const id = `${filterName}_opt_${value}`;
+
+          const row = document.createElement('label');
+          row.className = 'form-check filter-option';
+          row.innerHTML = `
+            <input class="form-check-input" type="checkbox" id="${id}" value="${value}">
+            <span class="form-check-label">${text}</span>
+          `;
+          container.appendChild(row);
         });
-    </script>
-</body>
-</html>
+      } catch (err) {
+        console.error('populateFilter error', filterName, err);
+      }
+    }
+
+    // --- رفتار مولتی‌سلکت و سرچ داخل لیست (همان کدی که قبلاً بود با پشتیبانی از المنت‌های داینامیک) ---
+    document.addEventListener("click", function (e) {
+        const toggle = e.target.closest(".filter-toggle");
+        const multiInside = e.target.closest(".filter-multi");
+
+        document.querySelectorAll(".filter-multi").forEach(function (m) {
+            if (toggle && m === multiInside) {
+                m.classList.toggle("open");
+            } else if (!multiInside || m !== multiInside) {
+                m.classList.remove("open");
+            }
+        });
+    });
+
+    function attachFilterSummaryUpdate(multi) {
+      const labelSpan   = multi.querySelector(".filter-label");
+      const countSpan   = multi.querySelector(".filter-count");
+      const placeholder = labelSpan.dataset.placeholder || labelSpan.textContent.trim();
+
+      function updateSummary() {
+          const checkboxes = multi.querySelectorAll("input[type='checkbox']");
+          const checked = Array.from(checkboxes).filter(function (c) { return c.checked; });
+          if (checked.length === 0) {
+              labelSpan.textContent = placeholder;
+              if (countSpan) countSpan.classList.add("d-none");
+              return;
+          }
+          const values = checked.map(function (c) { return c.nextElementSibling.textContent.trim(); });
+          const shown = values.slice(0, 2).join("، ");
+          labelSpan.textContent = values.length > 2 ? (shown + " و ...") : shown;
+          if (countSpan) {
+              countSpan.classList.remove("d-none");
+              countSpan.textContent = `(${values.length} مورد)`;
+          }
+      }
+
+      // هم روی تغییرات داینامیک و هم روی کلیک event listener
+      multi.addEventListener('change', function (e) {
+        if (e.target && e.target.matches("input[type='checkbox']")) updateSummary();
+      });
+
+      // پس از پر شدن گزینه‌ها با JS باید updateSummary قابل استفاده باشد
+      return updateSummary;
+    }
+
+    // اتصال سرچ برای هر مولتی
+    function attachFilterSearch(multi) {
+      const searchInput = multi.querySelector(".filter-search");
+      const optionRows  = multi.querySelectorAll(".filter-option");
+      if (!searchInput) return;
+      searchInput.addEventListener("input", function () {
+          const q = this.value.trim().toLowerCase();
+          const rows = multi.querySelectorAll(".filter-option");
+          rows.forEach(function (row) {
+              const text = row.textContent.trim().toLowerCase();
+              row.style.display = text.includes(q) ? "" : "none";
+          });
+      });
+    }
+
+    // --- جمع‌آوری فیلترها و فراخوانی API ---
+    document.getElementById('applyFiltersBtn').addEventListener('click', function () {
+      const jobType = document.getElementById('filterJobType').value;
+      const jobTime = document.getElementById('filterJobTime').value;
+
+      // برای category, major, skills: اگر چند انتخاب شده است تنها اولین مقدار ارسال می‌شود (به دلیل محدودیت بک‌اند فعلی).
+      function firstCheckedValue(filterName) {
+        const first = document.querySelector(`.filter-multi[data-filter="${filterName}"] input[type="checkbox"]:checked`);
+        return first ? first.value : '';
+      }
+
+      const filterCategoryId = firstCheckedValue('category');
+      const filterStudyFieldId = firstCheckedValue('major');
+      const filterSkillId = firstCheckedValue('skills');
+
+      loadAnnouncements({
+        filterJobType: jobType,
+        filterJobTime: jobTime,
+        filterCategoryId,
+        filterStudyFieldId,
+        filterSkillId
+      });
+    });
+
+    // --- init: پر کردن فیلترها و لود اولیه آگهی‌ها ---
+    async function init() {
+      await Promise.all([
+        populateFilter(routes.categories, 'category'),
+        populateFilter(routes.studyFields, 'major'),
+        populateFilter(routes.skills, 'skills')
+      ]);
+
+      // attach search + summary update روی هر مولتی
+      document.querySelectorAll('.filter-multi').forEach(m => {
+        attachFilterSearch(m);
+        attachFilterSummaryUpdate(m)();
+      });
+
+      // لود اولیه آگهی‌ها (بدون فیلتر)
+      loadAnnouncements();
+    }
+
+    // اجرا هنگام بارگذاری صفحه
+    document.addEventListener('DOMContentLoaded', init);
+</script>

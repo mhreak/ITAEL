@@ -10,6 +10,15 @@
         [MaxLength(100)]
         public string CompanyName { get; set; }
 
+        [MaxLength(4000)]
+        public string? Description { get; set; }
+
+        [MaxLength(1000)]
+        public string? WebsiteAddress { get; set; }
+
+        [MaxLength(100)]
+        public string? CompanyLogoFileName { get; set; }
+
         [Required]
         public DateTime InsertDate { get; set; }
 

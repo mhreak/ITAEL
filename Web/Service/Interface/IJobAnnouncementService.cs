@@ -13,6 +13,8 @@ namespace Web.Service.Interface
 
         JobAnnouncementViewModel Get(int id);
 
+        List<JobAnnouncementViewModel> GetAllLast(int count);
+
         public IList<JobAnnouncementViewModel> GetAllFiltered(
             string filterTitle, string filterGender, string filterHasEmployementExam,
             string filterPublishDateFrom, string filterPublishDateTo,

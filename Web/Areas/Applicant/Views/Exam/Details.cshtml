@@ -1,0 +1,43 @@
+﻿@model ExamDetailsViewModel
+
+<!-- Exam Info -->
+<div id="exam-card">
+
+    <div class="ei-topicon">
+        <img src="~/image/exam-info.png" class="page-icon" alt="@Model.ExamTitle">
+        <span class="ei-title">@Model.ExamTitle</span>
+        <small class="ei-sub">بازه آزمون: @Model.StartDate تا @Model.EndDate</small>
+    </div>
+
+    <div class="ei-row small">
+        <div class="ei-card">
+            <div class="ei-icon"><i class="bi bi-calendar-check"></i></div>
+            <div class="ei-body">
+                <span class="ei-label">بازه تاریخ آزمون</span>
+                <span class="ei-value">از @Model.StartDate تا @Model.EndDate</span>
+            </div>
+        </div>
+
+        <div class="ei-card">
+            <div class="ei-icon"><i class="bi bi-clock"></i></div>
+            <div class="ei-body">
+                <span class="ei-label">مدت زمان پاسخ به سوالات آزمون</span>
+                <span class="ei-value">@Model.DurationMinutes دقیقه</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="ei-row full">
+        <div class="ei-card ei-card-full">
+            <div class="ei-icon"><i class="bi bi-grid"></i></div>
+            <div class="ei-body">
+                <span class="ei-label">تعداد سؤال</span>
+                <span class="ei-value">@Model.QuestionsCount سؤال (@Model.MultipleChoiceQuestionsCount تستی + @Model.AnnotationQuestionsCount تشریحی)</span>
+            </div>
+        </div>
+    </div>
+    <div class="ei-actions">
+        <a asp-area="Applicant" asp-controller="Exam" asp-action="TakeExam" asp-route-jobAnnouncementId="@Model.JobAnnouncementId" asp-route-examId="@Model.ExamId" class="btn-start">شروع آزمون</a>
+    </div>
+
+</div>

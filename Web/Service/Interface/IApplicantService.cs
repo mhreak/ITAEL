@@ -5,7 +5,7 @@ namespace Web.Service.Interface
 {
     public interface IApplicantService
     {
-        int Add(ApplicantViewModel uiModel);
+        int Add(ApplicantViewModel uiModel, string password);
 
         bool Edit(ApplicantViewModel uiModel);
 

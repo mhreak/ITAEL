@@ -30,10 +30,14 @@ namespace DbConnection.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ApplicantId"));
 
-                    b.Property<DateTime>("BirthDate")
+                    b.Property<string>("Address")
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)");
+
+                    b.Property<DateTime?>("BirthDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("CityId")
+                    b.Property<int?>("CityId")
                         .HasColumnType("int");
 
                     b.Property<string>("EducationalCertificateFileName")
@@ -81,7 +85,6 @@ namespace DbConnection.Migrations
                         .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("NationalCode")
-                        .IsRequired()
                         .HasMaxLength(10)
                         .HasColumnType("nvarchar(10)");
 
@@ -93,7 +96,11 @@ namespace DbConnection.Migrations
                         .HasMaxLength(11)
                         .HasColumnType("nvarchar(11)");
 
-                    b.Property<int>("StudyFieldId")
+                    b.Property<string>("PostalCode")
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
+                    b.Property<int?>("StudyFieldId")
                         .HasColumnType("int");
 
                     b.HasKey("ApplicantId");
@@ -154,12 +161,19 @@ namespace DbConnection.Migrations
                         .HasColumnType("int")
                         .HasColumnOrder(0);
 
+                    b.Property<string>("AdditionalCorrectionTips")
+                        .HasMaxLength(4000)
+                        .HasColumnType("nvarchar(4000)");
+
                     b.Property<string>("AnswerText")
                         .HasMaxLength(4000)
                         .HasColumnType("nvarchar(4000)");
 
                     b.Property<int?>("ExamQuestionOptionId")
                         .HasColumnType("int");
+
+                    b.Property<double>("Grade")
+                        .HasColumnType("float");
 
                     b.Property<DateTime>("InsertDate")
                         .HasColumnType("datetime2");
@@ -186,11 +200,58 @@ namespace DbConnection.Migrations
                     b.Property<DateTime>("InsertDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<short>("Status")
+                        .HasColumnType("smallint");
+
                     b.HasKey("ApplicantId", "JobAnnouncementId");
 
                     b.HasIndex("JobAnnouncementId");
 
                     b.ToTable("Applicant_JobAnnouncement");
+                });
+
+            modelBuilder.Entity("DbEntities.BankGateway", b =>
+                {
+                    b.Property<int>("BankGatewayId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("BankGatewayId"));
+
+                    b.Property<bool>("Active")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("GatewayName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<short>("GatewayType")
+                        .HasColumnType("smallint");
+
+                    b.Property<string>("Parameter1")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Parameter2")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Parameter3")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Parameter4")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Parameter5")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("BankGatewayId");
+
+                    b.ToTable("BankGateway");
                 });
 
             modelBuilder.Entity("DbEntities.City", b =>
@@ -310,10 +371,18 @@ namespace DbConnection.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CompanyId"));
 
+                    b.Property<string>("CompanyLogoFileName")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
                     b.Property<string>("CompanyName")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(4000)
+                        .HasColumnType("nvarchar(4000)");
 
                     b.Property<DateTime>("InsertDate")
                         .HasColumnType("datetime2");
@@ -321,9 +390,40 @@ namespace DbConnection.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
+                    b.Property<string>("WebsiteAddress")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
                     b.HasKey("CompanyId");
 
                     b.ToTable("Company");
+                });
+
+            modelBuilder.Entity("DbEntities.ContactMessage", b =>
+                {
+                    b.Property<int>("ContactMessageId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ContactMessageId"));
+
+                    b.Property<string>("Mobile")
+                        .IsRequired()
+                        .HasMaxLength(11)
+                        .HasColumnType("nvarchar(11)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Text")
+                        .IsRequired()
+                        .HasMaxLength(4000)
+                        .HasColumnType("nvarchar(4000)");
+
+                    b.HasKey("ContactMessageId");
+
+                    b.ToTable("ContactMessage");
                 });
 
             modelBuilder.Entity("DbEntities.Exam", b =>
@@ -356,8 +456,14 @@ namespace DbConnection.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ExamQuestionId"));
 
+                    b.Property<string>("AnswerText")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("ExamId")
                         .HasColumnType("int");
+
+                    b.Property<double>("Grade")
+                        .HasColumnType("float");
 
                     b.Property<int>("QuestionOrder")
                         .HasColumnType("int");
@@ -456,11 +562,11 @@ namespace DbConnection.Migrations
                     b.Property<int>("ApplicantId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("BankGatewayId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime?>("DeliveryDate")
                         .HasColumnType("datetime2");
-
-                    b.Property<int>("ExamResourceId")
-                        .HasColumnType("int");
 
                     b.Property<DateTime>("OrderDate")
                         .HasColumnType("datetime2");
@@ -475,9 +581,38 @@ namespace DbConnection.Migrations
 
                     b.HasIndex("ApplicantId");
 
-                    b.HasIndex("ExamResourceId");
+                    b.HasIndex("BankGatewayId");
 
                     b.ToTable("ExamResourceOrder");
+                });
+
+            modelBuilder.Entity("DbEntities.ExamResourceOrderItem", b =>
+                {
+                    b.Property<int>("ExamResourceOrderItemId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ExamResourceOrderItemId"));
+
+                    b.Property<int>("ExamResourceId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ExamResourceOrderId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("InsertDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("ExamResourceOrderItemId");
+
+                    b.HasIndex("ExamResourceId");
+
+                    b.HasIndex("ExamResourceOrderId");
+
+                    b.ToTable("ExamResourceOrderItem");
                 });
 
             modelBuilder.Entity("DbEntities.Identity.ApplicationUser", b =>
@@ -737,12 +872,14 @@ namespace DbConnection.Migrations
                     b.Property<int?>("Capacity")
                         .HasColumnType("int");
 
+                    b.Property<int>("CityId")
+                        .HasColumnType("int");
+
                     b.Property<int>("CompanyId")
                         .HasColumnType("int");
 
                     b.Property<string>("Description")
-                        .HasMaxLength(3000)
-                        .HasColumnType("nvarchar(3000)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("ExamDate")
                         .HasColumnType("datetime2");
@@ -762,14 +899,32 @@ namespace DbConnection.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
+                    b.Property<DateTime?>("JobAnnouncementApplicationDeadlineDateFrom")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("JobAnnouncementApplicationDeadlineDateTo")
+                        .HasColumnType("datetime2");
+
                     b.Property<short?>("JobTimeType")
                         .HasColumnType("smallint");
 
                     b.Property<short?>("JobType")
                         .HasColumnType("smallint");
 
+                    b.Property<decimal?>("Price")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<DateTime>("PublishDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<decimal?>("Salary")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("ShamsiJobAnnouncementApplicationDeadlineDateFrom")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ShamsiJobAnnouncementApplicationDeadlineDateTo")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("ShowCompanyInfo")
                         .HasColumnType("bit");
@@ -780,6 +935,8 @@ namespace DbConnection.Migrations
                         .HasColumnType("nvarchar(100)");
 
                     b.HasKey("JobAnnouncementId");
+
+                    b.HasIndex("CityId");
 
                     b.HasIndex("CompanyId");
 
@@ -927,6 +1084,57 @@ namespace DbConnection.Migrations
                     b.ToTable("JobAnnouncement_StudyField");
                 });
 
+            modelBuilder.Entity("DbEntities.OnlineTransaction", b =>
+                {
+                    b.Property<long>("OnlineTransactionId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("OnlineTransactionId"));
+
+                    b.Property<int>("Amount")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ApplicantId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("BankGatewayId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ExamResourceOrderId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("InsertDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("JobAnnouncementId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ReferenceNumber")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<short>("State")
+                        .HasColumnType("smallint");
+
+                    b.Property<string>("TransactionCmnt")
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
+
+                    b.Property<DateTime?>("VerifyDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("OnlineTransactionId");
+
+                    b.HasIndex("BankGatewayId");
+
+                    b.HasIndex("ExamResourceOrderId");
+
+                    b.HasIndex("ApplicantId", "JobAnnouncementId");
+
+                    b.ToTable("OnlineTransaction");
+                });
+
             modelBuilder.Entity("DbEntities.PaymentType", b =>
                 {
                     b.Property<int>("PaymentTypeId")
@@ -978,6 +1186,30 @@ namespace DbConnection.Migrations
                     b.HasKey("ProvinceId");
 
                     b.ToTable("Province");
+                });
+
+            modelBuilder.Entity("DbEntities.SMSPattern", b =>
+                {
+                    b.Property<int>("SMSPatternId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("PatternCode")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("SMSPatternName")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("TemplateText")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<short?>("TemplateType")
+                        .HasColumnType("smallint");
+
+                    b.HasKey("SMSPatternId");
+
+                    b.ToTable("SMSPattern");
                 });
 
             modelBuilder.Entity("DbEntities.Setting", b =>
@@ -1188,15 +1420,11 @@ namespace DbConnection.Migrations
                 {
                     b.HasOne("DbEntities.City", "City")
                         .WithMany("ApplicantList")
-                        .HasForeignKey("CityId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CityId");
 
                     b.HasOne("DbEntities.StudyField", "StudyField")
                         .WithMany("ApplicantList")
-                        .HasForeignKey("StudyFieldId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("StudyFieldId");
 
                     b.Navigation("City");
 
@@ -1308,15 +1536,30 @@ namespace DbConnection.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("DbEntities.ExamResource", "ExamResource")
+                    b.HasOne("DbEntities.BankGateway", null)
                         .WithMany("ExamResourceOrderList")
+                        .HasForeignKey("BankGatewayId");
+
+                    b.Navigation("Applicant");
+                });
+
+            modelBuilder.Entity("DbEntities.ExamResourceOrderItem", b =>
+                {
+                    b.HasOne("DbEntities.ExamResource", "ExamResource")
+                        .WithMany("ExamResourceOrderItem_List")
                         .HasForeignKey("ExamResourceId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("DbEntities.ExamResourceOrder", "ExamResourceOrder")
+                        .WithMany("ExamResourceOrderItemList")
+                        .HasForeignKey("ExamResourceOrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Applicant");
-
                     b.Navigation("ExamResource");
+
+                    b.Navigation("ExamResourceOrder");
                 });
 
             modelBuilder.Entity("DbEntities.Identity.CustomRoleClaim", b =>
@@ -1391,11 +1634,19 @@ namespace DbConnection.Migrations
 
             modelBuilder.Entity("DbEntities.JobAnnouncement", b =>
                 {
+                    b.HasOne("DbEntities.City", "City")
+                        .WithMany("JobAnnouncementList")
+                        .HasForeignKey("CityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("DbEntities.Company", "Company")
                         .WithMany("JobAnnouncementList")
                         .HasForeignKey("CompanyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("City");
 
                     b.Navigation("Company");
                 });
@@ -1495,6 +1746,31 @@ namespace DbConnection.Migrations
                     b.Navigation("StudyField");
                 });
 
+            modelBuilder.Entity("DbEntities.OnlineTransaction", b =>
+                {
+                    b.HasOne("DbEntities.BankGateway", "BankGateway")
+                        .WithMany("OnlineTransactionList")
+                        .HasForeignKey("BankGatewayId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DbEntities.ExamResourceOrder", "ExamResourceOrder")
+                        .WithMany("OnlineTransactionList")
+                        .HasForeignKey("ExamResourceOrderId");
+
+                    b.HasOne("DbEntities.Applicant_JobAnnouncement", "Applicant_JobAnnouncement")
+                        .WithMany()
+                        .HasForeignKey("ApplicantId", "JobAnnouncementId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Applicant_JobAnnouncement");
+
+                    b.Navigation("BankGateway");
+
+                    b.Navigation("ExamResourceOrder");
+                });
+
             modelBuilder.Entity("DbEntities.Skill_ExamResource", b =>
                 {
                     b.HasOne("DbEntities.ExamResource", "ExamResource")
@@ -1585,9 +1861,18 @@ namespace DbConnection.Migrations
                     b.Navigation("ApplicantExamQuestionAnswerList");
                 });
 
+            modelBuilder.Entity("DbEntities.BankGateway", b =>
+                {
+                    b.Navigation("ExamResourceOrderList");
+
+                    b.Navigation("OnlineTransactionList");
+                });
+
             modelBuilder.Entity("DbEntities.City", b =>
                 {
                     b.Navigation("ApplicantList");
+
+                    b.Navigation("JobAnnouncementList");
                 });
 
             modelBuilder.Entity("DbEntities.Collaborator", b =>
@@ -1628,13 +1913,20 @@ namespace DbConnection.Migrations
 
             modelBuilder.Entity("DbEntities.ExamResource", b =>
                 {
-                    b.Navigation("ExamResourceOrderList");
+                    b.Navigation("ExamResourceOrderItem_List");
 
                     b.Navigation("JobAnnouncement_ExamResource_List");
 
                     b.Navigation("Skill_ExamResource_List");
 
                     b.Navigation("StudyField_ExamResource_List");
+                });
+
+            modelBuilder.Entity("DbEntities.ExamResourceOrder", b =>
+                {
+                    b.Navigation("ExamResourceOrderItemList");
+
+                    b.Navigation("OnlineTransactionList");
                 });
 
             modelBuilder.Entity("DbEntities.JobAnnouncement", b =>

@@ -28,14 +28,18 @@ namespace DbConnection
         public DbSet<Province> Province { get; set; }
         public DbSet<Applicant> Applicant { get; set; }
         public DbSet<SystemSMS> SystemSMS { get; set; }
+        public DbSet<SMSPattern> SMSPattern { get; set; }
         public DbSet<StudyField> StudyField { get; set; }
+        public DbSet<BankGateway> BankGateway { get; set; }
         public DbSet<PaymentType> PaymentType { get; set; }
         public DbSet<Collaborator> Collaborator { get; set; }
         public DbSet<ExamResource> ExamResource { get; set; }
         public DbSet<ExamQuestion> ExamQuestion { get; set; }
         public DbSet<CommissionRule> CommissionRule { get; set; }
+        public DbSet<ContactMessage> ContactMessage { get; set; }
         public DbSet<JobAnnouncement> JobAnnouncement { get; set; }
         public DbSet<WalletCommission> WalletCommission { get; set; }
+        public DbSet<OnlineTransaction> OnlineTransaction { get; set; }
         public DbSet<ExamResourceOrder> ExamResourceOrder { get; set; }
         public DbSet<ExamQuestionOption> ExamQuestionOption { get; set; }
         public DbSet<Skill_ExamResource> Skill_ExamResource { get; set; }
@@ -93,6 +97,18 @@ namespace DbConnection
                 b.Property(x => x.InsertDate).IsRequired();
             });
 
+            modelBuilder.Entity<ExamResourceOrderItem>()
+                        .HasOne(eri => eri.ExamResourceOrder)
+                        .WithMany(ero => ero.ExamResourceOrderItemList)
+                        .HasForeignKey(eri => eri.ExamResourceOrderId)
+                        .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<ExamResourceOrderItem>()
+                        .HasOne(eri => eri.ExamResource)
+                        .WithMany(er => er.ExamResourceOrderItem_List)
+                        .HasForeignKey(eri => eri.ExamResourceId)
+                        .OnDelete(DeleteBehavior.Restrict); // or DeleteBehavior.NoAction
+
             modelBuilder.Entity<ApplicantExamAttempt>(b =>
             {
                 b.Property(x => x.FinalScore).HasPrecision(10, 2); // choose precision/scale for your domain
@@ -146,6 +162,12 @@ namespace DbConnection
                 table.CollaboratorId,
                 table.CommissionRuleId
             });
+
+            modelBuilder.Entity<OnlineTransaction>()
+                        .HasOne(e => e.Applicant_JobAnnouncement)
+                        .WithMany()
+                        .HasForeignKey(e => new { e.ApplicantId, e.JobAnnouncementId })
+                        .IsRequired();
 
             modelBuilder.Entity<ApplicationUser>().ToTable("User").Property(p => p.Id).HasColumnName("UserId");
             modelBuilder.Entity<CustomRole>().ToTable("Role");

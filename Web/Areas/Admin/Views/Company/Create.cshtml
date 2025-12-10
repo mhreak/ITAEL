@@ -19,6 +19,60 @@
                         <span style="color:red;font-size:20px;">*</span>
                     </div>
                 </div>
+                <div class="row form-group" style="margin-top:30px;">
+                    @Html.LabelFor(model => model.WebsiteAddress, htmlAttributes: new { @class = "control-label col-md-2 col-sm-3 form-input-label" })
+                    <div class="col-md-3 col-sm-4">
+                        @Html.EditorFor(model => model.WebsiteAddress)
+                        @Html.ValidationMessageFor(model => model.WebsiteAddress, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-md-7 col-sm-5">
+                        <span style="color:red;font-size:20px;">*</span>
+                    </div>
+                </div>
+                <div class="col-md-6 col-12">
+                    <div class="row form-group" style="margin-top:30px;">
+                        @Html.Label(null, "لوگوی شرکت", htmlAttributes: new { @class = "control-label col-md-4 col-sm-12 form-input-label", style = "float:right;text-align:right;" })
+                        <div class="col-md-6 col-sm-10 col-10">
+                            @(Html.Kendo().Upload()
+                                  .Name("CompanyLogoFile")
+                                  .HtmlAttributes(new
+                                                  {
+                                                      id = "CompanyLogoFile",
+                                                      aria_label = "files"
+                                                  })
+                                  .Messages(m => m.Select("انتخاب فایل"))
+                                  .Messages(m => m.InvalidMaxFileSize("حداکثر حجم قابل آپلود یک مگابایت است"))
+                                  .Validation(validation => validation.MaxFileSize(1048576))
+                                  .Validation(validation => validation.AllowedExtensions(new string[] { "jpg", "jpeg", "png" })))
+                        </div>
+                        <div class="col-md-2 col-sm-2 col-2">
+                        </div>
+                    </div>
+                </div>
+                <div class="row form-group" style="margin-top:30px;">
+                    @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2 col-sm-3 form-input-label" })
+                    <div class="col-md-8 col-sm-12 col-12">
+                        <div class="col-12 k-rtl" style="margin-top:22px;">
+                            @(Html.Kendo().EditorFor(model => model.Description)
+                                  .HtmlAttributes(new { style = "width: 100%; height:360px;font-family:'IranSans';", aria_label = "editor" })
+                                  .Encoded(false)
+                                  .Tools(tools => tools
+                                                  .Clear()
+                                                  .Bold().Italic().Underline()
+                                                  .JustifyLeft().JustifyCenter().JustifyRight().JustifyFull()
+                                                  .InsertOrderedList()
+                                                  .InsertUnorderedList()
+                                                  .Outdent().Indent()
+                                                  .CreateLink().Unlink()
+                                                  .FontSize()
+                                  )
+                            )
+                            @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="col-md-7 col-sm-5">
+                    </div>
+                </div>
                 <hr style="margin-top:45px;color:orangered;" />
                 <div class="row" style="margin-top:12px;">
                     <div class="col-md-6 col-sm-12">

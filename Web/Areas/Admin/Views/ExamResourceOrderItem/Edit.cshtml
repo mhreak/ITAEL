@@ -1,0 +1,58 @@
+﻿@model Web.Model.ExamResourceOrderItemViewModel
+
+@{
+    ViewData["PageTitle"] = $"ویرایش آیتم سفارش برای داوطلب {ViewBag.ApplicantFullName}";
+}
+
+<div style="margin-top:-14px;">
+    @using (Html.BeginForm(null, null, FormMethod.Post, new { name = "my-form", id = "my-form" }))
+    {
+        @Html.HiddenFor(model => model.ExamResourceOrderItemId)
+        @Html.HiddenFor(model => model.ExamResourceOrderId)
+        @Html.HiddenFor(model => model.InsertDate)
+
+        <div class="container-card padding30" style="padding-top:45px;">
+            <div class="form-horizontal">
+                <div class="row form-group" style="margin-top:30px;">
+                    @Html.Label(null, "منابع آزمون", htmlAttributes: new { @class = "control-label col-md-2 col-sm-3 form-input-label" })
+                    <div class="col-md-3 col-sm-4">
+                        @Html.Hidden("ExamResourceId")
+                        @Html.TextBox("ResourceName", "", new { @readonly = "readonly", @class = "form-control" })
+                    </div>
+                    <div class="col-md-1 col-sm-2" style="margin-right:-20px;">
+                        <a class="btn btn-info modal-link" href=@Url.Action("ShowExamResourceSearchDialog",
+                                                                            "ExamResource", new { Area = "Admin", valueElementId = "ExamResourceId",
+                                                                                                    displayElementId = "ResourceName" })
+                           style="box-shadow:none;border-radius:0.4rem;height:40px;font-size:20px;padding-top:6px;">
+                            <i class="uil-search"></i>
+                        </a>
+                    </div>
+                    <div class="col-md-2 col-sm-2 col-12">
+                        <span style="color:red;font-size:20px;">*</span>
+                    </div>
+                </div>
+                
+                <div class="row form-group" style="margin-top:30px;">
+                    @Html.LabelFor(model => model.Price, htmlAttributes: new { @class = "control-label col-md-2 col-sm-3 form-input-label" })
+                    <div class="col-md-3 col-sm-4">
+                        @Html.EditorFor(model => model.Price)
+                        @Html.ValidationMessageFor(model => model.Price, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-md-7 col-sm-5">
+                        <span style="color:red;font-size:20px;">*</span>
+                    </div>
+                </div>
+
+                <hr style="margin-top:45px;color:orangered;" />
+                <div class="row" style="margin-top:12px;">
+                    <div class="col-md-6 col-sm-12">
+                        <input type="submit" class="btn btn-success form-command-btn" value="ذخیره" style="float:right;" />
+                    </div>
+                    <div class="col-md-6 col-sm-12">
+                        <a href=@Url.Action("Index", "ExamResourceOrderItem", new { Area = "Admin", exanResourceOrderId = @Model.ExamResourceOrderId }) class="btn btn-danger form-command-btn" style="float: left;">بازگشت</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>

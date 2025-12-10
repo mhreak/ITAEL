@@ -5,13 +5,15 @@ using Kendo.Mvc.Extensions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Web.Model.Identity;
-using Web.Service.Identity.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Security.Claims;
+using Web.Model;
+using Web.Model.Identity;
+using Web.Service.Identity.Interface;
+using Web.Service.Interface;
 
 namespace Web.Service.Identity
 {
@@ -22,6 +24,7 @@ namespace Web.Service.Identity
         private readonly DbSet<ApplicationUser> _table;
         private ApplicationUser _user;
         private readonly IUserRoleService _userRoleService;
+        private readonly IFarazSMSService _farazSMSService;
         private readonly IRoleManagerService _roleManagerService;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IHttpContextAccessor _httpContextAccessor;
@@ -31,6 +34,7 @@ namespace Web.Service.Identity
             IMapper mappingEngine,
             //Func<IIdentity> identity,
             IUserRoleService userRoleService,
+            IFarazSMSService farazSMSService,
             IRoleManagerService roleManagerService,
             IHttpContextAccessor httpContextAccessor,
             UserManager<ApplicationUser> userManager)
@@ -40,10 +44,11 @@ namespace Web.Service.Identity
             _mapper = mappingEngine;
             _table = _database.Set<ApplicationUser>();
             _userRoleService = userRoleService;
+            _farazSMSService = farazSMSService;
             _roleManagerService = roleManagerService;
             _httpContextAccessor = httpContextAccessor;
             _userManager = userManager;
-    }
+        }
 
         public ApplicationUserViewModel GetCurrentUser()
         {
@@ -243,6 +248,38 @@ namespace Web.Service.Identity
             }
         }
 
+        public bool SendPassword(int userId, string password)
+        {
+            try
+            {
+                if (_table.Any(x => x.Id == userId))
+                {
+                    var dbModel = _table.SingleOrDefault(x => x.Id == userId);
+
+                    if (dbModel != null)
+                    {
+                        var patternParameters = new List<KeyValuePair<string, string>>
+                                                {
+                                                    new KeyValuePair<string, string>("otp-code", password)
+                                                };
+
+                        _farazSMSService.SendPatternedSMS(1, dbModel.PhoneNumber, patternParameters);
+                        return true;
+                    }
+
+                    return false;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
+        }
+
         public bool SetPhoneNumberConfirmd(int userId, bool value)
         {
             try
@@ -311,7 +348,7 @@ namespace Web.Service.Identity
         {
             var dbModel = _table.Where(x => x.Id == id).FirstOrDefault();
 
-            if(dbModel == null)
+            if (dbModel == null)
             {
                 return null;
             }
@@ -340,6 +377,75 @@ namespace Web.Service.Identity
             return uiModel;
         }
 
+        public ApplicationUserViewModel GetByPhoneNumber(string phoneNumber)
+        {
+            var dbModel = _table.FirstOrDefault(x => x.PhoneNumber == phoneNumber);
+
+            if (dbModel == null)
+            {
+                return null;
+            }
+
+            ApplicationUserViewModel uiModel = new ApplicationUserViewModel();
+
+            _mapper.Map(dbModel, uiModel);
+
+            string roleName = _roleManagerService.Get(_userRoleService.GetAllByUserId(dbModel.Id).First().RoleId).Name;
+
+            switch (roleName)
+            {
+                case "Passenger":
+                    roleName = "مسافر";
+                    break;
+                case "Admin":
+                    roleName = "مدیر";
+                    break;
+                case "Manager":
+                    roleName = "مدیر ارشد";
+                    break;
+            }
+
+            uiModel.RoleName = roleName;
+
+            return uiModel;
+        }
+
+        public int Add(ApplicationUserViewModel model, string password, string roleName)
+        {
+            var dbModel = _table.FirstOrDefault(x => x.PhoneNumber == model.PhoneNumber);
+
+            if (dbModel != null)
+            {
+                return -1;
+            }
+
+            var applicationUser = new ApplicationUser();
+            _mapper.Map(model, applicationUser);
+            _table.Add(applicationUser);
+
+            try
+            {
+                _database.SaveChanges();
+                var roleViewModel = _roleManagerService.GetAll().FirstOrDefault(x => x.Name == roleName);
+                var userRoleViewModel = new UserRoleViewModel()
+                {
+                    RoleId = roleViewModel.Id,
+                    UserId = applicationUser.Id
+                };
+                bool isAdd = _userRoleService.Add(userRoleViewModel);
+
+                if (!isAdd)
+                {
+                    return -1;
+                }
+
+                return applicationUser.Id;
+            }
+            catch (Exception)
+            {
+                return -1;
+            }
+        }
         public bool Edit(ApplicationUser model)
         {
             var dbModel = _table.SingleOrDefault(x => x.Id == model.Id);

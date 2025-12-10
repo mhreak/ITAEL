@@ -1,0 +1,82 @@
+﻿@model Web.Areas.Admin.Controllers.SMSViewModel
+
+<div style="margin-top:-14px;">
+    @using (Html.BeginForm(null, null, FormMethod.Post, new { name = "my-form", id = "my-form" }))
+    {
+        <div class="container-card padding30" style="padding-top:45px;">
+            <div class="form-horizontal">
+
+                <div class="row form-group" style="margin-top:30px;">
+                    @Html.Label(null, "داوطلب", htmlAttributes: new { @class = "control-label col-md-2 col-sm-3 form-input-label" })
+                    <div class="col-md-3 col-sm-4">
+                        @Html.Hidden("ApplicantIdList", "", new { id = "ApplicantIdList" })
+                        @Html.TextBox("ApplicantFullNames", "", new { id = "ApplicantFullNames", @readonly = "readonly", @class = "form-control" })
+
+                    </div>
+                    <div class="col-md-1 col-sm-5" style="margin-right:-20px;">
+                        <a class="btn btn-info modal-link" href=@Url.Action("ShowApplicantsSearchDialog", "Applicant", new { Area = "Admin",
+                                                                                                                           valueElementId = "ApplicantId", displayElementId = "ApplicantFullName"}) style="box-shadow:none;border-radius:0.4rem;height:40px;font-size:20px;padding-top:6px;"><i class="uil-search"></i></a>
+                    </div>
+                    <div class="col-md-5 col-sm-5" style="margin-right:-40px;">
+                    </div>
+                </div>
+
+            <hr />
+
+            <!-- نوع پیامک -->
+            <div class="row form-group" style="margin-top:30px;">
+                @Html.Label(null, "نوع پیامک", htmlAttributes: new { @class = "control-label col-md-2 col-sm-3 form-input-label" })
+                <div class="col-md-3 col-sm-4">
+                    @Html.DropDownListFor(model => model.SystemSMSViewModel.SMSType,
+                                        new SelectList(
+                                        new List<SelectListItem>
+                                        {
+                                        new SelectListItem { Text = "لیست قیمت هوشمند", Value = "1" },
+                                        new SelectListItem { Text = "تبریک تولد", Value = "2" },
+                                        new SelectListItem { Text = "ثبت درخواست فعالسازی گارانتی", Value = "3" },
+                                        new SelectListItem { Text = "رد شدن درخواست فعالسازی گارانتی", Value = "4" },
+                                        new SelectListItem { Text = "فعال شدن گارانتی", Value = "5" },
+                                        new SelectListItem { Text = "پایان دوره گارانتی", Value = "6" },
+                                        new SelectListItem { Text = "ارسال زیلینک", Value = "7" },
+                                        new SelectListItem { Text = "ارسال لینک لیست قیمت", Value = "8" }
+                                        },
+                                        "Value", "Text"),
+                                        "انتخاب کنید",
+                                        new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.SystemSMSViewModel.SMSType, "", new { @class = "text-danger" })
+                </div>
+                <div class="col-md-5 col-sm-5"></div>
+            </div>
+
+                <div class="col-md-6 col-12">
+                    <div class="row form-group" style="margin-top:30px;">
+                        @Html.LabelFor(model => model.SystemSMSViewModel.SendDate, htmlAttributes: new { @class = "control-label col-md-4 col-sm-12 col-12 form-input-label" })
+                        <div class="col-md-6 col-sm-10 col-10">
+                            @Html.EditorFor(model => model.SystemSMSViewModel.SendDate)
+                            @Html.ValidationMessageFor(model => model.SystemSMSViewModel.SendDate, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="col-md-2 col-sm-2 col-2">
+                            <span style="color:red;font-size:20px;">*</span>
+                        </div>
+                    </div>
+                </div>
+            <hr style="margin-top:45px;color:orangered;" />
+
+            <!-- دکمه‌های اکشن -->
+            <div class="row" style="margin-top:20px;">
+                <div class="col-xs-6 col-sm-6 col-md-6">
+                    <button type="submit" class="btn btn-success form-command-btn">
+                        <span class="btn-label"><i class="uil-envelope"></i><span>&nbsp;</span>ارسال</span>
+                    </button>
+                </div>
+                <div class="col-xs-6 col-sm-6 col-md-6 text-left">
+                    <a href="@Url.Action("Index", "SystemSMS", new { Area = "Admin" })" class="btn btn-danger form-command-btn" style="float:left;">
+                        <span class="btn-label"><i class="fa fa-reply"></i><span>&nbsp;</span>بازگشت</span>
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+        }
+</div>

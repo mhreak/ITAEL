@@ -31,8 +31,8 @@
         [Required]
         public DateTime InsertDate { get; set; }
 
-        public virtual ICollection<ExamResourceOrder> ExamResourceOrderList { get; set; } = [];
         public virtual ICollection<Skill_ExamResource> Skill_ExamResource_List { get; set; } = [];
+        public virtual ICollection<ExamResourceOrderItem> ExamResourceOrderItem_List { get; set; } = [];
         public virtual ICollection<StudyField_ExamResource> StudyField_ExamResource_List { get; set; } = [];
         public virtual ICollection<JobAnnouncement_ExamResource> JobAnnouncement_ExamResource_List { get; set; } = [];
     }

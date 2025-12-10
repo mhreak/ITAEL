@@ -1,4 +1,6 @@
-﻿using AutoMapper;
+﻿using System;
+
+using AutoMapper;
 using DbConnection;
 using DbEntities.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -40,6 +42,31 @@ namespace Web.Service.Identity
 
             _mapper.Map(dbModelList, uiModelList);
             return uiModelList;
+        }
+
+        public bool Add(UserRoleViewModel model)
+        {
+            var dbModel = _table.FirstOrDefault(x => x.RoleId == model.RoleId && x.UserId == model.UserId);
+
+            if (dbModel != null)
+            {
+                return false;
+            }
+
+            var userRole = new CustomUserRole();
+            _mapper.Map(model, userRole);
+            _table.Add(userRole);
+
+            try
+            {
+                _uow.SaveChanges();
+
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
     }
 }

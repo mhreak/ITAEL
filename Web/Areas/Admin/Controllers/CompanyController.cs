@@ -1,18 +1,23 @@
-﻿using Web.Model;
-using System.Linq;
+﻿using DbEntities;
 using Kendo.Mvc.UI;
-using Web.Controllers;
-using Web.Service.Interface;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.AspNetCore.Authorization;
+using System.IO;
+using System.Linq;
+using Web.Controllers;
+using Web.Model;
+using Web.Service;
+using Web.Service.Interface;
 
 namespace Web.Areas.Admin.Controllers
 {
     [Area("Admin")]
     [Route("Admin/[controller]")]
     [Authorize(Roles = "Manager,Admin")]
-    public class CompanyController(ICompanyService companyService) : BaseController
+    public class CompanyController(ICompanyService companyService, IWebHostEnvironment webHostEnvironment, IUtilService utilService) : BaseController
     {
         [Route("Index")]
         public IActionResult Index()
@@ -51,16 +56,50 @@ namespace Web.Areas.Admin.Controllers
         [HttpPost]
         [Route("Create")]
         [ValidateAntiForgeryToken]
-        public virtual ActionResult Create(CompanyViewModel model)
+        public IActionResult Create(CompanyViewModel model, IFormFile CompanyLogoFile)
         {
             if (ModelState.IsValid)
             {
                 if (!companyService.IsDuplicateByCompanyName(null, model.CompanyName))
                 {
-                    if (companyService.Add(model) != -1)
+                    int companyId = companyService.Add(model);
+                    if (companyId != -1)
                     {
-                        ShowSuccessToast("عملیات انجام شد", "اطلاعات با موفقیت ذخیره شد");
+                        string directoryPath = webHostEnvironment.WebRootPath + "\\Upload\\CompanyDocument\\" + companyId.ToString();
 
+                        if (Directory.Exists(directoryPath))
+                        {
+                            Directory.Delete(directoryPath, true);
+                        }
+
+                        Directory.CreateDirectory(directoryPath);
+
+                        if (CompanyLogoFile != null && CompanyLogoFile.Length > 0)
+                        {
+                            string uploadedFileName = CompanyLogoFile.FileName;
+                            string[] splittedFileName = uploadedFileName.Split('.').ToArray();
+                            string uploadedFileExtention = CompanyLogoFile.FileName.Split('.')[splittedFileName.Length - 1];
+                            string generatedFileName = utilService.GenerateRandomString(15) + "." + uploadedFileExtention;
+
+                            string filePath = directoryPath + "\\" + generatedFileName;
+
+                            while (System.IO.File.Exists(filePath))
+                            {
+                                generatedFileName = utilService.GenerateRandomString(15) + "." + uploadedFileExtention;
+                                filePath = directoryPath + "\\" + generatedFileName;
+                            }
+
+                            using (var stream = new FileStream(filePath, FileMode.Create))
+                            {
+                                CompanyLogoFile.CopyTo(stream);
+
+                                companyService.SetCompanyLogoFileName(companyId, generatedFileName);
+
+                                stream.Close();
+                            }
+                        }
+
+                        ShowSuccessToast("عملیات انجام شد", "اطلاعات با موفقیت ذخیره شد");
                         return RedirectToAction("Index");
                     }
                     else
@@ -96,7 +135,7 @@ namespace Web.Areas.Admin.Controllers
         [HttpPost]
         [Route("Edit/{id}")]
         [ValidateAntiForgeryToken]
-        public virtual ActionResult Edit(CompanyViewModel model)
+        public IActionResult Edit(CompanyViewModel model, IFormFile CompanyLogoFile)
         {
             if (ModelState.IsValid)
             {
@@ -104,8 +143,41 @@ namespace Web.Areas.Admin.Controllers
                 {
                     if (companyService.Edit(model))
                     {
-                        ShowSuccessToast("عملیات انجام شد", "اطلاعات با موفقیت ذخیره شد");
+                        string directoryPath = webHostEnvironment.WebRootPath + "\\Upload\\CompanyDocument\\" + model.CompanyId.ToString();
 
+                        if (Directory.Exists(directoryPath))
+                        {
+                            Directory.Delete(directoryPath, true);
+                        }
+
+                        Directory.CreateDirectory(directoryPath);
+
+                        if (CompanyLogoFile != null && CompanyLogoFile.Length > 0)
+                        {
+                            string uploadedFileName = CompanyLogoFile.FileName;
+                            string[] splittedFileName = uploadedFileName.Split('.').ToArray();
+                            string uploadedFileExtention = CompanyLogoFile.FileName.Split('.')[splittedFileName.Length - 1];
+                            string generatedFileName = utilService.GenerateRandomString(15) + "." + uploadedFileExtention;
+
+                            string filePath = directoryPath + "\\" + generatedFileName;
+
+                            while (System.IO.File.Exists(filePath))
+                            {
+                                generatedFileName = utilService.GenerateRandomString(15) + "." + uploadedFileExtention;
+                                filePath = directoryPath + "\\" + generatedFileName;
+                            }
+
+                            using (var stream = new FileStream(filePath, FileMode.Create))
+                            {
+                                CompanyLogoFile.CopyTo(stream);
+
+                                companyService.SetCompanyLogoFileName(model.CompanyId, generatedFileName);
+
+                                stream.Close();
+                            }
+                        }
+
+                        ShowSuccessToast("عملیات انجام شد", "اطلاعات با موفقیت ذخیره شد");
                         return RedirectToAction("Index");
                     }
                     else

@@ -1,0 +1,121 @@
+﻿@model IEnumerable<ApplicantExamAttemptViewModel>
+
+@{
+    ViewData["PageTitle"] = $"لیست آزمون های داوطلب {ViewBag.ApplicantFullName} برای آگهی {ViewBag.JobAnnouncementTitle}";
+}
+
+<div class="accordion" id="custom-accordion-one" style="margin-top:-14px;">
+    <div class="k-rtl" style="margin-top:20px;">
+        <div style="height:100%;">
+            @(
+                        Html.Kendo().Grid<ApplicantExamAttemptViewModel>().Name("Grid").Columns(columns =>
+                        {
+                            columns.Bound(c => c.ExamTitle).Width(250);
+                            columns.Bound(c => c.ShamsiStartTime).Width(250);
+                            columns.Bound(c => c.ShamsiEndTime).Width(250);
+                            columns.Bound(c => c.FinalScore).Width(250);
+                            columns.Bound(c => c.StatusStr).Width(250);
+                            columns.Command(command =>
+                            {
+
+                                command.Custom("حذف").Click("deleteRow").HtmlAttributes(new { @class = "command-btn-red" });
+
+                                command.Custom("نمایش جواب ها").Click("showAnswersRow").HtmlAttributes(new { @class = "command-btn-blue" });
+
+                            }).Width(400);
+                        })
+                        .HtmlAttributes(new { style = "height: 550px;border-radius:5px;" })
+                        .Filterable(ftb => ftb.Mode(GridFilterMode.Menu))
+                        .Scrollable(scrollable => scrollable.Virtual(true))
+                        .Sortable()
+                        .Pageable(pageable => pageable
+                        .Refresh(true)
+                        .PageSizes(true)
+                        .ButtonCount(5))
+                        .DataSource(dataSource => dataSource
+                        .Ajax()
+                        .Events(events => events.Error("error_handler"))
+                        .Model(model =>
+                        {
+                            model.Id(x => x.ExamId);
+                        })
+                        .Read(read => read.Action("Grid_Data_Read", "ApplicantExamAttempt", new { Area = "Admin" })
+                        .Data("getFilterDataParams"))
+                        .PageSize(20)
+                        )
+                        )
+        </div>
+    </div>
+    <div class="row" style="margin-top:20px;">
+        <div class="col-12 d-flex justify-content-end">
+            <a href="@Url.Action("ApplicantIndex", "Applicant_JobAnnouncement_", new { Area = "Admin", applicantId = @ViewBag.ApplicantId })" class="btn btn-info form-command-btn" style="float:left;">
+                <span class="btn-label"><i class="fa fa-reply"></i><span>&nbsp;</span>بازگشت</span>
+            </a>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    var getFilterDataParams = function (e) {
+        var result = {
+            applicantId: @ViewBag.ApplicantId,
+            jobAnnouncementId: @ViewBag.JobAnnouncementId
+        }
+        return result;
+    };
+
+    function filterData() {
+        $("#Grid").data("kendoGrid").dataSource.read();
+    }
+
+    function deleteRow(e) {
+            e.preventDefault();
+            var dataItem = this.dataItem(jQuery(e.currentTarget).closest("tr"));
+
+            showConfirmModalMessage(
+                "danger",
+                "عملیات حذف",
+                "آیا از حذف اطمینان دارید؟",
+                "انصراف",
+                "حذف",
+                "danger",
+                "Confirm",
+                dataItem.ApplicantExamAttemptId,
+                "Cancel",
+                null
+            );
+        }
+
+        function Confirm(applicantExamAttemptId) {
+            $.ajax({
+                url: '/Admin/ApplicantExamAttempt/Delete',
+                type: "GET",
+                data: {
+                    id: applicantExamAttemptId
+                }
+            }).done(function (dresult) {
+                if (dresult == true) {
+                    var reqGrid = $("#Grid").data("kendoGrid");
+                    reqGrid.dataSource.read();
+                    showSimpleModalMessage('success', 'عملیات انجام شد', 'اطلاعات موردنظر حذف شد', '');
+                }
+                else {
+                    showSimpleModalMessage('danger', 'خطا', 'امکان حذف این اطلاعات وجود ندارد', '');
+                }
+            }).fail(function (xhr) {
+                showSimpleModalMessage('danger', 'خطا', 'در ارسال درخواست خطا رخ داد: ' + (xhr.responseText || xhr.statusText), '');
+            });
+        }
+
+        function Cancel(x) {
+
+        }
+
+        function showAnswersRow(e) {
+        e.preventDefault();
+        var dataItem = this.dataItem(jQuery(e.currentTarget).closest("tr"));
+        window.location.href = "/Admin/ApplicantExamQuestionAnswer/Index/" + dataItem.ApplicantExamAttemptId + "/" + @ViewBag.JobAnnouncementId;
+        }
+
+</script>

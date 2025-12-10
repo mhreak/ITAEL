@@ -236,7 +236,7 @@
                             columns.Bound(c => c.GenderStr).Width(200);
                             columns.Bound(c => c.ShamsiPublishDate).Width(220);
                             columns.Bound(c => c.Capacity).Width(220);
-                            columns.Bound(c => c.HasEmploymentExam).Width(220);
+                            columns.Bound(c => c.HasEmploymentExamStr).Width(220);
                             columns.Bound(c => c.ShamsiExamDate).Width(220);
                             columns.Bound(c => c.ShamsiInsertDate).Width(220);
                             columns.Bound(c => c.ActiveStr).Width(220);
@@ -247,13 +247,9 @@
 
                                 command.Custom("حذف").Click("deleteRow").HtmlAttributes(new { @class = "command-btn-red" });
 
-                                @*                                 command.Custom("نمایش قرارهای مصاحبه").Click("interviewAppointmentListRow").HtmlAttributes(new { @class = "command-btn-blue" });
-
-                                command.Custom("نمایش آزمون ها").Click("examListRow").HtmlAttributes(new { @class = "command-btn-blue" }); *@
-
                             }).Width(400);
                         })
-                        .HtmlAttributes(new { style = "height: 550px;border-radius:0.25rem;" })
+                        .HtmlAttributes(new { style = "height: 550px;border-radius:5px;" })
                         .Filterable(ftb => ftb.Mode(GridFilterMode.Menu))
                         .Scrollable(scrollable => scrollable.Virtual(true))
                         .Sortable()
@@ -361,18 +357,6 @@
             function Cancel(x) {
 
             }
-
-    function interviewAppointmentListRow(e) {
-        e.preventDefault();
-        var dataItem = this.dataItem(jQuery(e.currentTarget).closest("tr"));
-        window.location.href = "/Admin/InterviewAppointment/Index/" + dataItem.JobAnnouncementId;
-    }
-
-    function examListRow(e) {
-        e.preventDefault();
-        var dataItem = this.dataItem(jQuery(e.currentTarget).closest("tr"));
-        window.location.href = "/Admin/JobAnnouncement_Exam_/Index/" + dataItem.JobAnnouncementId;
-    }
 
     function showAnnouncementOperationMenu(e) {
          e.preventDefault();

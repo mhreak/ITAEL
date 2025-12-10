@@ -22,11 +22,11 @@ namespace Web.Controllers
 
                 if (roles.Contains("Manager") || roles.Contains("Admin"))
                 {
-                    return RedirectToAction("Index", "Admin", new { area = "Admin" });
+                    return RedirectToAction("Index", "Dashboard", new { area = "Admin" });
                 }
                 else if(roles.Contains("Applicant"))
                 {
-                    return RedirectToAction("Index", "Panel", new { area = "Applicant" });
+                    return RedirectToAction("Index", "Dashboard", new { area = "Applicant" });
                 }
             }
 
@@ -56,11 +56,11 @@ namespace Web.Controllers
 
                     if (roles.Contains("Manager") || roles.Contains("Admin"))
                     {
-                        return RedirectToAction("Index", "Applicant", new { area = "Admin" });
+                        return RedirectToAction("Index", "Dashboard", new { area = "Admin" });
                     }
                     else if(roles.Contains("Applicant"))
                     {
-                        return RedirectToAction("Index", "Panel", new { area = "Applicant" });
+                        return RedirectToAction("Index", "Dashboard", new { area = "Applicant" });
                     }
                 }
                 else

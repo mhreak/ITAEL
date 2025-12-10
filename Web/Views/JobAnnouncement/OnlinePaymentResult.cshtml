@@ -1,0 +1,56 @@
+﻿@{
+    ViewData["PageTitle"] = "نتیجه عملیات پرداخت آنلاین";
+}
+
+<style>
+    .btn {
+        box-shadow: none;
+        border-radius: 10px;
+        padding: 10px 24px;
+        font-weight: bold;
+        min-width: 170px;
+    }
+</style>
+
+<div style="padding:0px 16px 0px 16px;">
+    <div style="text-align:center;padding:30px 20px;">
+        <div style="border: 1.3px solid #dfdfdf; border-radius: 10px;">
+            @switch ((int)ViewBag.ResCode)
+            {
+                case 1:
+                    <div style="padding:30px;">
+                        <img src="~/image/animated/ic-ticket.gif" style="width:130px;" />
+                        <h2 style="font-size:20px;color:#333;">رزرو موفق</h2>
+                        <h5 style="font-size:15px;margin-top:20px;">کاربرگرامی پرداخت شما با موفقیت انجام شد.</h5>
+                    </div>
+                    <div style="border: 1.3px solid #dfdfdf; border-radius: 10px; padding: 20px; display: inline-block; width: auto; color:#fc8a19;">
+                        کد رهگیری: @ViewBag.ReferenceNumber
+                    </div>
+                    <div class="row" style="padding:8px;margin-top:30px;">
+                        <div class="col-md-6 col-sm-12">
+                            <a class="btn btn-info" style="float:right;" href=@Url.Action("Index", "Dashboard" , new { Area = "Applicant" })>
+                                <span>بازگشت به صفحه اصلی</span>
+                            </a>
+                        </div>
+                    </div>
+                    break;
+                default:
+                    <div style="padding:30px;">
+                        <img src="/image/animated/ic-error.gif" style="width:130px;" />
+                        <h2 style="font-size:20px;color:#333;">خطایی رخ داد</h2>
+                        <h5 style="font-size:15px;margin-top:20px;">هنگام انجام عملیات خطایی رخ داد</h5>
+                    </div>
+                    <div class="row" style="padding:8px;margin-top:30px;">
+                        <div class="col-md-6 col-sm-12">
+                            <a class="btn btn-info" style="float:right;" href=@Url.Action("Index", "Dashboard", new { Area = "Applicant" })>
+                                <span>بازگشت به صفحه اصلی</span>
+                            </a>
+                        </div>
+                        <div class="col-md-6 col-sm-12">
+                        </div>
+                    </div>
+                    break;
+            }
+        </div>
+    </div>
+</div>

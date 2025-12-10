@@ -266,7 +266,7 @@ namespace DbConnection.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     CompanyId = table.Column<int>(type: "int", nullable: false),
                     Title = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(3000)", maxLength: 3000, nullable: true),
+                    Description = table.Column<string>(type: "nvarchar()", maxLength: 3000, nullable: true),
                     PublishDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ExpirationDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     Gender = table.Column<bool>(type: "bit", nullable: true),
@@ -297,7 +297,7 @@ namespace DbConnection.Migrations
                 {
                     ExamQuestionId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Text = table.Column<string>(type: "nvarchar(3000)", maxLength: 3000, nullable: false),
+                    Text = table.Column<string>(type: "nvarchar(MAX)", maxLength: 3000, nullable: false),
                     ExamId = table.Column<int>(type: "int", nullable: false),
                     Type = table.Column<short>(type: "smallint", nullable: false),
                     QuestionOrder = table.Column<int>(type: "int", nullable: false)
@@ -705,7 +705,7 @@ namespace DbConnection.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     FirstName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     LastName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    NationalCode = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
+                    NationalCode = table.Column<string>(type: "nvarchar(10)", fixedLength: true, maxLength: 10, nullable: false),
                     Gender = table.Column<bool>(type: "bit", nullable: false),
                     Phone = table.Column<string>(type: "nvarchar(11)", maxLength: 11, nullable: true),
                     Mobile = table.Column<string>(type: "nvarchar(11)", maxLength: 11, nullable: false),

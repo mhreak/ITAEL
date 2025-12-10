@@ -11,6 +11,15 @@ namespace Web.Service.Interface
 
         bool Delete(int applicantExamAttemptId, int examQuestionId);
 
+        bool CalculateGradeAfterExam(int examId, int applicantId);
+
         ApplicantExamQuestionAnswerViewModel Get(int applicantExamAttemptId, int examQuestionId);
+
+        List<ApplicantExamQuestionAnswerViewModel> GetAllFiltered(string filterApplicantExamAttemptId,
+                                                                  string filterInsertDateFrom,
+                                                                  string filterInsertDateTo,
+                                                                  int currentPage,
+                                                                  int pageSize,
+                                                                  out int totalRecord);
     }
 }

@@ -1,0 +1,65 @@
+﻿@using Kendo.Mvc.UI
+@model IEnumerable<BankGatewayViewModel>
+
+@{
+    ViewData["PageTitle"] = "لیست درگاه های پرداخت بانکی";
+}
+
+<div style="margin-top:-14px;">
+    <div class="k-rtl">
+        <div id="report-grid" style="height:100%;">
+            @(Html.Kendo().Grid<BankGatewayViewModel>().Name("Grid").Columns(columns =>
+        {
+            columns.Bound(c => c.GatewayName);
+            columns.Bound(c => c.GatewayTypeStr);
+            columns.Bound(c => c.ActiveStr);
+            columns.Command(command =>
+            {
+                command.Custom("ویرایش").Click("showEdit").HtmlAttributes(new { @class = "command-btn-yellow" });
+            });
+        })
+                              .HtmlAttributes(new { style = "height: 550px;" })
+                              .Filterable(ftb => ftb.Mode(GridFilterMode.Menu))
+                              .Scrollable()
+                              //.Groupable()
+                              .Sortable()
+                              .Pageable(pageable => pageable
+                                  .Refresh(true)
+                                  .PageSizes(true)
+                                  .ButtonCount(5))
+                              .DataSource(dataSource => dataSource
+                                  .Ajax()
+                                  .Events(events => events.Error("error_handler"))
+                                  .Model(model =>
+                                  {
+                                      model.Id(p => p.BankGatewayId);
+                                  })
+                                  .Read(read => read.Action("Grid_Data_Read", "BankGateway", new { Area = "Admin" }))
+                                  .PageSize(20)
+                              ))
+        </div>
+    </div>
+    <div class="row" style="margin-top:20px;">
+        <div class="col-xs-6 col-sm-6 col-md-6">
+            <a href="@Url.Action("Create", "BankGateway")" class="btn btn-success form-command-btn" style="display:inline-block;float:right;">
+                <span><i class="fa fa-plus"></i><span>&nbsp;</span>ثبت جدید</span>
+            </a>
+            <a class="btn btn-light form-command-btn" onclick="ExportGridExcelData()" style="display:inline-block;margin-right:20px;width:auto;background-color:orange;color:white;">
+                <span><i class="fa fa-file-excel-o"></i><span>&nbsp;</span>دانلود فایل اکسل</span>
+            </a>
+        </div>
+        <div class="col-xs-6 col-sm-6 col-md-6 text-left">
+            <a href="@Url.Action("Index", "Dashboard")" class="btn btn-info form-command-btn" style="float:left;">
+                <span class="btn-label"><i class="fa fa-reply"></i><span>&nbsp;</span>بازگشت</span>
+            </a>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    function showEdit(e) {
+        e.preventDefault();
+        var dataItem = this.dataItem(jQuery(e.currentTarget).closest("tr"));
+        window.location.href = "/Admin/BankGateway/Edit/" + dataItem.BankGatewayId;
+    }
+</script>

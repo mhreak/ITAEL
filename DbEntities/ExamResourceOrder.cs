@@ -12,11 +12,11 @@
         [ForeignKey("ApplicantId")]
         public Applicant Applicant { get; set; }
 
-        [Required]
-        public int ExamResourceId { get; set; }
+        //[Required]
+        //public int ExamResourceId { get; set; }
 
-        [ForeignKey("ExamResourceId")]
-        public ExamResource ExamResource { get; set; }
+        //[ForeignKey("ExamResourceId")]
+        //public ExamResource ExamResource { get; set; }
 
         [Column(TypeName = "decimal(18,2)")]
         [Required]
@@ -34,5 +34,8 @@
         public DateTime OrderDate { get; set; }
 
         public DateTime? DeliveryDate { get; set; }
+
+        public virtual ICollection<OnlineTransaction> OnlineTransactionList { get; set; }
+        public virtual ICollection<ExamResourceOrderItem> ExamResourceOrderItemList { get; set; }
     }
 }

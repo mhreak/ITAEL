@@ -1,0 +1,91 @@
+﻿@model Web.Model.Applicant_JobAnnouncement_ViewModel
+@{
+    ViewData["PageTitle"] = $"ویرایش داوطلب برای آگهی {ViewBag.JobAnnouncementTitle}";
+}
+
+<style>
+    .k-multiselect {
+        border: 1px solid #c8c9ce !important;
+        border-radius: 8px !important;
+        background: white;
+    }
+
+    .k-chip-label {
+        font-family: IranSans;
+    }
+
+    .k-selection-multiple input {
+        font-size: 14px;
+    }
+</style>
+
+<div style="margin-top:-14px;">
+    @using (Html.BeginForm(null, null, FormMethod.Post, new { name = "my-form", id = "my-form" }))
+    {
+        @Html.HiddenFor(m => m.JobAnnouncementId)
+
+        <div class="container-card padding30" style="padding-top:45px;">
+            <div class="form-horizontal">
+
+                <div class="row form-group" style="margin-top:30px;">
+                    @Html.Label(null, "داوطلب", htmlAttributes: new { @class = "control-label col-md-2 col-sm-3 form-input-label" })
+                    <div class="col-md-3 col-sm-4">
+                        @Html.Hidden("ApplicantId")
+                        @Html.TextBox("ApplicantFullName", "", new { @readonly = "readonly", @class = "form-control" })
+                    </div>
+                    <div class="col-md-1 col-sm-2" style="margin-right:-20px;">
+                        <a class="btn btn-info modal-link" href=@Url.Action("ShowApplicantSearchDialog",
+                                                                            "Applicant", new { Area = "Admin", valueElementId = "ApplicantId",
+                                                                                                 displayElementId = "ApplicantFullName" })
+                           style="box-shadow:none;border-radius:0.4rem;height:40px;font-size:20px;padding-top:6px;">
+                            <i class="uil-search"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="row form-group" style="margin-top:30px;">
+                    @Html.LabelFor(model => model.Status, htmlAttributes: new { @class = "control-label col-md-2 col-sm-3 form-input-label" })
+                    <div class="col-md-3 col-sm-4">
+                        @(Html.Kendo().DropDownList()
+                              .Name("Status")
+                              .DataTextField("Text")
+                              .DataValueField("Value")
+                              .Value(Model.Status.ToString())
+                              .OptionLabel("انتخاب کنید")
+                              .HtmlAttributes(new { style = "width: 100%" })
+                              .BindTo(new List<SelectListItem>() {
+                                                                     new SelectListItem() {
+                                                                                              Text = "قبول شده",
+                                                                                              Value = "1"
+                                                                                          },
+                                                                     new SelectListItem() {
+                                                                                              Text = "نامشخص",
+                                                                                              Value = "0"
+                                                                                          },
+                                                                     new SelectListItem() {
+                                                                                              Text = "رد شده",
+                                                                                              Value = "-1"
+                                                                                          }
+                                                                 }))
+                        @Html.ValidationMessageFor(model => model.Status, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-md-7 col-sm-5">
+                        <span style="color:red;font-size:20px;">*</span>
+                    </div>
+                </div>
+            </div>
+
+            <hr style="margin-top:45px;color:orangered;" />
+
+            <div class="row" style="margin-top:12px;">
+                <div class="col-md-6 col-sm-12">
+                    <input type="submit" class="btn btn-success form-command-btn" value="ذخیره" style="float:right;" />
+                </div>
+                <div class="col-md-6 col-sm-12">
+                    <a href="@Url.Action("JAIndex", "Applicant_JobAnnouncement_", new { Area = "Admin", jobAnnouncementId = @ViewBag.JobAnnouncementId })"
+                       class="btn btn-danger form-command-btn" style="float:left;">بازگشت</a>
+                </div>
+            </div>
+        </div>
+        }
+</div>

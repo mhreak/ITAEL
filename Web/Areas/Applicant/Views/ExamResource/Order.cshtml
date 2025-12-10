@@ -1,0 +1,202 @@
+﻿@model Web.Areas.Applicant.Controllers.ShowExamResourceViewModel
+
+    <style>
+    /* ستون اصلی فرم */
+    .order-form-wrapper {
+        margin-top: 25px;
+    }
+
+    /* هر آیتم از منابع */
+    .rs-item {
+        padding: 15px 12px;
+        margin-bottom: 12px !important;
+        border-radius: 10px;
+        border: 1px solid #e3e3e3;
+        transition: 0.2s ease;
+    }
+
+        .rs-item.active {
+            border-color: #007bff;
+            background: #f0f8ff;
+        }
+
+    /* عکس‌ها */
+    .rs-thumb {
+        margin-left: 12px;
+        width: 65px;
+        height: 65px;
+        object-fit: cover;
+        border-radius: 8px;
+    }
+
+    /* متن داخل کارت */
+    .rs-body .rs-name {
+        margin-bottom: 6px;
+    }
+
+    .rs-meta {
+        margin-bottom: 8px;
+        font-size: 0.92rem;
+    }
+
+    /* بخش پایین صفحه */
+    .rs-bar {
+        padding: 18px 15px;
+        margin-top: 10px;
+        border-radius: 12px;
+    }
+
+    .rs-btn {
+        padding: 10px 25px;
+        margin-top: 10px;
+    }
+
+    /* چسباندن کارت پروفایل */
+    @@media (min-width: 992px) {
+        .profile-card
+
+    {
+        position: sticky;
+        top: 20px;
+        z-index: 5;
+    }
+
+    }
+    </style>
+
+<!--
+  نکته مهم: ما یک ستون (col-lg-8) اضافه می‌کنیم که sibling ستون پروفایل در _Layout هست.
+  داخل این ستون فرم را می‌گذاریم. اینطوری بوت‌استرپ ردیف را به درستی چیدمان می‌کند
+  و پروفایل حتما سمت راست (در صفحه‌های بزرگ) نمایش داده می‌شود.
+-->
+<div class="col-lg-8 order-2 order-lg-2 order-form-wrapper">
+    <form asp-area="Applicant" asp-controller="ExamResource" asp-action="Order" asp-route-jobAnnouncementId="@Model.JobAnnouncementViewModel.JobAnnouncementId" method="post">
+        @Html.AntiForgeryToken()
+
+        <div class="container section-box mb-2">
+            <header class="rs-head">
+                <div>
+                    <h5 class="rs-title mt-3 ml-3">ثبت سفارش</h5>
+                </div>
+            </header>
+
+            @for (int i = 0; i < Model.ExamResourceViewModelList.Count; i++)
+            {
+                var item = Model.ExamResourceViewModelList[i];
+                <ul class="rs-list">
+                    @if (item.Price != null)
+                    {
+                        <li class="rs-item" data-price="@item.Price.Value">
+                            <label class="rs-row">
+                                <input type="hidden" name="ExamResourceViewModelList[@i].IsSelected" value="false" />
+                                <input type="hidden" name="ExamResourceViewModelList[@i].ExamResourceId" value="@item.ExamResourceId" />
+
+                                <input type="checkbox" class="rs-check" name="selectedIds" value="@item.ExamResourceId" />
+                                @if (!string.IsNullOrEmpty(item.ImageFileName))
+                                {
+                                    <img class="rs-thumb" src="~/Upload/ExamResourceDocument/@item.ExamResourceId/@item.ImageFileName" alt="@item.ResourceName">
+                                }
+                                else
+                                {
+                                    <img class="rs-thumb" src="~/image/default-exam-resource.jpg" alt="@item.ResourceName">
+                                }
+                                <div class="rs-body">
+                                    <h6 class="rs-name">@item.ResourceName</h6>
+                                    @if (item.Description == null)
+                                    {
+                                        <p class="rs-meta">@item.TypeStr</p>
+                                    }
+                                    else
+                                    {
+                                        <p class="rs-meta">@item.TypeStr •@item.Description</p>
+                                    }
+
+                                    <div class="rs-foot">
+                                        <span class="rs-price">
+                                            <span class="rs-num">@item.Price.Value.ToString("N0")</span> تومان
+                                        </span>
+                                    </div>
+                                </div>
+                            </label>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="rs-item" data-price="0">
+                            <label class="rs-row">
+                                <input type="checkbox" class="rs-check" name="selectedIds" value="@item.ExamResourceId" />
+                                @if (!string.IsNullOrEmpty(item.ImageFileName))
+                                {
+                                    <img class="rs-thumb" src="~/Upload/ExamResourceDocument/@item.ExamResourceId/@item.ImageFileName" alt="@item.ResourceName">
+                                }
+                                else
+                                {
+                                    <img class="rs-thumb" src="~/image/default-exam-resource.jpg" alt="@item.ResourceName">
+                                }
+                                
+                                <div class="rs-body">
+                                    <h6 class="rs-name">@item.ResourceName</h6>
+                                    @if (item.Description == null)
+                                    {
+                                        <p class="rs-meta">@item.TypeStr</p>
+                                    }
+                                    else
+                                    {
+                                        <p class="rs-meta">@item.TypeStr •@item.Description</p>
+                                    }
+
+                                    <div class="rs-foot">
+                                        <span class="rs-price">0.00 تومان</span>
+                                    </div>
+                                </div>
+                            </label>
+                        </li>
+                    }
+                </ul>
+            }
+            <div class="rs-bar">
+                <div class="rs-bar-left">
+                    <span class="rs-chip"><span id="rs-count">0</span> مورد انتخاب‌شده</span>
+                    <span class="rs-total">مجموع: <strong id="rs-total">0</strong> تومان</span>
+                </div>
+                <button type="submit" class="rs-btn mb-2" id="rs-pay" disabled>
+                    ثبت و ادامه
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+    // توجه: چون ما فرم را داخل یک ستون گذاشتیم، selector ها همین‌جا کار می‌کنند.
+    const checks = document.querySelectorAll('.rs-check');
+    const totalEl = document.getElementById('rs-total');
+    const countEl = document.getElementById('rs-count');
+    const payBtn = document.getElementById('rs-pay');
+
+    let total = 0;
+    let count = 0;
+
+    checks.forEach(ch => {
+        ch.addEventListener('change', () => {
+            const price = parseInt(ch.closest('.rs-item').dataset.price) || 0;
+
+            if (ch.checked) {
+                total += price;
+                count++;
+                ch.closest('.rs-item').classList.add('active');
+            } else {
+                total -= price;
+                count--;
+                ch.closest('.rs-item').classList.remove('active');
+            }
+
+            // به‌روزرسانی نمایش
+            totalEl.textContent = total.toLocaleString('fa-IR');
+            countEl.textContent = count;
+
+            // فعال/غیرفعال شدن دکمه
+            payBtn.disabled = count === 0;
+        });
+    });
+</script>

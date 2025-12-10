@@ -14,6 +14,7 @@ namespace Web.Areas.Admin.Controllers
     [Route("Admin/[controller]")]
     [Authorize(Roles = "Manager,Admin")]
     public class JobAnnouncementController(
+        ICityService cityService,
         IJobAnnouncementService jobAnnouncementService,
         IJobAnnouncement_Skill_Service ja_skill_serivce,
         IJobAnnouncement_StudyField_Service ja_studyField_service,
@@ -60,7 +61,7 @@ namespace Web.Areas.Admin.Controllers
         [HttpPost]
         [Route("Create")]
         [ValidateAntiForgeryToken]
-        public virtual ActionResult Create(JobAnnouncementViewModel model)
+        public IActionResult Create(JobAnnouncementViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -175,25 +176,29 @@ namespace Web.Areas.Admin.Controllers
 
             if (studyFiledIdList.Any())
             {
-                ViewBag.SkillIdArray = skillIdList.ToArray();
+                ViewBag.StudyFieldIdArray = studyFiledIdList.ToArray();
             }
             else
             {
-                ViewBag.SkillIdArray = null;
+                ViewBag.StudyFieldIdArray = null;
             }
+
+            var cityViewModel = cityService.Get(model.CityId);
+            model.ProvinceId = cityViewModel.ProvinceId;
+            model.ProvinceName = cityViewModel.ProvinceName;
 
             return View(model);
         }
 
         [HttpPost]
-        [Route("Edit")]
+        [Route("Edit/{id}")]
         [ValidateAntiForgeryToken]
-        public virtual ActionResult Edit(JobAnnouncementViewModel model)
+        public IActionResult Edit(JobAnnouncementViewModel model)
         {
             if (ModelState.IsValid)
             {
                 List<int> jaCategoryIdList = new List<int>();
-                foreach (string jaCategoryId in Request.Form["JA_Category_MultiSelect"].ToList())
+                foreach (string jaCategoryId in Request.Form["CategoryMultiSelect"].ToList())
                 {
                     jaCategoryIdList.Add(Convert.ToInt32(jaCategoryId));
                 }
@@ -284,6 +289,15 @@ namespace Web.Areas.Admin.Controllers
             var model = jobAnnouncementService.Get(jobAnnouncementId);
 
             return PartialView("_JobAnnouncementOprationDrawer", model);
+        }
+
+        [Route("ShowJobAnnouncementSearchDialog")]
+        public virtual ActionResult ShowJobAnnouncementSearchDialog(string valueElementId, string displayElementId)
+        {
+            ViewBag.ValueElementId = valueElementId;
+            ViewBag.DisplayElementId = displayElementId;
+
+            return PartialView("_JobAnnouncementSearchDialog");
         }
     }
 }

@@ -86,7 +86,7 @@
                     command.Custom("حذف").Click("deleteUser").HtmlAttributes(new { @class = "command-btn-red" });
                 });
             })
-            .HtmlAttributes(new { style = "height: 550px;border-radius:0.25rem;" })
+            .HtmlAttributes(new { style = "height: 550px;border-radius:5px;" })
             .Filterable(ftb => ftb.Mode(GridFilterMode.Menu))
             .Scrollable(scrollable => scrollable.Virtual(true))
             .Sortable()

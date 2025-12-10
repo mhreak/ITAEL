@@ -1,0 +1,190 @@
+﻿<script>
+    // آرایه global برای ذخیره اطلاعات انتخاب شدگان
+    var selectedApplicantsList = [];
+
+    $("body").on("click", ".applicant-filter-grid .k-checkbox", FilterApplicantGridOnRowClick);
+
+    var getApplicantFilterDataParams = function (e) {
+        var result = {
+            filterFullName: $('#FilterFullName').val(),
+            filterMobile: $('#FilterApplicantMobile').val()
+        }
+        return result;
+    };
+
+    function filterApplicantData() {
+        $("#Applicant_Filter_Grid").data("kendoGrid").dataSource.read();
+    }
+
+    function FilterApplicantGridOnRowClick(e) {
+        var grid = $("#Applicant_Filter_Grid").data("kendoGrid");
+        var row = $(e.target).closest("tr");
+        var applicantId = grid.dataItem(row).ApplicantId;
+        var applicantFullName = grid.dataItem(row).FullName != null &&
+                                 grid.dataItem(row).FullName != '' ?
+                                 grid.dataItem(row).FullName : grid.dataItem(row).Mobile;
+
+        // اگر ردیف انتخاب شده باشد
+        if (row.hasClass("k-state-selected")) {
+            // اضافه کردن به آرایه انتخاب‌شدگان
+            selectedApplicantsList.push({
+                id: applicantId,
+                name: applicantFullName
+            });
+        } else {
+            // حذف کردن از آرایه انتخاب‌شدگان
+            selectedApplicantsList = selectedApplicantsList.filter(item => item.id !== applicantId);
+        }
+
+        console.log("انتخاب‌شدگان:", selectedApplicantsList);
+    }
+
+    function selectApplicants() {
+        if (selectedApplicantsList.length > 0) {
+            // استخراج IDs
+            var applicantIds = selectedApplicantsList.map(item => item.id);
+
+            // استخراج نام‌ها
+            var applicantNames = selectedApplicantsList.map(item => item.name).join(", ");
+
+            // ریخت‌ن در hidden field
+            $('#ApplicantIdList').val(applicantIds.join(","));
+
+            // نمایش نام‌های انتخاب‌شده
+            $('#ApplicantFullNames').val(applicantNames);
+
+            closeModalDialog();
+        } else {
+            alert("لطفا حداقل یک داوطلب را انتخاب کنید");
+        }
+    }
+
+    function clearApplicantSelection() {
+        selectedApplicantsList = [];
+        $('#ApplicantIdList').val('');
+        $('#ApplicantFullNames').val('');
+    }
+
+    $(document).ready(function () {
+        $('.k-grid-content').css("height", "271px");
+    });
+</script>
+
+<div>
+    <div style="text-align:center">
+        <div class="modal-dialog-title">جستجوی و انتخاب داوطلبین (چندگانه)</div>
+    </div>
+
+    <div style="padding:20px;">
+        <div class="row">
+            <div class="col-md-6 col-sm-12">
+                <div class="row form-group">
+                    @Html.Label(null, "نام", htmlAttributes: new { @class = "control-label col-md-3 col-sm-12 modal-dialog-label", style = "text-align:right;" })
+                    <div class="col-md-9 col-sm-12">
+                        @Html.Editor("FilterFullName", new { htmlAttributes = new { @class = "modal-dialog-editor" } })
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-sm-12">
+                <div class="row form-group">
+                    @Html.Label(null, "شماره تماس", htmlAttributes: new { @class = "control-label col-md-3 col-sm-12 modal-dialog-label", style = "text-align:left;" })
+                    <div class="col-md-9 col-sm-12">
+                        @Html.Editor("FilterApplicantMobile", new { htmlAttributes = new { @class = "modal-dialog-editor" } })
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div style="margin-top:10px;">
+            <a class="btn btn-info" style="float:left;box-shadow:none;" onclick="filterApplicantData()">فیلتر اطلاعات</a>
+        </div>
+        <div class="k-rtl applicant-filter-grid" style="margin-top:48px;">
+            <div id="report-grid" style="height:100%;">
+                @(Html.Kendo().Grid<Web.Model.ApplicantViewModel>()
+                                .Name("Applicant_Filter_Grid")
+                                .Columns(columns =>
+                                {
+                                    columns.Select().Width(50).ClientHeaderTemplate(" ");
+                                    columns.Bound(c => c.FullName);
+                                    columns.Bound(c => c.Mobile);
+                                })
+                                .HtmlAttributes(new { style = "height: 370px;" })
+                                .Filterable(ftb => ftb.Mode(GridFilterMode.Menu))
+                                .Scrollable()
+                                .Sortable()
+                                .Pageable(pageable => pageable
+                                .Refresh(true)
+                                .PageSizes(true)
+                                .ButtonCount(5))
+                                .DataSource(dataSource => dataSource
+                                .Ajax()
+                                .Model(model =>
+                                {
+                                    model.Id(p => p.ApplicantId);
+                                })
+                                .Read(read => read.Action("Grid_Data_Read", "Applicant", new { Area = "Admin" }).Data("getApplicantFilterDataParams"))
+                                .PageSize(20)
+                                ))
+            </div>
+        </div>
+
+        <!-- نمایش داوطلبان انتخاب شده -->
+        <div style="margin-top:20px; padding:10px; background-color:#f0f0f0; border-radius:4px;">
+            <strong>داوطلبان انتخاب شده: <span id="selectedCount">0</span></strong>
+            <div id="selectedApplicantsList" style="margin-top:10px;"></div>
+        </div>
+
+        <div class="row" style="margin-top:20px;">
+            <div class="col-xs-6 col-sm-6 col-md-6">
+                <a onclick="selectApplicants()" class="btn btn-success form-command-btn">
+                    <span><i class="fa fa-check"></i><span>&nbsp;</span>انتخاب</span>
+                </a>
+            </div>
+            <div class="col-xs-3 col-sm-3 col-md-3">
+                <a onclick="clearApplicantSelection()" class="btn btn-warning form-command-btn">
+                    <span><i class="fa fa-trash"></i><span>&nbsp;</span>پاک کردن</span>
+                </a>
+            </div>
+            <div class="col-xs-3 col-sm-3 col-md-3 text-left">
+                <button type="button" class="btn btn-danger form-command-btn" style="float:left;" data-bs-dismiss="modal">
+                    <span class="btn-label"><i class="fa fa-reply"></i><span>&nbsp;</span>لغو</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // نمایش تعداد و نام‌های انتخاب شده (realtime)
+    function updateSelectedList() {
+        $('#selectedCount').text(selectedApplicantsList.length);
+        var html = '';
+        selectedApplicantsList.forEach(item => {
+            html += '<span style="display:inline-block; margin:5px; padding:5px 10px; background:#d4edda; border-radius:4px;">' +
+                    item.name + ' <i class="fa fa-times" onclick="removeApplicant(' + item.id + ')" style="cursor:pointer;margin-right:5px;"></i></span>';
+        });
+        $('#selectedApplicantsList').html(html);
+    }
+
+    // حذف یک داوطلب از لیست انتخاب‌شدگان
+    function removeApplicant(id) {
+        selectedApplicantsList = selectedApplicantsList.filter(item => item.id !== id);
+        updateSelectedList();
+        // بروزرسانی checkbox در grid
+        var grid = $("#Applicant_Filter_Grid").data("kendoGrid");
+        grid.tbody.find('tr').each(function() {
+            var item = grid.dataItem(this);
+            if (item.ApplicantId === id) {
+                grid.clearSelection();
+                $(this).removeClass("k-state-selected");
+                $(this).find('.k-checkbox').prop('checked', false);
+            }
+        });
+    }
+
+    // بروزرسانی لیست هنگام انتخاب
+    var originalFilterClick = FilterApplicantGridOnRowClick;
+    window.FilterApplicantGridOnRowClick = function(e) {
+        originalFilterClick.call(this, e);
+        updateSelectedList();
+    };
+</script>

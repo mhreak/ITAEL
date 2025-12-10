@@ -1,0 +1,44 @@
+﻿@model Web.Model.ApplicantViewModel
+
+<style>
+    .footer-drawer-item-title {
+        text-align: center;
+        font-weight: bold;
+        color: #193A60;
+        font-family: IranSans;
+        font-size: 16px;
+        margin-top: 10px;
+    }
+</style>
+<div class="row" style="margin-top:30px;">
+    <div class="col-md-2 col-sm-6 col-xs-6" style="text-align:center;padding:30px;padding-top:0px;">
+        <a href=@Url.Action("Edit", "Applicant", new { Area = "Admin", id = Model.ApplicantId })>
+            <div style="border:1px #ddd solid;border-radius:12px;">
+                <div style="padding:20px;">
+                    <img src="/image/edit-icon.png" style="width:50px;height:50px;margin-top:10px;" />
+                </div>
+                <div style="border-top:1px #ddd solid;margin-top:14px;"><h4 class="footer-drawer-item-title">ویرایش</h4></div>
+            </div>
+        </a>
+    </div>
+    <div class="col-md-2 col-sm-6 col-xs-6" style="text-align:center;padding:30px;padding-top:0px;">
+        <a href=@Url.Action("Index", "ExamResourceOrder", new { Area = "Admin", applicantId = Model.ApplicantId })>
+            <div style="border:1px #ddd solid;border-radius:12px;">
+                <div style="padding:20px;">
+                    <img src="/image/exam-resource-order-icon.png" style="width:50px;height:50px;margin-top:10px;" />
+                </div>
+                <div style="border-top:1px #ddd solid;margin-top:14px;"><h4 class="footer-drawer-item-title">سفارشات</h4></div>
+            </div>
+        </a>
+    </div>
+    <div class="col-md-2 col-sm-6 col-xs-6" style="text-align:center;padding:30px;padding-top:0px;">
+        <a href=@Url.Action("ApplicantIndex", "Applicant_JobAnnouncement_", new { Area = "Admin", applicantId = Model.ApplicantId })>
+            <div style="border:1px #ddd solid;border-radius:12px;">
+                <div style="padding:20px;">
+                    <img src="/image/job-announcement-icon.png" style="width:50px;height:50px;margin-top:10px;" />
+                </div>
+                <div style="border-top:1px #ddd solid;margin-top:14px;"><h4 class="footer-drawer-item-title">درخواست ها</h4></div>
+            </div>
+        </a>
+    </div>
+</div>

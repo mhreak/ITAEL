@@ -30,7 +30,7 @@ namespace Web.Areas.Admin.Controllers
 
         [Route("Grid_Data_Read")]
         public IActionResult Grid_Data_Read([DataSourceRequest] DataSourceRequest request, string filterApplicantId,
-                                            string filterExamResourceId, string filterStatus, string filterTotalPriceFrom,
+                                            string filterStatus, string filterTotalPriceFrom,
                                             string filterTotalPriceTo, string filterOrderDateFrom, string filterOrderDateTo,
                                             string filterDeliveryDateFrom, string filterDeliveryDateTo)
         {
@@ -41,7 +41,7 @@ namespace Web.Areas.Admin.Controllers
 
             var result = new DataSourceResult()
             {
-                Data = examResourceOrderService.GetAllFiltered(filterApplicantId, filterExamResourceId,
+                Data = examResourceOrderService.GetAllFiltered(filterApplicantId,
                                                                filterStatus, filterTotalPriceFrom, 
                                                                filterTotalPriceTo, filterOrderDateFrom,
                                                                filterOrderDateTo, filterDeliveryDateFrom,

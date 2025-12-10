@@ -7,5 +7,6 @@ namespace Web.Service.Identity.Interface
     {
         IList<UserRoleViewModel> GetAllByUserId(int userId);
         IList<UserRoleViewModel> GetAllByRoleId(int roleId);
+        bool Add(UserRoleViewModel model);
     }
 }

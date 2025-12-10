@@ -1,0 +1,316 @@
+﻿@model Web.Areas.Applicant.Controllers.SignUpViewModel
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ثبت نام - کاریابی من</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <link href="https://cdn.fontcdn.ir/Font/Persian/IranSansX/IranSansX.css" rel="stylesheet">
+    <link rel="stylesheet" href="~/css/style/styles1.css" />
+</head>
+<body class="bg-app">
+@* ---------- Global Alerts (Error + Success) ---------- *@
+<div class="container mt-3">
+    @* 1) TempData Error (برای Redirect ها) *@
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show global-alert" role="alert" aria-live="assertive" aria-atomic="true">
+            @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="بستن"></button>
+        </div>
+    }
+
+    @* 2) Model-level errors (AddModelError("", "...")) *@
+    @if (ViewData.ModelState[string.Empty]?.Errors.Count > 0)
+    {
+        <div class="alert alert-danger alert-dismissible fade show global-alert" role="alert" aria-live="assertive" aria-atomic="true">
+            @foreach (var err in ViewData.ModelState[string.Empty].Errors)
+            {
+                <div>@err.ErrorMessage</div>
+            }
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="بستن"></button>
+        </div>
+    }
+
+    @* 3) TempData Success (برای پیام‌های موفقیت بعد از Redirect) *@
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show global-alert" role="alert" aria-live="polite" aria-atomic="true">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="بستن"></button>
+        </div>
+    }
+</div>
+@* ---------- End Global Alerts ---------- *@   
+<main class="page-center">
+    <div class="auth-card w-100" style="max-width:520px;">
+        <header class="mb-3 text-center">
+            <img src="~/image/signin.png" class="page-icon" alt="ثبت‌نام">
+            <h1 class="h3 fw-bold text-ink mb-2">ایجاد حساب کاربری</h1>
+            <p class="text-muted-ink mb-0">برای ایجاد حساب، شماره موبایل و رمز عبور را وارد کنید.</p>
+        </header>
+
+        <form asp-area="Applicant" asp-controller="Account" asp-action="SignUp" method="post" class="needs-validation" autocomplete="off" novalidate>
+            @Html.AntiForgeryToken()
+            <div asp-validation-summary="All" class="text-danger"></div>
+
+            <div class="row g-2">
+                <div class="col-12 col-md-6 mb-3">
+                    <label asp-for="FirstName" class="form-label">نام</label>
+                    <input asp-for="FirstName" id="firstName" type="text" class="form-control form-control-lg" required autocomplete="off" />
+                    <div class="invalid-feedback">وارد کردن نام الزامی است.</div>
+                    <span style="color:red" asp-validation-for="FirstName" class="text-danger"></span>
+                </div>
+
+                <div class="col-12 col-md-6 mb-3">
+                    <label asp-for="LastName" class="form-label">نام خانوادگی</label>
+                    <input asp-for="LastName" id="lastName" type="text" class="form-control form-control-lg" required autocomplete="off" />
+                    <div class="invalid-feedback">وارد کردن نام خانوادگی الزامی است.</div>
+                    <span style="color:red" asp-validation-for="LastName" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Mobile" class="form-label">شماره موبایل</label>
+                <input asp-for="Mobile" id="phone" type="tel" class="form-control form-control-lg tel-ltr" placeholder="09..." inputmode="numeric" pattern="(\+98|0)?9\d{9}" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" required />
+                <div class="invalid-feedback">
+                    شماره موبایل معتبر وارد کنید (مثال: 09123456789).
+                </div>
+                <span style="color:red" asp-validation-for="Mobile" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Gender" class="form-label">جنسیت</label>
+                <select asp-for="Gender" class="form-select form-select-lg" required>
+                    <option value="">انتخاب کنید</option>
+                    <option value="true">مرد</option>
+                    <option value="false">زن</option>
+                </select>
+                <div class="invalid-feedback">انتخاب جنسیت الزامی است.</div>
+                <span style="color:red" asp-validation-for="Gender" class="text-danger"></span>
+            </div>
+
+            <div class="row gx-2 gy-0">
+                <div class="col-12 col-md-6 mb-2 input-has-icon position-relative">
+                    <label asp-for="Password" class="form-label">رمز عبور</label>
+                    <input asp-for="Password" id="password" type="password" class="form-control form-control-lg latin-only tel-ltr" minlength="6" pattern="^[A-Za-z0-9!@@#$%^&*()_\-+=<>?`~\[\]{};:'\" ,.\ / \\|]{6,}$" autocomplete="off" required />
+                    <button type="button" class="btn btn-eye position-absolute top-50 end-0 translate-middle-y me-2" id="togglePass" aria-label="نمایش/مخفی‌سازی رمز">
+                        <i class="bi bi-eye-slash"></i>
+                    </button>
+                    <div class="invalid-feedback">رمز باید حداقل ۶ کاراکتر و شامل حروف انگلیسی/اعداد/نمادهای مجاز باشد.</div>
+                    <span style="color:red" asp-validation-for="Password" class="text-danger"></span>
+                </div>
+
+                <div class="col-12 col-md-6 mb-0 mb-md-3 input-has-icon position-relative">
+                    <label asp-for="ConfirmPassword" class="form-label">تکرار رمز عبور</label>
+                    <input asp-for="ConfirmPassword" id="password2" type="password" class="form-control form-control-lg latin-only tel-ltr" minlength="6" pattern="^[A-Za-z0-9!@@#$%^&*()_\-+=<>?`~\[\]{};:'\" ,.\ / \\|]{6,}$" autocomplete="off" required />
+                    <button type="button" class="btn btn-eye position-absolute top-50 end-0 translate-middle-y me-2" id="togglePass2" aria-label="نمایش/مخفی‌سازی تکرار رمز">
+                        <i class="bi bi-eye-slash"></i>
+                    </button>
+                    <div class="invalid-feedback">تکرار رمز را صحیح وارد کنید.</div>
+                    <span style="color:red" asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                </div>
+            </div>
+
+            <button class="btn btn-brand w-100 btn-lg mb-3 mt-3" type="submit">ایجاد حساب</button>
+            <hr class="hr-form">
+
+            <p class="text-center mt-3 mb-0 text-muted-ink">
+                قبلاً حساب دارید؟
+                <a asp-area="Applicant" asp-controller="Account" asp-action="Login" class="link-accent small">وارد شدن به حساب کاربری</a>
+            </p>
+        </form>
+    </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+        (function () {
+          'use strict';
+
+          // Bootstrap client-side validation kickstarter
+          const forms = document.querySelectorAll('.needs-validation');
+          Array.from(forms).forEach(form => {
+            form.addEventListener('submit', event => {
+              if (!form.checkValidity()) { event.preventDefault(); event.stopPropagation(); }
+              form.classList.add('was-validated');
+            }, false);
+          });
+
+          // normalize persian/arabic digits to latin
+          function normalizePhone(v) {
+            const m = {
+              '۰':'0','۱':'1','۲':'2','۳':'3','۴':'4','۵':'5','۶':'6','۷':'7','۸':'8','۹':'9',
+              '٠':'0','١':'1','٢':'2','٣':'3','٤':'4','٥':'5','٦':'6','٧':'7','٨':'8','٩':'9'
+            };
+            return v.replace(/[\u06F0-\u06F9\u0660-\u0669]/g, d => m[d]).replace(/[\s\-]/g, '');
+          }
+          const phone = document.getElementById('phone');
+          phone?.addEventListener('input', () => phone.value = normalizePhone(phone.value));
+          phone?.addEventListener('blur', () => phone.value = normalizePhone(phone.value));
+
+          // password visibility toggle (buttons contain an <i>)
+          function toggle(btnId, inpId) {
+            const b = document.getElementById(btnId), i = document.getElementById(inpId);
+            if (!b || !i) return;
+            b.addEventListener('click', () => {
+              const ic = b.querySelector('i');
+              i.type = i.type === 'password' ? 'text' : 'password';
+              ic.classList.toggle('bi-eye');
+              ic.classList.toggle('bi-eye-slash');
+            });
+          }
+          toggle('togglePass', 'password'); toggle('togglePass2', 'password2');
+
+          const PASS_RE = new RegExp("^[A-Za-z0-9!@@#$%^&*()_\\-+=<>?`~\\[\\]{};:'\\\",.\\/\\\\|]{6,}$");
+
+          // check for non-ASCII (e.g. Persian letters) or illegal chars
+          function hasIllegalChars(v) {
+            if (!v) return false;
+            if (/[^\x00-\x7F]/.test(v)) return true;      // non-ASCII (Persian etc.)
+            if (!PASS_RE.test(v)) return true;            // not matching allowed set
+            return false;
+          }
+
+          function markInvalid(el, message) {
+            // keep user's typed value (do not clear), only mark invalid
+            el.classList.remove('is-valid');
+            el.classList.add('is-invalid');
+            el.setCustomValidity(message || 'مقدار واردشده معتبر نیست.');
+            el.reportValidity();
+          }
+          function clearCustom(el) {
+            el.setCustomValidity('');
+            el.classList.remove('is-invalid');
+            if (el.value) el.classList.add('is-valid');
+          }
+
+          function hookPasswordField(el) {
+            if (!el) return;
+            el.addEventListener('input', () => {
+              const v = el.value;
+              if (v && /[^\x00-\x7F]/.test(v)) {
+                markInvalid(el, 'حروف فارسی یا کاراکتر غیر ASCII مجاز نیست.');
+                return;
+              }
+              clearCustom(el);
+            });
+
+            el.addEventListener('blur', () => {
+              const v = el.value;
+              if (!v) { return; }
+              if (hasIllegalChars(v)) {
+                markInvalid(el, 'فقط حروف انگلیسی، اعداد و نمادهای مجاز قابل قبول‌اند.');
+                return;
+              }
+              if (v.length < 6) {
+                markInvalid(el, 'حداقل ۶ کاراکتر لازم است.');
+                return;
+              }
+              clearCustom(el);
+            });
+          }
+
+          const p1 = document.getElementById('password');
+          const p2 = document.getElementById('password2');
+          hookPasswordField(p1);
+          hookPasswordField(p2);
+
+          // final form submit checks (passwords match etc.)
+          document.querySelectorAll('form.needs-validation').forEach(form => {
+            form.addEventListener('submit', e => {
+              const a = form.querySelector('#password');
+              const b = form.querySelector('#password2');
+
+              let ok = true;
+
+              [a, b].forEach(el => {
+                if (!el) return;
+                const v = el.value;
+                if (!v) {
+                  markInvalid(el, 'این فیلد الزامی است.');
+                  ok = false;
+                  return;
+                }
+                if (hasIllegalChars(v)) {
+                  markInvalid(el, 'فقط حروف انگلیسی، اعداد و نمادهای مجاز قابل قبول‌اند.');
+                  ok = false;
+                  return;
+                }
+                if (v.length < 6) {
+                  markInvalid(el, 'حداقل ۶ کاراکتر لازم است.');
+                  ok = false;
+                  return;
+                }
+              });
+
+              if (ok && a && b && a.value !== b.value) {
+                e.preventDefault(); e.stopPropagation();
+                b.setCustomValidity('رمزها یکسان نیستند.');
+                b.reportValidity();
+                markInvalid(b, 'رمزها یکسان نیستند.');
+                return;
+              } else if (b) {
+                b.setCustomValidity('');
+              }
+
+              if (!ok || !form.checkValidity()) {
+                e.preventDefault(); e.stopPropagation();
+                return;
+              }
+
+              form.classList.add('was-validated');
+            }, false);
+          });
+
+          // ENTER to next input (requestSubmit at end)
+          document.querySelectorAll("form").forEach(form => {
+            const inputs = Array.from(form.querySelectorAll("input, select, textarea")).filter(i => !i.disabled && i.type !== 'hidden');
+            inputs.forEach((input, index) => {
+              input.addEventListener("keydown", function (event) {
+                if (event.key === "Enter") {
+                  event.preventDefault();
+                  const next = inputs[index + 1];
+                  if (next) next.focus();
+                  else form.requestSubmit();
+                }
+              });
+            });
+          });
+
+        })();
+    </script>
+
+<script>
+        // Auto dismiss alerts after 5 seconds, و اسکرول به اولین alert
+        document.addEventListener("DOMContentLoaded", function () {
+            const alerts = document.querySelectorAll(".global-alert");
+            if (alerts.length > 0) {
+                // Scroll to first alert (smooth)
+                alerts[0].scrollIntoView({ behavior: "smooth", block: "center" });
+
+                // Auto hide after 5s (5000ms)
+                setTimeout(() => {
+                    alerts.forEach(a => {
+                        // Bootstrap alert disposal: trigger close by removing 'show' (fade will hide)
+                        a.classList.remove("show");
+                        // fully remove from DOM after animation (300ms)
+                        setTimeout(() => a.remove(), 350);
+                    });
+                }, 5000);
+            }
+
+            // optional: close button already handled by bootstrap data-bs-dismiss
+        });
+    </script>
+</body>
+</html>

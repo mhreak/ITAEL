@@ -1,5 +1,7 @@
-﻿using Web.Model;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
+using Web.Model;
 
 namespace Web.Service.Interface
 {
@@ -11,12 +13,15 @@ namespace Web.Service.Interface
 
         bool Delete(int id);
 
+        bool SetStatus(int examResourceOrderId, short status);
+
         ExamResourceOrderViewModel Get(int id);
 
         IList<ExamResourceOrderViewModel> GetAll();
 
+        IList<ExamResourceOrderViewModel> GetAllByApplicantId(int applicantId);
+
         IList<ExamResourceOrderViewModel> GetAllFiltered(string filterApplicantId,
-                                                         string filterExamResourceId,
                                                          string filterStatus,
                                                          string filterTotalPriceFrom,
                                                          string filterTotalPriceTo,

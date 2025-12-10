@@ -151,7 +151,7 @@ namespace Web.Service
         public IList<ExamQuestionViewModel> GetAllByExamId(int examId)
         {
             var dbModelList = _table.Where(x => x.ExamId == examId)
-                                    .Include(x => x.Exam).ToList();
+                                    .Include(x => x.Exam).Include(x => x.ExamQuestionOptionList).ToList();
             var uiModelList = new List<ExamQuestionViewModel>();
             _mapper.Map(dbModelList, uiModelList);
             return uiModelList;

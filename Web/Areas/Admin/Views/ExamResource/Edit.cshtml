@@ -61,6 +61,27 @@
                         @Html.ValidationMessageFor(model => model.Price, "", new { @class = "text-danger" })
                     </div>
                 </div>
+                
+                <div class="col-md-6 col-12">
+                    <div class="row form-group" style="margin-top:30px;">
+                        @Html.Label(null, "عکس منبع", htmlAttributes: new { @class = "control-label col-md-4 col-sm-12 form-input-label", style = "float:right;text-align:right;" })
+                        <div class="col-md-6 col-sm-10 col-10">
+                            @(Html.Kendo().Upload()
+                                  .Name("ImageFile")
+                                  .HtmlAttributes(new
+                                                  {
+                                                      id = "ImageFile",
+                                                      aria_label = "files"
+                                                  })
+                                  .Messages(m => m.Select("انتخاب فایل"))
+                                  .Messages(m => m.InvalidMaxFileSize("حداکثر حجم قابل آپلود یک مگابایت است"))
+                                  .Validation(validation => validation.MaxFileSize(1048576))
+                                  .Validation(validation => validation.AllowedExtensions(new string[] { "jpg", "jpeg", "png" })))
+                        </div>
+                        <div class="col-md-2 col-sm-2 col-2">
+                        </div>
+                    </div>
+                </div>
 
                 <div class="row form-group" style="margin-top:30px;">
                     @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2 col-sm-3 form-input-label" })

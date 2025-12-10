@@ -82,10 +82,37 @@ namespace Web.Service
             }
         }
 
+        public bool SetStatus(int examResourceOrderId, short status)
+        {
+            if (_table.Any(x => x.ExamResourceOrderId == examResourceOrderId))
+            {
+                var dbModel = _table.SingleOrDefault(x => x.ExamResourceOrderId == examResourceOrderId);
+
+                dbModel.Status = status;
+
+
+                _table.Attach(dbModel);
+                _database.Entry(dbModel).State = EntityState.Modified;
+
+                try
+                {
+                    _database.SaveChanges();
+                    return true;
+                }
+                catch (Exception)
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                return false;
+            }
+        }
         public ExamResourceOrderViewModel Get(int id)
         {
             var dbModel = _table.Include(x => x.Applicant)
-                                .Include(x => x.ExamResource)
+                                .Include(x => x.ExamResourceOrderItemList)
                                 .FirstOrDefault(x => x.ExamResourceOrderId == id);
 
             if (dbModel == null)
@@ -103,7 +130,7 @@ namespace Web.Service
         public IList<ExamResourceOrderViewModel> GetAll()
         {
             var dbModel = _table.Include(x => x.Applicant)
-                                .Include(x => x.ExamResource)
+                                .Include(x => x.ExamResourceOrderItemList)
                                 .ToList();
 
             if (dbModel == null)
@@ -118,8 +145,20 @@ namespace Web.Service
             return uiModel;
         }
 
+        public IList<ExamResourceOrderViewModel> GetAllByApplicantId(int applicantId)
+        {
+            var dbModel = _table.Include(x => x.Applicant)
+                                .Include(x => x.ExamResourceOrderItemList)
+                                .FirstOrDefault(x => x.ApplicantId == applicantId);
+
+            var uiModel = new List<ExamResourceOrderViewModel>();
+
+            _mapper.Map(dbModel, uiModel);
+
+            return uiModel;
+        }
+
         public IList<ExamResourceOrderViewModel> GetAllFiltered(string filterApplicantId,
-                                                                string filterExamResourceId,
                                                                 string filterStatus,
                                                                 string filterTotalPriceFrom,
                                                                 string filterTotalPriceTo,
@@ -138,10 +177,10 @@ namespace Web.Service
                 whereStr += " AND ApplicantId = " + filterApplicantId;
             }
 
-            if (!String.IsNullOrEmpty(filterExamResourceId))
-            {
-                whereStr += " AND ExamResourceId = " + filterExamResourceId;
-            }
+            //if (!String.IsNullOrEmpty(filterExamResourceId))
+            //{
+            //    whereStr += " AND ExamResourceId = " + filterExamResourceId;
+            //}
 
             if (!String.IsNullOrEmpty(filterStatus))
             {
@@ -247,7 +286,7 @@ namespace Web.Service
                                        insertOrderDateToMiladi, insertDeliveryDateFromMiladi,
                                        insertDeliveryDateToMiladi)
                                 .Include(x => x.Applicant)
-                                .Include(x => x.ExamResource)
+                                .Include(x => x.ExamResourceOrderItemList)
                                 .ToList();
 
             totalRecord = dbModelList.Count();

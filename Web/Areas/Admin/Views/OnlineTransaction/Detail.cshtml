@@ -1,0 +1,94 @@
+﻿@using System.Globalization;
+
+@model OnlineTransactionViewModel
+
+@{
+    ViewData["PageTitle"] = "جزئیات تراکنش";
+    PersianCalendar pc = new PersianCalendar();
+}
+
+<div style="margin-top:-14px;">
+    <div class="form-horizontal">
+        <div class="container-card col-lg-12 col-md-12 col-sm-12 col-sx-12">
+            <div class="form-group">
+                @Html.LabelFor(model => model.OnlineTransactionId, htmlAttributes: new { @class = "control-label col-md-2 col-sm-3", style = "float:right;text-align:right;" })
+                <div class="col-md-3 col-sm-4">
+                    @Html.DisplayFor(model => model.OnlineTransactionId)
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.ApplicantFullName, htmlAttributes: new { @class = "control-label col-md-2 col-sm-3", style = "float:right;text-align:right;" })
+                <div class="col-md-3 col-sm-4">
+                    @Html.DisplayFor(model => model.ApplicantFullName)
+                </div>
+            </div>
+            @* <div class="form-group">
+                @Html.LabelFor(model => model.ExamResourceId, htmlAttributes: new { @class = "control-label col-md-2 col-sm-3", style = "float:right;text-align:right;" })
+                <div class="col-md-10 col-sm-9">
+                    @Html.DisplayFor(model => model.ExamResourceId)
+                </div>
+            </div> *@
+            <div class="form-group">
+                @Html.LabelFor(model => model.InsertDate, htmlAttributes: new { @class = "control-label col-md-2 col-sm-3", style = "float:right;text-align:right;" })
+                <div class="col-md-10 col-sm-9">
+                    @{
+                        var insertDateStr = pc.GetYear((DateTime)Model.InsertDate).ToString("0000/") + pc.GetMonth((DateTime)Model.InsertDate).ToString("00/") + pc.GetDayOfMonth((DateTime)Model.InsertDate).ToString("00");
+                        string insTime = ((DateTime)Model.InsertDate).ToString("HH:mm");
+                    }
+                    <div>@insTime  @insertDateStr</div>
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.Amount, htmlAttributes: new { @class = "control-label col-md-2 col-sm-3", style = "float:right;text-align:right;" })
+                <div class="col-md-10 col-sm-9">
+                    @Html.DisplayFor(model => model.Amount)
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.State, htmlAttributes: new { @class = "control-label col-md-2 col-sm-3", style = "float:right;text-align:right;" })
+                <div class="col-md-10 col-sm-9">
+                    @switch (Model.State)
+                    {
+                        case -2:
+                            <div>انصراف از پرداخت</div>
+                            break;
+                        case -1:
+                            <div>ناموفق</div>
+                            break;
+                        case 0:
+                            <div>نامشخص</div>
+                            break;
+                        case 1:
+                            <div>موفق</div>
+                            break;
+                    }
+                </div>
+            </div>
+            @if (Model.State == 1)
+            {
+                <div class="form-group">
+                    @Html.LabelFor(model => model.ReferenceNumber, htmlAttributes: new { @class = "control-label col-md-2 col-sm-3", style = "float:right;text-align:right;" })
+                    <div class="col-md-10 col-sm-9">
+                        @Html.DisplayFor(model => model.ReferenceNumber)
+                    </div>
+                </div>
+            }
+            <div class="form-group">
+                @Html.LabelFor(model => model.TransactionCmnt, htmlAttributes: new { @class = "control-label col-md-2 col-sm-3", style = "float:right;text-align:right;" })
+                <div class="col-md-10 col-sm-9">
+                    @Html.DisplayFor(model => model.TransactionCmnt)
+                </div>
+            </div>
+            <hr />
+            <div class="row" style="margin-top:20px;">
+                <div class="col-xs-6 col-sm-6 col-md-6">
+                </div>
+                <div class="col-xs-6 col-sm-6 col-md-6 text-left">
+                    <a href="@Url.Action("Index","OnlineTransaction")" class="btn-blue" style="float:left;">
+                        <span class="btn-label"><i class="fa fa-reply"></i><span>&nbsp;</span>بازگشت</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

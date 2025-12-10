@@ -25,6 +25,10 @@
         [Required]
         public int QuestionOrder { get; set; }
 
+        public double Grade { get; set; }
+
+        public string? AnswerText { get; set; }
+
         public virtual ICollection<ExamQuestionOption> ExamQuestionOptionList { get; set; } = [];
 
         public virtual ICollection<ApplicantExamQuestionAnswer> ApplicantExamQuestionAnswerList { get; set; } = [];

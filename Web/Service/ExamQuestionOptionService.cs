@@ -130,6 +130,27 @@ public class ExamQuestionOptionService : IExamQuestionOptionService
         return uiModel;
     }
 
+    public List<ExamQuestionOptionViewModel> GetAllByExamQuestionId(int examQuestionId)
+    {
+        if (examQuestionId == 0)
+        {
+            return null;
+        }
+
+        var dbModel = _table.Include(x => x.ExamQuestion).Where(x => x.ExamQuestionId == examQuestionId).ToList();
+
+        if (dbModel == null)
+        {
+            return null;
+        }
+
+        var uiModel = new List<ExamQuestionOptionViewModel>();
+
+        _mapper.Map(dbModel, uiModel);
+
+        return uiModel;
+    }
+
     public IList<ExamQuestionOptionViewModel> GetAllFiltered(string filterTitle,
                                                              string filterExamQuestionId,
                                                              string filterOrder,

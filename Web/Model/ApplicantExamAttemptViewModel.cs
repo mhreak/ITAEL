@@ -45,6 +45,8 @@ namespace Web.Model
         //1 -> قبول شده
         //2 -> رد شده
         //3 -> در حال بررسی
+        //4 -> آزمون تمام شده
+        //5 -> آزمون تمام نشده
         [Display(Name = "وضعیت")]
         [Required(ErrorMessage = "این فیلد الزامی است")]
         public short Status { get; set; }

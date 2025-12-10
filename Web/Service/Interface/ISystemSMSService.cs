@@ -17,5 +17,7 @@ namespace Web.Service.Interface
             int currentPage, int pageSize, out int totalRecord);
 
         SystemSMSViewModel Get(int id);
+
+        KeyValuePair<bool, string> SendSMS(List<string> receipts, string message);
     }
 }

@@ -2,26 +2,72 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+
+using Microsoft.AspNetCore.Authorization;
+
 using Web.Model;
 using Web.Service.Interface;
 
 namespace Web.Controllers
 {
+    [AllowAnonymous]
     public class HomeController(
+        ISettingService settingService,
+        IContactMessageService contactMessageService,
         IJobAnnouncementService jobAnnouncementService,
         IJobAnnouncement_Skill_Service ja_skill_service,
         IJobAnnouncement_StudyField_Service ja_studyField_service,
         IJobAnnouncement_JobAnnouncementCategory_Service ja_category_service)
         : BaseController
     {
-
         public IActionResult Index()
         {
-            //return View();
-            return RedirectToAction("Index", "Dashboard", new { Area = "Admin" });
+            return View();
         }
 
-        [Route("GetAnnouncements")]
+        public IActionResult AboutUs()
+        {
+            var model = new AboutUsSettingViewModel()
+                        {
+                            Description = settingService.GetValueByKey("AboutUs_Description")
+                        };
+
+            return View(model);
+        }
+
+        public IActionResult ContactUs()
+        {
+            var model = new ContactUsSettingViewModel()
+                        {
+                            PrimaryLandline = settingService.GetValueByKey("ContactUs_PrimaryLandline"),
+                            SecondaryLandline = settingService.GetValueByKey("ContactUs_SecondaryLandline"),
+                            PrimaryMobile = settingService.GetValueByKey("ContactUs_PrimaryMobileNumber"),
+                            SecondaryMobile = settingService.GetValueByKey("ContactUs_SecondaryMobileNumber"),
+                            TelegramID = settingService.GetValueByKey("ContactUs_TelegramID"),
+                            InstagramID = settingService.GetValueByKey("ContactUs_InstagramID"),
+                            WhatsAppNumber = settingService.GetValueByKey("ContactUs_WhatsAppNumber"),
+                            Email = settingService.GetValueByKey("ContactUs_Email"),
+                            Address = settingService.GetValueByKey("ContactUs_Address"),
+                        };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public IActionResult SubmitContactMessage(ContactMessageViewModel model)
+        {
+            int contactMessageId = contactMessageService.Add(model);
+
+            if (contactMessageId == -1)
+            {
+                TempData["ErrorMessage"] = "درخواست شما ثبت نشد لطفا دوباره تلاش کنید.";
+                return View(model);
+            }
+
+            return RedirectToAction("ContactUs");
+        }
+
+        [HttpGet]
         public IList<JobAnnouncementViewModel> GetAnnouncements(
     string filterJobType, string filterJobTime, string filterCategoryId,
     string filterStudyFieldId, string filterSkillId)

@@ -17,6 +17,14 @@ namespace Web.Model
         [Display(Name = "عنوان آگهی")]
         public string JobAnnouncementTitle { get; set; }
 
+        //-1 -> رد شده
+        //0 -> نامشخص
+        //1 -> قبول شده
+        [Required(ErrorMessage = "این فیلد الزامی است")]
+        public short Status { get; set; }
+
+        public string? StatusStr { get; set; }
+
         [Display(Name = "تاریخ ثبت")]
         [Required(ErrorMessage = "این فیلد الزامی است")]
         public DateTime InsertDate { get; set; }

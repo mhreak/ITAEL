@@ -22,6 +22,16 @@
         </a>
     </div>
     <div class="col-md-2 col-sm-6 col-xs-6" style="text-align:center;padding:30px;padding-top:0px;">
+        <a href=@Url.Action("JAIndex", "Applicant_JobAnnouncement_", new { Area = "Admin", jobAnnouncementId = Model.JobAnnouncementId })>
+            <div style="border:1px #ddd solid;border-radius:12px;">
+                <div style="padding:20px;">
+                    <img src="/image/applicant-icon.png" style="width:50px;height:50px;margin-top:10px;" />
+                </div>
+                <div style="border-top:1px #ddd solid;margin-top:14px;"><h4 class="footer-drawer-item-title">نمایش داوطلب ها</h4></div>
+            </div>
+        </a>
+    </div>
+    <div class="col-md-2 col-sm-6 col-xs-6" style="text-align:center;padding:30px;padding-top:0px;">
         <a href=@Url.Action("Index", "InterviewAppointment", new { Area = "Admin", jobAnnouncementId = Model.JobAnnouncementId })>
             <div style="border:1px #ddd solid;border-radius:12px;">
                 <div style="padding:20px;">

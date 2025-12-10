@@ -5,7 +5,7 @@ namespace Web.Service.Interface
 {
     public interface IApplicant_JobAnnouncement_Service
     {
-        bool Add(int applicantId, int jobAnnouncementId);
+        bool Add(Applicant_JobAnnouncement_ViewModel model);
 
         bool Edit(Applicant_JobAnnouncement_ViewModel uiModel);
 
@@ -18,5 +18,9 @@ namespace Web.Service.Interface
         IList<Applicant_JobAnnouncement_ViewModel> GetAllByApplicantId(int applicantId);
 
         IList<Applicant_JobAnnouncement_ViewModel> GetAllByJobAnnouncementId(int jobAnnouncementId);
+
+        IList<Applicant_JobAnnouncement_ViewModel> GetAllFiltered(string filterJobAnnouncementId, string filterApplicantId,
+                                                                  string filterInsertDateFrom, string filterInsertDateTo,
+                                                                  int currentPage, int pageSize, out int totalRecord);
     }
 }

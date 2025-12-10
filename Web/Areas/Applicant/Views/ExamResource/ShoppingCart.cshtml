@@ -1,0 +1,165 @@
+﻿@model Web.Areas.Applicant.Controllers.UserProfileForOrderViewModel
+
+<!--OrderReview-->
+<section class="container py-5">
+    <div class="section-box card checkout-box p-3 p-md-4 p-lg-5">
+        <div class="text-center mb-4">
+            <img src="~/image/order-icon.png" class="page-icon-lg mb-2" alt="">
+            <h2 class="section-title">بررسی سفارش</h2>
+            <p class="section-subtitle">کتاب‌های انتخاب‌شده شما در ادامه نمایش داده شده‌اند.</p>
+        </div>
+
+        @foreach (var item in Model.ExamResourceViewModelList)
+        {
+            <ul class="book-list mb-4" id="bookList">
+                <li class="book-item">
+                    @if (!string.IsNullOrEmpty(item.ImageFileName))
+                    {
+                        <div class="book-thumb">
+                            <img src="~/Upload/ExamResourceDocument/@item.ExamResourceId/@item.ImageFileName">
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="book-thumb">
+                            <img src="~/image/default-exam-resource.jpg">
+                        </div>
+                    }
+
+                    <div class="book-meta">
+                        <h4 class="book-title">@item.ResourceName</h4>
+                    </div>
+                    <div class="book-price">
+                        @if (item.Price != null && item.Price.HasValue)
+                        {
+                            <span>@item.Price.Value.ToString("N0") تومان</span>
+                        }
+                        else
+                        {
+                            <span> 0 تومان</span>
+                        }
+                    </div>
+                </li>
+            </ul>
+        }
+
+        <div class="order-summary d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4">
+            <div class="order-total-pill">
+                <span class="order-total-unit">@Model.TotalPrice.ToString("N0") تومان</span>
+            </div>
+        </div>
+
+        <form asp-area="Applicant" asp-controller="ExamResource" asp-action="ShoppingCart" asp-route-examResourceOrderId="@ViewBag.ExamResourceOrderId" asp-route-jobAnnouncementId="@ViewBag.JobAnnouncementId" method="post" class="needs-validation" novalidate>
+
+            <div asp-validation-summary="All"></div>
+
+            <input asp-for="ApplicantViewModel.ApplicantId" type="hidden" />
+
+            <div class="row g-3 mb-3">
+                <div class="col-md-6">
+                    <label asp-for="ApplicantViewModel.FirstName" class=" form-label"></label>
+                    <span class="text-danger">*</span>
+                    <input asp-for="ApplicantViewModel.FirstName" value="@Model.ApplicantViewModel.FirstName" type="text" class="form-control form-control-lg" required>
+                    <div class="invalid-feedback">نام را وارد کنید.</div>
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="ApplicantViewModel.LastName" class="form-label"></label>
+                    <span class="text-danger">*</span>
+                    <input asp-for="ApplicantViewModel.LastName" value="@Model.ApplicantViewModel.LastName" type="text" class="form-control form-control-lg" required>
+                    <div class="invalid-feedback">نام خانوادگی را وارد کنید.</div>
+                </div>
+            </div>
+
+            <div class="row g-3 mb-3">
+                <div class="col-md-6">
+                    <label asp-for="ApplicantViewModel.PostalCode" class="form-label"></label>
+                    <span class="text-danger">*</span>
+                    <input asp-for="ApplicantViewModel.PostalCode" value="@Model.ApplicantViewModel.PostalCode" type="text" class="form-control form-control-lg tel-ltr"
+                           maxlength="10" pattern="\d{10}" required>
+                    <div class="invalid-feedback">کد پستی ۱۰ رقمی وارد کنید.</div>
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="ApplicantViewModel.Mobile" class="form-label"></label>
+                    <span class="text-danger">*</span>
+                    <input asp-for="ApplicantViewModel.Mobile" value="@Model.ApplicantViewModel.Mobile" type="tel" class="form-control form-control-lg tel-ltr" required>
+                    <div class="invalid-feedback">شماره تلفن را وارد کنید.</div>
+                </div>
+            </div>
+
+            <div class="row g-3 mb-3">
+                <div class="col-md-6">
+                    <label asp-for="ApplicantViewModel.ProvinceId" class="form-label"></label>
+                    <span class="text-danger">*</span>
+                    <select asp-for="ApplicantViewModel.ProvinceId" class="form-select form-select-lg" id="ProvinceMultiSelect" required></select>
+                    <div class="invalid-feedback">استان را انتخاب کنید.</div>
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="ApplicantViewModel.CityId" class="form-label"></label>
+                    <span class="text-danger">*</span>
+                    <select asp-for="ApplicantViewModel.CityId" class="form-select form-select-lg" id="CityMultiSelect" required></select>
+                    <div class="invalid-feedback">شهر را انتخاب کنید.</div>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="ApplicantViewModel.Address" class="form-label"></label>
+                <span class="text-danger">*</span>
+                <textarea asp-for="ApplicantViewModel.Address" value="@Model.ApplicantViewModel.Address" class="form-control form-control-lg" rows="3" required></textarea>
+                <div class="invalid-feedback">آدرس را وارد کنید.</div>
+            </div>
+
+            <div class="text-end">
+                <button type="submit" class="rs-btn" id="rs-pay">ثبت نهایی و انتقال به صفحه پرداخت</button>
+            </div>
+
+        </form>
+    </div>
+</section>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+<script>
+
+    var provinceUrl = '@Url.Action("Fill_Province_Combo", "Province", new { area = "Applicant" })';
+    $.getJSON(provinceUrl, function (data) {
+        var options = '';
+        data.forEach(function (item) {
+            options += '<option value="' + item.Value + '"'
+                     + (item.Value == '@Model.ApplicantViewModel.ProvinceId' ? ' selected' : '')
+                     + '>' + item.Text + '</option>';
+        });
+        var $province = $('#ProvinceMultiSelect');
+        $province.html(options);
+        if ($.fn.selectpicker) $province.selectpicker('refresh');
+
+
+        var provinceId = $province.val();
+        if (provinceId) {
+            loadCities(provinceId);
+        }
+    });
+
+    function loadCities(provinceId) {
+        var cityUrl = '@Url.Action("Fill_City_Combo", "City", new { area = "Applicant" })' + '?provinceId=' + provinceId;
+        $.getJSON(cityUrl, function (data) {
+            var options = '';
+            data.forEach(function (item) {
+                options += '<option value="' + item.Value + '"'
+                         + (item.Value == '@Model.ApplicantViewModel.CityId' ? ' selected' : '')
+                         + '>' + item.Text + '</option>';
+            });
+            var $city = $('#CityMultiSelect');
+            $city.html(options);
+            if ($.fn.selectpicker) $city.selectpicker('refresh');
+        });
+    }
+
+    $('#ProvinceMultiSelect').on('change', function () {
+        var provinceId = $(this).val();
+        if (!provinceId) return;
+        loadCities(provinceId);
+    });
+
+</script>

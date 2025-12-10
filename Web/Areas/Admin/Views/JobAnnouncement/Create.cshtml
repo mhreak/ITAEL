@@ -26,18 +26,67 @@
     {
         <input type="hidden" name="IsDeleted" id="IsDeleted" value="false"/>
 
-        <div class="container-card padding30" style="padding-top:45px;">
-            <div class="form-horizontal">
-                <div class="row form-group" style="margin-top:30px;">
-                    @Html.LabelFor(model => model.Title, htmlAttributes: new { @class = "control-label col-md-2 col-sm-3 form-input-label" })
-                    <div class="col-md-3 col-sm-4">
-                        @Html.EditorFor(model => model.Title)
-                        @Html.ValidationMessageFor(model => model.Title, "", new { @class = "text-danger" })
+          <div class="container-card padding30" style="padding-top:45px;">
+              <div class="form-horizontal">
+                  <div class="row form-group" style="margin-top:30px;">
+                      @Html.LabelFor(model => model.Title, htmlAttributes: new { @class = "control-label col-md-2 col-sm-3 form-input-label" })
+                      <div class="col-md-3 col-sm-4">
+                          @Html.EditorFor(model => model.Title)
+                          @Html.ValidationMessageFor(model => model.Title, "", new { @class = "text-danger" })
+                      </div>
+                      <div class="col-md-7 col-sm-5">
+                          <span style="color:red;font-size:20px;">*</span>
+                      </div>
+                  </div>
+
+                <div class="col-md-6 col-12">
+                  <div class="row form-group" style="margin-top:30px;">
+                    @Html.LabelFor(m => m.ProvinceId, htmlAttributes: new { @class = "control-label col-md-4 col-sm-12 form-input-label" })
+                    <div class="col-md-6 col-sm-10 col-10">
+                      @(Html.Kendo()
+                          .DropDownList()
+                          .Name("ProvinceId")
+                          .OptionLabel("انتخاب کنید")
+                          .DataTextField("Text")
+                          .DataValueField("Value")
+                          .DataSource(source => {
+                              source.Read(read => read.Action("Fill_Province_Combo", "Province", new { Area = "Admin" }));
+                          })
+                      )
+                      @Html.ValidationMessageFor(m => m.ProvinceId, "", new { @class = "text-danger" })
                     </div>
-                    <div class="col-md-7 col-sm-5">
-                        <span style="color:red;font-size:20px;">*</span>
+                    <div class="col-md-2 col-sm-2 col-2">
+                      <span style="color:red;font-size:20px;">*</span>
                     </div>
+                  </div>
                 </div>
+                
+                <div class="col-md-6 col-12">
+                  <div class="row form-group" style="margin-top:30px;">
+                    @Html.LabelFor(m => m.CityId, htmlAttributes: new { @class = "control-label col-md-4 col-sm-12 form-input-label" })
+                    <div class="col-md-6 col-sm-10 col-10">
+                        @(Html.Kendo()
+                              .DropDownList()
+                              .Name("CityId")
+                              .AutoBind(false)
+                              .OptionLabel("انتخاب کنید")
+                              .DataTextField("Text")
+                              .DataValueField("Value")
+                              .CascadeFrom("ProvinceId")
+                              .DataSource(source => {
+                                              source.Read(read => read.Action("Fill_City_Combo", "City", new { Area = "Admin" }).Data("filterCities"));
+                                              source.ServerFiltering(true);
+                                          })
+                        )
+                
+                      @Html.ValidationMessageFor(m => m.CityId, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-md-2 col-sm-2 col-2">
+                      <span style="color:red;font-size:20px;">*</span>
+                    </div>
+                  </div>
+                </div>
+
                 <div class="col-md-6 col-12">
                     <div class="row form-group" style="margin-top:30px;">
                         @Html.LabelFor(model => model.CompanyName, htmlAttributes: new { @class = "control-label col-md-4 col-sm-12 col-12 form-input-label" })
@@ -110,40 +159,51 @@
                     <div class="col-md-7 col-sm-5">
                     </div>
                 </div>
-                <div class="row form-group" style="margin-top:30px;">
-                    @Html.LabelFor(model => model.GenderStr, htmlAttributes: new { @class = "control-label col-md-2 col-sm-3 form-input-label" })
-                    <div class="col-md-3 col-sm-4">
-                        @(Html.Kendo().DropDownList()
-                            .Name("Gender")
-                            .DataTextField("Text")
-                            .DataValueField("Value")
-                            .OptionLabel("آقا و خانم")
-                            .HtmlAttributes(new { style = "width: 100%" })
-                            .BindTo(new List<SelectListItem>() {
-                                new SelectListItem() {
-                                Text = "آقا",
-                                Value = "True"
-                                },
-                                new SelectListItem() {
-                                Text = "خانم",
-                                Value = "False"
-                                }
-                                }))
-                        @Html.ValidationMessageFor(model => model.Gender, "", new { @class = "text-danger" })
-                    </div>
-                    <div class="col-md-7 col-sm-5">
-                    </div>
-                </div>
-                <div class="row form-group" style="margin-top:30px;">
-                    @Html.LabelFor(model => model.Capacity, htmlAttributes: new { @class = "control-label col-md-2 col-sm-3 form-input-label" })
-                    <div class="col-md-3 col-sm-4">
-                        @Html.EditorFor(model => model.Capacity)
-                        @Html.ValidationMessageFor(model => model.Capacity, "", new { @class = "text-danger" })
-                    </div>
-                    <div class="col-md-7 col-sm-5">
-                        <span style="color:red;font-size:20px;">*</span>
-                    </div>
-                </div>
+                  <div class="row form-group" style="margin-top:30px;">
+                      @Html.LabelFor(model => model.GenderStr, htmlAttributes: new { @class = "control-label col-md-2 col-sm-3 form-input-label" })
+                      <div class="col-md-3 col-sm-4">
+                          @(Html.Kendo().DropDownList()
+                                .Name("Gender")
+                                .DataTextField("Text")
+                                .DataValueField("Value")
+                                .OptionLabel("آقا و خانم")
+                                .HtmlAttributes(new { style = "width: 100%" })
+                                .BindTo(new List<SelectListItem>() {
+                                                                       new SelectListItem() {
+                                                                                                Text = "آقا",
+                                                                                                Value = "True"
+                                                                                            },
+                                                                       new SelectListItem() {
+                                                                                                Text = "خانم",
+                                                                                                Value = "False"
+                                                                                            }
+                                                                   }))
+                          @Html.ValidationMessageFor(model => model.Gender, "", new { @class = "text-danger" })
+                      </div>
+                      <div class="col-md-7 col-sm-5">
+                      </div>
+                  </div>
+
+                  <div class="row form-group" style="margin-top:30px;">
+                      @Html.LabelFor(model => model.Capacity, htmlAttributes: new { @class = "control-label col-md-2 col-sm-3 form-input-label" })
+                      <div class="col-md-3 col-sm-4">
+                          @Html.EditorFor(model => model.Capacity, new { htmlAttributes = new { @type = "number", @min = "0", @class = "form-control" } })
+                          @Html.ValidationMessageFor(model => model.Capacity, "", new { @class = "text-danger" })
+                      </div>
+                      <div class="col-md-7 col-sm-5">
+                          <span style="color:red;font-size:20px;">*</span>
+                      </div>
+                  </div>
+
+                  <div class="row form-group" style="margin-top:30px;">
+                      @Html.LabelFor(model => model.Price, htmlAttributes: new { @class = "control-label col-md-2 col-sm-3 form-input-label" })
+                      <div class="col-md-3 col-sm-4" style="display: flex; align-items: center; gap: 5px;">
+                          @Html.EditorFor(model => model.Price, new { htmlAttributes = new { @class = "form-control price-input", style = "flex:1;" } })
+                          <span>تومان</span>
+                      </div>
+                      @Html.ValidationMessageFor(model => model.Price, "", new { @class = "text-danger" })
+                  </div>
+
                 <div class="row form-group" style="margin-top:30px;">
                     @Html.LabelFor(model => model.HasEmploymentExam, htmlAttributes: new { @class = "control-label col-md-2 col-sm-3 form-input-label" })
                     <div class="col-md-3 col-sm-4">
@@ -188,15 +248,41 @@
                         <span style="color:red;font-size:20px;">*</span>
                     </div>
                 </div>
-                <div class="row form-group" style="margin-top:30px;">
-                    @Html.LabelFor(model => model.ExpirationDate, htmlAttributes: new { @class = "control-label col-md-2 col-sm-3 form-input-label" })
-                    <div class="col-md-3 col-sm-4">
-                        @Html.EditorFor(model => model.ExpirationDate)
-                        @Html.ValidationMessageFor(model => model.ExpirationDate, "", new { @class = "text-danger" })
-                    </div>
-                    <div class="col-md-7 col-sm-5">
-                    </div>
-                </div>
+                  <div class="row form-group" style="margin-top:30px;">
+                      @Html.LabelFor(model => model.ExpirationDate, htmlAttributes: new { @class = "control-label col-md-2 col-sm-3 form-input-label" })
+                      <div class="col-md-3 col-sm-4">
+                          @Html.EditorFor(model => model.ExpirationDate)
+                          @Html.ValidationMessageFor(model => model.ExpirationDate, "", new { @class = "text-danger" })
+                      </div>
+                      <div class="col-md-7 col-sm-5">
+                      </div>
+                  </div>
+                  <div class="row form-group" style="margin-top:30px;">
+                      @Html.LabelFor(model => model.ShamsiJobAnnouncementApplicationDeadlineDateFrom, htmlAttributes: new { @class = "control-label col-md-2 col-sm-3 form-input-label" })
+                      <div class="col-md-3 col-sm-4">
+                          @Html.EditorFor(model => model.JobAnnouncementApplicationDeadlineDateFrom)
+                          @Html.ValidationMessageFor(model => model.JobAnnouncementApplicationDeadlineDateFrom, "", new { @class = "text-danger" })
+                      </div>
+                      <div class="col-md-7 col-sm-5">
+                      </div>
+                  </div>
+                  <div class="row form-group" style="margin-top:30px;">
+                      @Html.LabelFor(model => model.ShamsiJobAnnouncementApplicationDeadlineDateTo, htmlAttributes: new { @class = "control-label col-md-2 col-sm-3 form-input-label" })
+                      <div class="col-md-3 col-sm-4">
+                          @Html.EditorFor(model => model.JobAnnouncementApplicationDeadlineDateTo)
+                          @Html.ValidationMessageFor(model => model.JobAnnouncementApplicationDeadlineDateTo, "", new { @class = "text-danger" })
+                      </div>
+                      <div class="col-md-7 col-sm-5">
+                      </div>
+                  </div>
+                  <div class="row form-group" style="margin-top:30px;">
+                      @Html.LabelFor(model => model.Salary, htmlAttributes: new { @class = "control-label col-md-2 col-sm-3 form-input-label" })
+                      <div class="col-md-3 col-sm-4" style="display: flex; align-items: center; gap: 5px;">
+                          @Html.EditorFor(model => model.Salary, new { htmlAttributes = new { @class = "form-control price-input", style = "flex:1;" } })
+                          <span>تومان</span>
+                      </div>
+                      @Html.ValidationMessageFor(model => model.Salary, "", new { @class = "text-danger" })
+                  </div>
                 <hr style="height:0.9px;" />
                 <div class="row form-group" style="margin-top:30px;">
                     @Html.Label("دسته بندی ها", null, htmlAttributes: new { @class = "control-label col-md-2 col-sm-3 col-12 form-input-label" })
@@ -268,7 +354,7 @@
                 <div class="row form-group" style="margin-top:30px;">
                     @Html.Label(null, "نمایش اطلاعات شرکت", htmlAttributes: new { @class = "control-label col-md-2 col-sm-3 col-12 form-input-label" })
                     <div class="col-md-3 col-sm-4" style="padding-right:6px;">
-                        <input type="checkbox" asp-for="@Model.ShowCompanyInfo" checked data-switch="warning" />
+                        <input type="checkbox" asp-for="@Model.ShowCompanyInfo" checked data-switch="success" />
                         <label for="ShowCompanyInfo" data-on-label="بله" data-off-label="خیر" style="margin-right:8px;"></label>
                     </div>
                 </div>
@@ -316,3 +402,32 @@
         </div>
     }
 </div>
+
+<script>
+function filterCities() {
+return {
+ProvinceId: $("#ProvinceId").val()
+};
+}
+
+$(document).on("input", ".price-input", function () {
+        let value = $(this).val();
+
+        value = value.replace(/[^0-9.]/g, "");
+
+        let parts = value.split(".");
+        if (parts.length > 2) {
+            value = parts[0] + "." + parts[1];
+        }
+
+        let integer = parts[0].replace(/,/g, "");
+        let decimal = parts.length > 1 ? "." + parts[1] : "";
+
+        if (integer) {
+            integer = Number(integer).toLocaleString();
+        }
+
+        $(this).val(integer + decimal);
+    });
+</script>
+

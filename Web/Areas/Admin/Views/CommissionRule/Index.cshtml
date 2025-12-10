@@ -122,7 +122,7 @@
                         command.Custom("حذف").Click("deleteRow").HtmlAttributes(new { @class = "command-btn-red" });
                     }).Width(250);
                 })
-                .HtmlAttributes(new { style = "height: 550px;border-radius:0.25rem;" })
+                .HtmlAttributes(new { style = "height: 550px;border-radius:5px;" })
                 .Filterable(ftb => ftb.Mode(GridFilterMode.Menu))
                 .Scrollable(scrollable => scrollable.Virtual(true))
                 .Sortable()
@@ -195,5 +195,48 @@
                 showSimpleModalMessage('danger', 'خطا', 'امکان حذف این اطلاعات وجود ندارد', '');
             }
         })
+    }
+
+    function deleteRow(e) {
+            e.preventDefault();
+            var dataItem = this.dataItem(jQuery(e.currentTarget).closest("tr"));
+
+            showConfirmModalMessage(
+                "danger",
+                "عملیات حذف",
+                "آیا از حذف اطمینان دارید؟",
+                "انصراف",
+                "حذف",
+                "danger",
+                "Confirm",
+                dataItem.CommissionRuleId,
+                "Cancel",
+                null
+            );
+    }
+
+    function Confirm(commissionRuleId) {
+        $.ajax({
+            url: '/Admin/CommissionRule/Delete',
+            type: "GET",
+            data: {
+                id: commissionRuleId
+            }
+        }).done(function (dresult) {
+            if (dresult == true) {
+                var reqGrid = $("#Grid").data("kendoGrid");
+                reqGrid.dataSource.read();
+                showSimpleModalMessage('success', 'عملیات انجام شد', 'اطلاعات موردنظر حذف شد', '');
+            }
+            else {
+                showSimpleModalMessage('danger', 'خطا', 'امکان حذف این اطلاعات وجود ندارد', '');
+            }
+        }).fail(function (xhr) {
+            showSimpleModalMessage('danger', 'خطا', 'در ارسال درخواست خطا رخ داد: ' + (xhr.responseText || xhr.statusText), '');
+        });
+    }
+
+    function Cancel(x) {
+
     }
 </script>

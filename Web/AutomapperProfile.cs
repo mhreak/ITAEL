@@ -18,9 +18,7 @@ namespace Web
             CreateMap<CustomRole, RoleViewModel>();
             CreateMap<RoleViewModel, CustomRole>();
 
-            CreateMap<ApplicationUser, ApplicationUserViewModel>()
-                .ForMember(dest => dest.UserName, src => src.MapFrom(x => x.UserName));
-            CreateMap<ApplicationUser, ApplicationUser>();
+            CreateMap<ApplicationUser, ApplicationUserViewModel>().ReverseMap();
 
             CreateMap<CustomUserRole, UserRoleViewModel>();
             CreateMap<UserRoleViewModel, CustomUserRole>();
@@ -37,22 +35,28 @@ namespace Web
                 .ForMember(dest => dest.CityName, src => src.MapFrom(x => x.City.CityName))
                 .ForMember(dest => dest.EnglishLanguageLevelStr, src => src.MapFrom(x => x.EnglishLanguageLevel != null ? ((short)x.EnglishLanguageLevel == 1 ? "عالی" :
                     ((short)x.EnglishLanguageLevel == 2 ? "متوسط" : ((short)x.EnglishLanguageLevel == 3 ? "ضعیف" : "نامعتبر"))) : ""))
-                .ForMember(dest => dest.ShamsiBirthDate, src => src.MapFrom(x => ""))
-                .ForMember(dest => dest.ShamsiInsertDate, src => src.MapFrom(x => ""));
+                .ForMember(dest => dest.ShamsiBirthDate, src => src.MapFrom(x => ConvertToShamsiDate(x.BirthDate)))
+                .ForMember(dest => dest.ShamsiInsertDate, src => src.MapFrom(x => ConvertToShamsiDate(x.InsertDate)));
             CreateMap<ApplicantViewModel, Applicant>();
 
 
             CreateMap<JobAnnouncement, JobAnnouncementViewModel>()
                 .ForMember(dest => dest.GenderStr, src => src.MapFrom(x => x.Gender != null ? (((bool)x.Gender) ? "آقا" : "خانم") : "مشخص نشده"))
                 .ForMember(dest => dest.ActiveStr, src => src.MapFrom(x => x.Active ? "فعال" : "غیرفعال"))
-                .ForMember(dest => dest.ShamsiPublishDate, src => src.MapFrom(x => ""))
-                .ForMember(dest => dest.ShamsiExpirationDate, src => src.MapFrom(x => ""))
-                .ForMember(dest => dest.ShamsiExamDate, src => src.MapFrom(x => ""))
-                .ForMember(dest => dest.ShamsiInsertDate, src => src.MapFrom(x => ""))
+                .ForMember(dest => dest.HasEmploymentExamStr, src => src.MapFrom(x => x.HasEmploymentExam ? "بله" : "خیر"))
+                .ForMember(dest => dest.ShamsiPublishDate, src => src.MapFrom(x => ConvertToShamsiDate(x.PublishDate)))
+                .ForMember(dest => dest.ShamsiExpirationDate, src => src.MapFrom(x => ConvertToShamsiDate(x.ExpirationDate)))
+                .ForMember(dest => dest.ShamsiJobAnnouncementApplicationDeadlineDateFrom, src => src.MapFrom(x => ConvertToShamsiDate(x.JobAnnouncementApplicationDeadlineDateFrom)))
+                .ForMember(dest => dest.ShamsiJobAnnouncementApplicationDeadlineDateTo, src => src.MapFrom(x => ConvertToShamsiDate(x.JobAnnouncementApplicationDeadlineDateTo)))
+                .ForMember(dest => dest.CompanyName, src => src.MapFrom(x => x.Company.CompanyName))
+                .ForMember(dest => dest.CompanyLogoFileName, src => src.MapFrom(x => x.Company.CompanyLogoFileName))
+                .ForMember(dest => dest.CityName, src => src.MapFrom(x => x.City.CityName))
+                .ForMember(dest => dest.ShamsiExamDate, src => src.MapFrom(x => ConvertToShamsiDate(x.ExamDate)))
+                .ForMember(dest => dest.ShamsiInsertDate, src => src.MapFrom(x => ConvertToShamsiDate(x.InsertDate)))
                 .ForMember(dest => dest.JobTypeStr, src => src.MapFrom(x => x.JobType != null ? ((short)x.JobType == 1 ? "حضوری" :
-                    ((short)x.JobType == 2 ? "غیرحضوری" : "حضوری / غیرحضوری")) : ""))
+                    ((short)x.JobType == 2 ? "غیرحضوری" : "حضوری / غیرحضوری")) : "حضوری / غیرحضوری"))
                 .ForMember(dest => dest.JobTimeTypeStr, src => src.MapFrom(x => x.JobTimeType != null ? ((short)x.JobTimeType == 1 ? "تمام وقت" :
-                    ((short)x.JobType == 2 ? "پاره وقت" : "تمام وقت / پاره وقت")) : ""));
+                    ((short)x.JobType == 2 ? "پاره وقت" : "تمام وقت / پاره وقت")) : "تمام وقت / پاره وقت"));
             CreateMap<JobAnnouncementViewModel, JobAnnouncement>();
 
             CreateMap<JobAnnouncementCategory, JobAnnouncementCategoryViewModel>()
@@ -114,13 +118,10 @@ namespace Web
                .ForMember(dest => dest.ShamsiInsertDate, src => src.MapFrom(x => ""));
             CreateMap<Wallet_Collaborator_CommissionRule_ViewModel, Wallet_Collaborator_CommissionRule>();
 
-            CreateMap<SystemSMS, SystemSMSViewModel>()
-                .ForMember(dest => dest.ShamsiSendDate, src => src.MapFrom(x => ""))
-                .ForMember(dest => dest.SMSTypeStr, src => src.MapFrom(x => x.SMSType == 1 ?
-                    "لیست قیمت هوشمند" : (x.SMSType == 2 ? "تبریک تولد" : (x.SMSType == 3 ? "ثبت درخواست فعالسازی گارانتی" :
-                    (x.SMSType == 4 ? "رد شدن درخواست فعالسازی گارانتی" : (x.SMSType == 5 ? "فعال شدن گارانتی" :
-                    (x.SMSType == 6 ? "پایان دوره گارانتی" : (x.SMSType == 7 ? "ارسال زیلینک" :
-                    (x.SMSType == 8 ? "ارسال لینک لیست قیمت" : "نامعتبر")))))))));
+            CreateMap<SMSPattern, SMSPatternViewModel>();
+            CreateMap<SMSPatternViewModel, SMSPattern>();
+
+            CreateMap<SystemSMS, SystemSMSViewModel>();
             CreateMap<SystemSMSViewModel, SystemSMS>();
 
             CreateMap<JobAnnouncement_StudyField, JobAnnouncement_StudyField_ViewModel>()
@@ -132,7 +133,8 @@ namespace Web
             CreateMap<Applicant_JobAnnouncement, Applicant_JobAnnouncement_ViewModel>()
                 .ForMember(dest => dest.ApplicantFullName, src => src.MapFrom(x => x.Applicant.FirstName + " " + x.Applicant.LastName))
                 .ForMember(dest => dest.JobAnnouncementTitle, src => src.MapFrom(x => x.JobAnnouncement.Title))
-                .ForMember(dest => dest.ShamsiInsertDate, src => src.MapFrom(x => ""));
+                .ForMember(dest => dest.StatusStr, src => src.MapFrom(x => x.Status == -1 ? "رد شده" : (x.Status == 0 ? "نامشخص" : (x.Status == 1 ? "قبول شده" : "نامعتبر"))))
+                .ForMember(dest => dest.ShamsiInsertDate, src => src.MapFrom(x => ConvertToShamsiDate(x.InsertDate)));
             CreateMap<Applicant_JobAnnouncement_ViewModel, Applicant_JobAnnouncement>();
 
             CreateMap<Province, ProvinceViewModel>()
@@ -152,11 +154,12 @@ namespace Web
                 .ForMember(dest => dest.ShamsiStartTime, src => src.MapFrom(x => ConvertToShamsiDateWithTime(x.StartTime)))
                 .ForMember(dest => dest.ShamsiEndTime, src => src.MapFrom(x => ConvertToShamsiDateWithTime(x.EndTime)))
                 .ForMember(dest => dest.StatusStr, src => src.MapFrom(x => x.Status == 1 ?
-                "قبول شده" : (x.Status == 2 ? "رد شده" : (x.Status == 3 ? "در حال بررسی" : "نامعتبر"))));
+                "قبول شده" : (x.Status == 2 ? "رد شده" : (x.Status == 3 ? "در حال بررسی" : (x.Status == 4 ? "آزمون تمام شده" : (x.Status == 5 ? "آزمون تمام نشده" : "نامعتبر"))))));
             CreateMap<ApplicantExamAttemptViewModel, ApplicantExamAttempt>();
 
             CreateMap<ApplicantExamQuestionAnswer, ApplicantExamQuestionAnswerViewModel>()
-                .ForMember(dest => dest.ShamsiInsertDate, src => src.MapFrom(x => ConvertToShamsiDate(x.InsertDate)));
+                .ForMember(dest => dest.ShamsiInsertDate, src => src.MapFrom(x => ConvertToShamsiDate(x.InsertDate)))
+                .ForMember(dest => dest.ExamQuestionText, src => src.MapFrom(x => x.ExamQuestion.Text));
             CreateMap<ApplicantExamQuestionAnswerViewModel, ApplicantExamQuestionAnswer>();
 
             CreateMap<Collaborator, CollaboratorViewModel>()
@@ -186,7 +189,7 @@ namespace Web
                 .ForMember(dest => dest.StatusStr, src => src.MapFrom(x => x.Status == 1 ? 
                 "درحال بررسی" : (x.Status == 2 ? "پرداخت شده" : (x.Status == 3 ? 
                 "ارسال شده" : (x.Status == 4 ? "تحویل داده شده" : (x.Status == 5 ? "دانلود شده" : "نامعتبر"))))))
-                .ForMember(dest => dest.ResourceName, src => src.MapFrom(x => x.ExamResource.ResourceName))
+                .ForMember(dest => dest.ExamResourceOrderItemViewModelList, src => src.MapFrom(x => x.ExamResourceOrderItemList))
                 .ForMember(dest => dest.ShamsiDeliveryDate, src => src.MapFrom(x => ConvertToShamsiDate(x.DeliveryDate)))
                 .ForMember(dest => dest.ShamsiOrderDate, src => src.MapFrom(x => ConvertToShamsiDate(x.OrderDate)));
             CreateMap<ExamResourceOrderViewModel, ExamResourceOrder>();
@@ -227,6 +230,32 @@ namespace Web
                 .ForMember(dest => dest.StudyFieldName, src => src.MapFrom(x => x.StudyField.StudyFieldName))
                 .ForMember(dest => dest.ShmasiInsertDate, src => src.MapFrom(x => ConvertToShamsiDate(x.InsertDate)));
             CreateMap<StudyField_ExamResource_ViewModel, StudyField_ExamResource>();
+
+            CreateMap<BankGateway, BankGatewayViewModel>()
+                .ForMember(dest => dest.GatewayTypeStr, src => src.MapFrom(x => x.GatewayType == 1 ? "زرین پال" : "نامشخص"))
+                .ForMember(dest => dest.ActiveStr, src => src.MapFrom(x => x.Active ? "فعال" : "غیر فعال"));
+            CreateMap<BankGatewayViewModel, BankGateway>();
+
+
+            CreateMap<OnlineTransaction, OnlineTransactionViewModel>()
+                .ForMember(dest => dest.ApplicantId, src => src.MapFrom(x => x.ExamResourceOrder.ApplicantId))
+                .ForMember(dest => dest.ApplicantFullName, src => src.MapFrom(x => x.Applicant_JobAnnouncement.Applicant.FirstName + " " + x.Applicant_JobAnnouncement.Applicant.LastName))
+                .ForMember(dest => dest.JobAnnouncementTitle, src => src.MapFrom(x => x.Applicant_JobAnnouncement.JobAnnouncement.Title))
+                .ForMember(dest => dest.ApplicantFullName, src => src.MapFrom(x => x.ExamResourceOrder.Applicant.FirstName + " " + x.ExamResourceOrder.Applicant.LastName))
+                .ForMember(dest => dest.BankGatewayName, src => src.MapFrom(x => x.BankGateway.GatewayName))
+                .ForMember(dest => dest.StateStr,
+                           src => src.MapFrom(x => x.State == 1 ? "موفق" :
+                                                       (x.State == -1 ? "ناموفق" :
+                                                            (x.State == -2 ? "ناموفق - انصراف از پرداخت" :
+                                                                 "نامشخص"))));
+            CreateMap<OnlineTransactionViewModel, OnlineTransaction>();
+
+            CreateMap<ExamResourceOrderItem, ExamResourceOrderItemViewModel>()
+                .ForMember(dest => dest.ResourceName, src => src.MapFrom(x => x.ExamResource.ResourceName))
+                .ForMember(dest => dest.ShamsiInsertDate, src => src.MapFrom(x => ConvertToShamsiDate(x.InsertDate)));
+            CreateMap<ExamResourceOrderItemViewModel, ExamResourceOrderItem>();
+
+            CreateMap<ContactMessage, ContactMessageViewModel>().ReverseMap();
         }
 
         private string ConvertToShamsiDate(DateTime? date)

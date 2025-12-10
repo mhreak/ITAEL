@@ -1,0 +1,128 @@
+﻿@model ContactUsSettingViewModel
+
+@{
+    ViewData["PageTitle"] = "تنظیمات صفحه تماس با ما";
+}
+
+<div style="margin-top:-14px;">
+    @using (Html.BeginForm(null, null, FormMethod.Post, new { name = "my-form", id = "my-form" }))
+    {
+        @Html.AntiForgeryToken()
+        <div class="form-horizontal">
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            <div class="container-card col-lg-12 col-md-12 col-sm-12 col-sx-12">
+                <div class="row form-group" style="margin-top:30px;">
+                    @Html.LabelFor(model => model.PrimaryLandline, htmlAttributes: new { @class = "control-label col-md-2 col-sm-3 form-input-label" })
+                    <div class="col-md-3 col-sm-4">
+                        @Html.EditorFor(model => model.PrimaryLandline)
+                        @Html.ValidationMessageFor(model => model.PrimaryLandline, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-md-7 col-sm-5">
+                        <span style="color:red;font-size:20px;">*</span>
+                    </div>
+                </div>
+                <div class="row form-group" style="margin-top:30px;">
+                    @Html.LabelFor(model => model.SecondaryLandline, htmlAttributes: new { @class = "control-label col-md-2 col-sm-3 form-input-label" })
+                    <div class="col-md-3 col-sm-4">
+                        @Html.EditorFor(model => model.SecondaryLandline)
+                        @Html.ValidationMessageFor(model => model.SecondaryLandline, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-md-7 col-sm-5">
+                        <span style="color:red;font-size:20px;">*</span>
+                    </div>
+                </div>
+                <div class="row form-group" style="margin-top:30px;">
+                    @Html.LabelFor(model => model.PrimaryMobile, htmlAttributes: new { @class = "control-label col-md-2 col-sm-3 form-input-label" })
+                    <div class="col-md-3 col-sm-4">
+                        @Html.EditorFor(model => model.PrimaryMobile)
+                        @Html.ValidationMessageFor(model => model.PrimaryMobile, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-md-7 col-sm-5">
+                        <span style="color:red;font-size:20px;">*</span>
+                    </div>
+                </div>
+                <div class="row form-group" style="margin-top:30px;">
+                    @Html.LabelFor(model => model.SecondaryMobile, htmlAttributes: new { @class = "control-label col-md-2 col-sm-3 form-input-label" })
+                    <div class="col-md-3 col-sm-4">
+                        @Html.EditorFor(model => model.SecondaryMobile)
+                        @Html.ValidationMessageFor(model => model.SecondaryMobile, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-md-7 col-sm-5">
+                        <span style="color:red;font-size:20px;">*</span>
+                    </div>
+                </div>
+                <div class="row form-group" style="margin-top:30px;">
+                    @Html.LabelFor(model => model.TelegramID, htmlAttributes: new { @class = "control-label col-md-2 col-sm-3 form-input-label" })
+                    <div class="col-md-3 col-sm-4">
+                        @Html.EditorFor(model => model.TelegramID)
+                        @Html.ValidationMessageFor(model => model.TelegramID, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-md-7 col-sm-5">
+                        <span style="color:red;font-size:20px;">*</span>
+                    </div>
+                </div>
+                <div class="row form-group" style="margin-top:30px;">
+                    @Html.LabelFor(model => model.InstagramID, htmlAttributes: new { @class = "control-label col-md-2 col-sm-3 form-input-label" })
+                    <div class="col-md-3 col-sm-4">
+                        @Html.EditorFor(model => model.InstagramID)
+                        @Html.ValidationMessageFor(model => model.InstagramID, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-md-7 col-sm-5">
+                        <span style="color:red;font-size:20px;">*</span>
+                    </div>
+                </div>
+                <div class="row form-group" style="margin-top:30px;">
+                    @Html.LabelFor(model => model.WhatsAppNumber, htmlAttributes: new { @class = "control-label col-md-2 col-sm-3 form-input-label" })
+                    <div class="col-md-3 col-sm-4">
+                        @Html.EditorFor(model => model.WhatsAppNumber)
+                        @Html.ValidationMessageFor(model => model.WhatsAppNumber, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-md-7 col-sm-5">
+                        <span style="color:red;font-size:20px;">*</span>
+                    </div>
+                </div>
+                <div class="row form-group" style="margin-top:30px;">
+                    @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "control-label col-md-2 col-sm-3 form-input-label" })
+                    <div class="col-md-3 col-sm-4">
+                        @Html.EditorFor(model => model.Email)
+                        @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-md-7 col-sm-5">
+                        <span style="color:red;font-size:20px;">*</span>
+                    </div>
+                </div>
+                <div class="row form-group" style="margin-top:30px;">
+                    @Html.LabelFor(model => model.Address, htmlAttributes: new { @class = "control-label col-md-2 col-sm-3 form-input-label" })
+                    <div class="col-md-8 col-sm-12 col-12">
+                        <div class="col-12 k-rtl" style="margin-top:22px;">
+                            @(Html.Kendo().EditorFor(model => model.Address)
+                                                    .HtmlAttributes(new { style = "width: 100%; height:360px;font-family:'IranSans';", aria_label = "editor" })
+                                                    .Encoded(false)
+                                                    .Tools(tools => tools
+                                                    .Clear()
+                                                    .Bold().Italic().Underline()
+                                                    .JustifyLeft().JustifyCenter().JustifyRight().JustifyFull()
+                                                    .InsertOrderedList()
+                                                    .InsertUnorderedList()
+                                                    .Outdent().Indent()
+                                                    .CreateLink().Unlink()
+                                                    .FontSize()
+                                                    )
+                                                    )
+                        @Html.ValidationMessageFor(model => model.Address, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="col-md-7 col-sm-5">
+                    <span style="color:red;font-size:20px;">*</span>
+                </div>
+            </div>
+        </div>
+        <hr style="margin-top:45px;color:orangered;" />
+        <div class="row" style="margin-top:12px;">
+            <div class="col-md-6 col-sm-12">
+                <input type="submit" class="btn btn-success form-command-btn" value="ذخیره" style="float:right;" />
+            </div>
+        </div>
+    </div>
+        }
+</div>

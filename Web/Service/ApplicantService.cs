@@ -9,6 +9,7 @@ using System.Globalization;
 using System.Linq;
 using System.Linq.Dynamic.Core;
 using Web.Model;
+using Web.Model.Identity;
 using Web.Service.Identity.Interface;
 using Web.Service.Interface;
 
@@ -17,6 +18,7 @@ namespace Web.Service
     public class ApplicantService : IApplicantService
     {
         readonly IMapper _mapper;
+        private readonly ICityService _cityService;
         readonly IUnitOfWork _database;
         readonly DbSet<Applicant> _table;
         readonly IUserRoleService _userRoleService;
@@ -26,19 +28,21 @@ namespace Web.Service
         public ApplicantService(
             IUnitOfWork database,
             IMapper mappingEngine,
+            ICityService cityService,
             IUserRoleService userRoleService,
             IApplicationUserManagerService userManagerService,
             IApplicant_JobAnnouncement_Service applicant_JobAnnouncement_Service)
         {
             _database = database;
             _mapper = mappingEngine;
+            _cityService = cityService;
             _userRoleService = userRoleService;
             _table = _database.Set<Applicant>();
             _userManagerService = userManagerService;
             _applicant_JobAnnouncement_Service = applicant_JobAnnouncement_Service;
         }
 
-        public int Add(ApplicantViewModel uiModel)
+        public int Add(ApplicantViewModel uiModel, string password)
         {
             var dbModel = new Applicant();
             _mapper.Map(source: uiModel, destination: dbModel);
@@ -51,10 +55,32 @@ namespace Web.Service
             dbModel.IdentityCertificateSecondPageFileName = null;
             dbModel.EducationalCertificateFileName = null;
 
+
             _table.Add(dbModel);
             try
             {
                 _database.SaveChanges();
+                //var user = _userManagerService.GetUserByApplicantId(dbModel.ApplicantId);
+
+                //if (user == null)
+                //{
+                //    var applicationUserViewModel = new ApplicationUserViewModel()
+                //                                   {
+                //                                       Name = dbModel.FirstName + " " + dbModel.LastName,
+                //                                       PhoneNumber = dbModel.Mobile,
+                //                                       ApplicantId = dbModel.ApplicantId,
+                //                                       AccountState = 1,
+                //                                       CompanyName = "",
+                //                                       RoleName = "",
+                //                                       UserName = ""
+                //                                   };
+                //    int userId = _userManagerService.Add(applicationUserViewModel, password, "Applicant");
+
+                //    if (userId == -1)
+                //    {
+                //        return -1;
+                //    }
+                //}
 
                 return dbModel.ApplicantId;
             }
@@ -75,9 +101,9 @@ namespace Web.Service
                 _database.SaveChanges();
 
                 var applicant_jobAnnouncement_list = _applicant_JobAnnouncement_Service.GetAllByApplicantId(id);
-                if(applicant_jobAnnouncement_list != null && applicant_jobAnnouncement_list.Any())
+                if (applicant_jobAnnouncement_list != null && applicant_jobAnnouncement_list.Any())
                 {
-                    foreach(var a_ja in applicant_jobAnnouncement_list)
+                    foreach (var a_ja in applicant_jobAnnouncement_list)
                     {
                         _applicant_JobAnnouncement_Service.Delete(id, a_ja.JobAnnouncementId);
                     }
@@ -123,23 +149,14 @@ namespace Web.Service
         {
             if (id == 0) { return null; }
 
-            var dbModel = _table.
-                Where(x => x.ApplicantId == id)
-                .FirstOrDefault();
+            var dbModel = _table
+                          .Include(x => x.City)
+                          .Include(x => x.StudyField)
+                          .FirstOrDefault(x => x.ApplicantId == id);
 
             var uiModel = new ApplicantViewModel();
 
             _mapper.Map(dbModel, uiModel);
-
-            PersianCalendar pc = new PersianCalendar();
-
-            uiModel.ShamsiBirthDate = pc.GetYear((DateTime)uiModel.BirthDate).ToString("0000/") +
-                pc.GetMonth((DateTime)uiModel.BirthDate).ToString("00/") +
-                pc.GetDayOfMonth((DateTime)uiModel.BirthDate).ToString("00");
-
-            uiModel.ShamsiInsertDate = pc.GetYear(uiModel.InsertDate).ToString("0000/") +
-                pc.GetMonth(uiModel.InsertDate).ToString("00/") +
-                pc.GetDayOfMonth(uiModel.InsertDate).ToString("00");
 
             return uiModel;
         }
@@ -288,7 +305,7 @@ namespace Web.Service
 
             var dbModelList = new List<Applicant>();
 
-            dbModelList = _table.Where(whereStr,filterFirstName, filterLastName, filterFullName, filterGender,
+            dbModelList = _table.Include(x => x.City).Where(whereStr, filterFirstName, filterLastName, filterFullName, filterGender,
                 filterNationalCode, filterMobile, birthDateFromMiladi, birthDateToMiladi,
                 insertDateFromMiladi, insertDateToMiladi).ToList();
 
@@ -302,16 +319,15 @@ namespace Web.Service
             var uiModelList = new List<ApplicantViewModel>();
             _mapper.Map(dbModelList, uiModelList);
 
-            PersianCalendar pc = new PersianCalendar();
-            foreach (var uiModelItem in uiModelList)
+            foreach (var uiModel in uiModelList)
             {
-                uiModelItem.ShamsiBirthDate = pc.GetYear((DateTime)uiModelItem.BirthDate).ToString("0000/") +
-                    pc.GetMonth((DateTime)uiModelItem.BirthDate).ToString("00/") +
-                    pc.GetDayOfMonth((DateTime)uiModelItem.BirthDate).ToString("00");
-
-                uiModelItem.ShamsiInsertDate = pc.GetYear(uiModelItem.InsertDate).ToString("0000/") +
-                    pc.GetMonth(uiModelItem.InsertDate).ToString("00/") +
-                    pc.GetDayOfMonth(uiModelItem.InsertDate).ToString("00");
+                if (uiModel.CityId is not null)
+                {
+                    var cityViewModel = _cityService.Get(uiModel.CityId.Value);
+                    uiModel.ProvinceId = cityViewModel.ProvinceId;
+                    uiModel.ProvinceName = cityViewModel.ProvinceName;
+                }
+                
             }
 
             return uiModelList;
@@ -319,7 +335,7 @@ namespace Web.Service
 
         public bool IsDuplicateByMobile(int? applicantId, string mobile)
         {
-            if(applicantId != null)
+            if (applicantId != null)
             {
                 return _table.Any(x => x.ApplicantId != (int)applicantId && x.Mobile == mobile);
             }
@@ -346,7 +362,7 @@ namespace Web.Service
             var dbModel = _table.SingleOrDefault(x => x.ApplicantId == applicantId);
 
             dbModel.EducationalCertificateFileName = fileName;
-            
+
             _table.Attach(dbModel);
 
             _database.Entry(dbModel).State = EntityState.Modified;

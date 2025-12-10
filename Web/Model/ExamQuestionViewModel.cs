@@ -10,7 +10,7 @@ namespace Web.Model
         public int ExamQuestionId { get; set; }
 
         [MaxLength(3000)]
-        [Display(Name = "متن")]
+        [Display(Name = "متن سوال")]
         [Required(ErrorMessage = "این فیلد الزامی است")]
         public string Text { get; set; }
 
@@ -35,6 +35,12 @@ namespace Web.Model
         [Range(0, int.MaxValue, ErrorMessage = "عدد باید ۰ یا بزرگتر باشد.")]
 
         public int QuestionOrder { get; set; }
+
+        [Display(Name = "نمره")]
+        public double Grade { get; set; }
+
+        [Display(Name = "متن جواب سوال")]
+        public string? AnswerText { get; set; }
 
         public List<ExamQuestionOptionViewModel>? ExamQuestionOptionViewModelList { get; set; }
     }

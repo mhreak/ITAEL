@@ -1,12 +1,17 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System;
 
+using Web.Service.Identity.Interface;
+using Web.Service.Interface;
+
 namespace Web.Controllers
 {
     public class BaseController : Controller
     {
         public BaseController()
-        { }
+        {
+
+        }
 
         private void SetToast(string type, string title, string text)
         {

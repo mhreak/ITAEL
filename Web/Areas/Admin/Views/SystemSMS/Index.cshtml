@@ -1,0 +1,232 @@
+﻿@model IEnumerable<SystemSMSViewModel>
+
+@{
+    ViewData["PageTitle"] = "لیست پیامک های سیستمی";
+}
+
+<div class="accordion" id="custom-accordion-one" style="margin-top:-14px;">
+    <div class="card mb-0">
+        <div class="card-header" id="headingOne" style="max-height:40px;padding-top:0px;border-radius:4px;">
+            <h5 class="m-0">
+                <a class="custom-accordion-title d-block pt-2 pb-2 collapsed"
+                   data-bs-toggle="collapse" href="#collapseOne"
+                   aria-expanded="true" aria-controls="collapseOne">
+                    <i class="uil uil-filter" style="color:orangered;"></i>
+                    <b style="font-size:16px;margin-right:5px;">فیلتر اطلاعات</b>
+                    <i class="mdi mdi-chevron-up accordion-arrow" style="float:left;color:orangered;"></i>
+                </a>
+            </h5>
+        </div>
+
+        <div id="collapseOne" class="collapse"
+             aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+            <div class="card-body">
+                <div class="row" style="margin-top:22px;">
+                    <div class="col-md-6 col-sm-12">
+                        <div class="row form-group">
+                            @Html.Label(null, "موبایل", htmlAttributes: new { @class = "form-input-label col-md-3 col-sm-12", style = "float:right;text-align:right;margin-top:8px;" })
+                            <div class="col-md-6 col-sm-12">
+                                @Html.Editor("FilterMobile")
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-sm-12">
+                        <div class="row form-group">
+                            @Html.Label(null, "نوع پیامک", htmlAttributes: new { @class = "form-input-label col-md-3 col-sm-12", style = "float:right;text-align:right;margin-top:8px;" })
+                            <div class="col-md-6 col-sm-12">
+                                @(Html.Kendo().DropDownList()
+                                                                .Name("FilterSMSType")
+                                                                .DataTextField("Text")
+                                                                .DataValueField("Value")
+                                                                .OptionLabel("همه")
+                                                                .HtmlAttributes(new { style = "width: 100%" })
+                                                                .BindTo(new List<SelectListItem>() {
+                                                                new SelectListItem() {
+                                                                Text = "لیست قیمت هوشمند",
+                                                                Value = "1"
+                                                                },
+                                                                new SelectListItem() {
+                                                                Text = "تبریک تولد",
+                                                                Value = "2"
+                                                                },
+                                                                new SelectListItem() {
+                                                                Text = "ثبت درخواست فعالسازی گارانتی",
+                                                                Value = "3"
+                                                                },
+                                                                new SelectListItem() {
+                                                                Text = "رد شدن درخواست فعالسازی گارانتی",
+                                                                Value = "4"
+                                                                },
+                                                                new SelectListItem() {
+                                                                Text = "فعال شدن گارانتی",
+                                                                Value = "5"
+                                                                },
+                                                                new SelectListItem() {
+                                                                Text = "پایان دوره گارانتی",
+                                                                Value = "6"
+                                                                },
+                                                                new SelectListItem() {
+                                                                Text = "ارسال زیلینک",
+                                                                Value = "7"
+                                                                },
+                                                                new SelectListItem() {
+                                                                Text = "ارسال لینک لیست قیمت",
+                                                                Value = "8"
+                                                                }
+                                                                }))
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row" style="margin-top:22px;">
+                    <div class="col-md-6 col-sm-12">
+                        <div class="row form-group">
+                            @Html.Label(null, "تاریخ ارسال از", htmlAttributes: new { @class = "form-input-label col-md-3 col-sm-12", style = "float:right;text-align:right;margin-top:8px;" })
+                            <div class="col-md-6 col-sm-12">
+                                <div>
+                                    <div style="display:inline-block;width:100%;">
+                                        <input type="text" class="form-control" id="FilterSendDateFrom" name="FilterSendDateFrom"
+                                               data-ha-datetimepicker="#FilterSendDateFrom" data-ha-dp-issolar="true"
+                                               data-ha-dp-disabletime="true" data-ha-dp-resultinsolar="true"
+                                               data-ha-dp-resultformat="{year}/{month}/{day}" value="" style="display:inline;" />
+                                    </div>
+                                    <div style="display:inline-block;margin-right:-30px;">
+                                        <i class="fa fa-calendar" style="color: #034ea2;"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-sm-12">
+                        <div class="row form-group">
+                            @Html.Label(null, "تاریخ ارسال تا", htmlAttributes: new { @class = "form-input-label col-md-3 col-sm-12", style = "float:right;text-align:right;margin-top:8px;" })
+                            <div class="col-md-6 col-sm-12">
+                                <div>
+                                    <div style="display:inline-block;width:100%;">
+                                        <input type="text" class="form-control" id="FilterSendDateTo" name="FilterSendDateTo"
+                                               data-ha-datetimepicker="#FilterSendDateTo" data-ha-dp-issolar="true"
+                                               data-ha-dp-disabletime="true" data-ha-dp-resultinsolar="true"
+                                               data-ha-dp-resultformat="{year}/{month}/{day}" value="" style="display:inline;" />
+                                    </div>
+                                    <div style="display:inline-block;margin-right:-30px;">
+                                        <i class="fa fa-calendar" style="color: #034ea2;"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <hr style="margin-top:22px;" />
+                <a class="btn btn-info" style="float:left;margin-bottom:10px;" onclick="filterData()">فیلتر اطلاعات</a>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="k-rtl" style="margin-top:20px;">
+        <div style="height:100%;">
+            @(
+                        Html.Kendo().Grid<SystemSMSViewModel>().Name("Grid").Columns(columns =>
+                        {
+                            columns.Bound(c => c.Mobile).Width(250);
+                            columns.Bound(c => c.SMSTypeStr).Width(250);
+                            columns.Bound(c => c.ShamsiSendDate).Width(250);
+                        })
+                        .HtmlAttributes(new { style = "height: 550px;border-radius:5px;" })
+                        .Filterable(ftb => ftb.Mode(GridFilterMode.Menu))
+                        .Scrollable(scrollable => scrollable.Virtual(true))
+                        .Sortable()
+                        .Pageable(pageable => pageable
+                        .Refresh(true)
+                        .PageSizes(true)
+                        .ButtonCount(5))
+                        .DataSource(dataSource => dataSource
+                        .Ajax()
+                        .Events(events => events.Error("error_handler"))
+                        .Model(model =>
+                        {
+                            model.Id(x => x.SystemSMSId);
+                        })
+                        .Read(read => read.Action("Grid_Data_Read", "SystemSMS", new { Area = "Admin" })
+                        .Data("getFilterDataParams"))
+                        .PageSize(20)
+                        )
+                        )
+        </div>
+    </div>
+    <div class="row" style="margin-top:20px;">
+        <div class="col-xs-6 col-sm-6 col-md-6">
+            <a href="@Url.Action("SendSMS", "SystemSMS")" class="btn btn-success form-command-btn" style="display:inline-block;float:right;">
+                <span><i class="fa fa-plus"></i><span>&nbsp;</span>ثبت جدید</span>
+            </a>
+        </div>
+        <div class="col-xs-6 col-sm-6 col-md-6 text-left">
+            @* <a href="@Url.Action("Index", "Dashboard")" class="btn btn-info form-command-btn" style="float:left;">
+            <span class="btn-label"><i class="fa fa-reply"></i><span>&nbsp;</span>بازگشت</span>
+            </a> *@
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+
+    var getFilterDataParams = function (e) {
+        var result = {
+            filterMobile: $('#FilterMobile').val(),
+            filterSMSType: $('#FilterSMSType').val(),
+            filterSendDateFrom: $('#FilterSendDateFrom').val(),
+            filterSendDateTo: $('#FilterSendDateTo').val(),
+        }
+        return result;
+    };
+
+    function filterData() {
+        $("#Grid").data("kendoGrid").dataSource.read();
+    }
+
+    function deleteRow(e) {
+            e.preventDefault();
+            var dataItem = this.dataItem(jQuery(e.currentTarget).closest("tr"));
+
+            showConfirmModalMessage(
+                "danger",
+                "عملیات حذف",
+                "آیا از حذف اطمینان دارید؟",
+                "انصراف",
+                "حذف",
+                "danger",
+                "Confirm",
+                dataItem.SystemSMSId,
+                "Cancel",
+                null
+            );
+        }
+
+        function Confirm(systemSMSId) {
+            $.ajax({
+                url: '/Admin/SystemSMS/Delete',
+                type: "GET",
+                data: {
+                    id: systemSMSId
+                }
+            }).done(function (dresult) {
+                if (dresult == true) {
+                    var reqGrid = $("#Grid").data("kendoGrid");
+                    reqGrid.dataSource.read();
+                    showSimpleModalMessage('success', 'عملیات انجام شد', 'اطلاعات موردنظر حذف شد', '');
+                }
+                else {
+                    showSimpleModalMessage('danger', 'خطا', 'امکان حذف این اطلاعات وجود ندارد', '');
+                }
+            }).fail(function (xhr) {
+                showSimpleModalMessage('danger', 'خطا', 'در ارسال درخواست خطا رخ داد: ' + (xhr.responseText || xhr.statusText), '');
+            });
+        }
+
+        function Cancel(x) {
+
+        }
+
+
+
+</script>

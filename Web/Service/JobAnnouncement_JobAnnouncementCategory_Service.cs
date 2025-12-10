@@ -128,7 +128,7 @@ namespace Web.Service
 
         public IList<JobAnnouncement_JobAnnouncementCategory_ViewModel> GetAllByJobAnnouncementId(int jobAnnouncementId)
         {
-            var dbModelList = _table.Where(x => x.JobAnnouncementId == jobAnnouncementId).ToList();
+            var dbModelList = _table.Include(x => x.JobAnnouncementCategory).Where(x => x.JobAnnouncementId == jobAnnouncementId).ToList();
             var uiModelList = new List<JobAnnouncement_JobAnnouncementCategory_ViewModel>();
 
             _mapper.Map(dbModelList, uiModelList);

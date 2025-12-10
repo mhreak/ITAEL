@@ -1,0 +1,142 @@
+﻿@model ContactUsSettingViewModel
+
+<head>
+    <title>تماس با ما | ایتائل</title>
+    <link rel="stylesheet" href="~/css/style/contact.css">
+</head>
+<body class="bg-body">
+    
+    <section class="contact-hero">
+        <div class="container">
+            <h1 class="contact-hero-title mb-2">تماس با ما</h1>
+            <p class="contact-hero-text mb-0">
+                برای ارتباط با کارشناسان ما از فرم زیر استفاده کنید.
+            </p>
+        </div>
+    </section>
+
+    <section class="contact-section container py-5">
+
+        <div class="row g-4 justify-content-center mb-5">
+            @if (!string.IsNullOrEmpty(Model.Address))
+            {
+                <div class="col-6 col-md-4 col-lg-2 contact-card-wrapper">
+                    <div class="contact-card card-style-1">
+                        <i class="bi bi-geo-alt"></i>
+                        <h5>آدرس</h5>
+                        <p>تهران، خیابان فرشته</p>
+                    </div>
+                </div>
+            }
+            
+            @if (!string.IsNullOrEmpty(Model.PrimaryLandline))
+            {
+                <div class="col-6 col-md-4 col-lg-2 contact-card-wrapper">
+                    <div class="contact-card card-style-2">
+                        <i class="bi bi-telephone"></i>
+                        <h5>شماره تلفن ثابت 1</h5>
+                        <p>@Model.PrimaryLandline</p>
+                    </div>
+                </div>
+            }
+            
+            @if (!string.IsNullOrEmpty(Model.SecondaryLandline))
+            {
+                <div class="col-6 col-md-4 col-lg-2 contact-card-wrapper">
+                    <div class="contact-card card-style-2">
+                        <i class="bi bi-telephone"></i>
+                        <h5>شماره تلفن ثابت 2</h5>
+                        <p>@Model.SecondaryLandline</p>
+                    </div>
+                </div>
+            }
+            
+            @if (!string.IsNullOrEmpty(Model.PrimaryMobile))
+            {
+                <div class="col-6 col-md-4 col-lg-2 contact-card-wrapper">
+                    <div class="contact-card card-style-2">
+                        <i class="bi bi-phone"></i>
+                        <h5>شماره تلفن همراه 1</h5>
+                        <p>@Model.PrimaryMobile</p>
+                    </div>
+                </div>
+            }
+            
+            @if (!string.IsNullOrEmpty(Model.SecondaryMobile))
+            {
+                <div class="col-6 col-md-4 col-lg-2 contact-card-wrapper">
+                    <div class="contact-card card-style-2">
+                        <i class="bi bi-phone"></i>
+                        <h5>شماره تلفن همراه 2</h5>
+                        <p>@Model.SecondaryMobile</p>
+                    </div>
+                </div>
+            }
+            
+            @if (!string.IsNullOrEmpty(Model.Email))
+            {
+                <div class="col-6 col-md-4 col-lg-2 contact-card-wrapper">
+                    <div class="contact-card card-style-3">
+                        <i class="bi bi-envelope"></i>
+                        <h5>ایمیل</h5>
+                        <p>@Model.Email</p>
+                    </div>
+                </div>
+            }
+            
+            @if (!string.IsNullOrEmpty(Model.WhatsAppNumber))
+            {
+                <div class="col-6 col-md-4 col-lg-2 contact-card-wrapper">
+                    <div class="contact-card card-style-4">
+                        <i class="bi bi-whatsapp"></i>
+                        <h5>واتساپ</h5>
+                        <p>@Model.WhatsAppNumber</p>
+                    </div>
+                </div>
+            }
+            
+            @if (!string.IsNullOrEmpty(Model.TelegramID))
+            {
+                <div class="col-6 col-md-4 col-lg-2 contact-card-wrapper">
+                    <div class="contact-card card-style-5">
+                        <i class="bi bi-telegram"></i>
+                        <h5>تلگرام</h5>
+                        <p>@Model.TelegramID</p>
+                    </div>
+                </div>
+            }
+            
+            @if (!string.IsNullOrEmpty(Model.InstagramID))
+            {
+                <div class="col-6 col-md-4 col-lg-2 contact-card-wrapper">
+                    <div class="contact-card card-style-6">
+                        <i class="bi bi-instagram"></i>
+                        <h5>اینستاگرام</h5>
+                        <p>@Model.InstagramID</p>
+                    </div>
+                </div>
+            }
+        </div>
+
+
+        <div class="contact-form-box mx-auto">
+            <h3 class="contact-form-title mb-2">فرم تماس</h3>
+            <p class="contact-form-subtitle mb-4">فرم زیر را تکمیل کنید تا کارشناسان ما با شما تماس بگیرند.</p>
+
+            <form asp-area="" asp-controller="Home" asp-action="SubmitContactMessage" method="post">
+                <input for="Name" name="Name" type="text" placeholder="نام خود را وارد کنید" class="form-control mb-3">
+                <input for="Mobile" name="Mobile" type="tel" placeholder="0912xxxxxxx" pattern="^09\d{9}$" maxlength="11" class="form-control mb-3">
+                <textarea for="Text" name="Text" rows="4" placeholder="متن پیام خود را اینجا بنویسید..." class="form-control mb-4"></textarea>
+                <button type="submit" class="btn submit-btn">ثبت پیام</button>
+            </form>
+        </div>
+    </section>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const href = window.location.href;
+        if (href.includes("job-detail")) {
+            document.getElementById("nav-home")?.classList.add("active");
+        }
+    </script>
+</body>

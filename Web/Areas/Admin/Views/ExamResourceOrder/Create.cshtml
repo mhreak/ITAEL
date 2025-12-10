@@ -27,13 +27,18 @@
         <div class="container-card padding30" style="padding-top:45px;">
             <div class="form-horizontal">
                 <div class="row form-group" style="margin-top:30px;">
-                    @Html.LabelFor(model => model.ResourceName, htmlAttributes: new { @class = "control-label col-md-2 col-sm-3 form-input-label" })
+                    @Html.Label(null, "منبع آزمون", htmlAttributes: new { @class = "control-label col-md-2 col-sm-3 form-input-label" })
                     <div class="col-md-3 col-sm-4">
-                        @Html.EditorFor(model => model.ResourceName)
-                        @Html.ValidationMessageFor(model => model.ResourceName, "", new { @class = "text-danger" })
+                        @Html.Hidden("ExamResourceId")
+                        @Html.TextBox("ResourceName", "", new { @readonly = "readonly", @class = "form-control" })
                     </div>
-                    <div class="col-md-7 col-sm-5">
-                        <span style="color:red;font-size:20px;">*</span>
+                    <div class="col-md-1 col-sm-2" style="margin-right:-20px;">
+                        <a class="btn btn-info modal-link" href=@Url.Action("ShowExamResourceSearchDialog",
+                                                                            "ExamResource", new { Area = "Admin", valueElementId = "ExamResourceId",
+                                                                                                 displayElementId = "ResourceName" })
+                           style="box-shadow:none;border-radius:0.4rem;height:40px;font-size:20px;padding-top:6px;">
+                            <i class="uil-search"></i>
+                        </a>
                     </div>
                 </div>
 

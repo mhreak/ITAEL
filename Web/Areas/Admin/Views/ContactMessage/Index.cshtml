@@ -1,0 +1,100 @@
+﻿@model IEnumerable<ContactMessageViewModel>
+
+@{
+    ViewData["PageTitle"] = "لیست پیام های فرم تماس";
+}
+
+<div class="accordion" id="custom-accordion-one" style="margin-top:-14px;">
+    <div class="k-rtl" style="margin-top:20px;">
+        <div style="height:100%;">
+            @(
+                        Html.Kendo().Grid<ContactMessageViewModel>().Name("Grid").Columns(columns =>
+                        {
+                            columns.Bound(c => c.Name).Width(250);
+                            columns.Bound(c => c.Mobile).Width(250);
+                            columns.Bound(c => c.Text).Width(750);
+                            columns.Command(command =>
+                            {
+                                command.Custom("حذف").Click("deleteRow").HtmlAttributes(new { @class = "command-btn-red" });
+                            }).Width(400);
+                        })
+                        .HtmlAttributes(new { style = "height: 550px;border-radius:5px;" })
+                        .Filterable(ftb => ftb.Mode(GridFilterMode.Menu))
+                        .Scrollable(scrollable => scrollable.Virtual(true))
+                        .Sortable()
+                        .Pageable(pageable => pageable
+                        .Refresh(true)
+                        .PageSizes(true)
+                        .ButtonCount(5))
+                        .DataSource(dataSource => dataSource
+                        .Ajax()
+                        .Events(events => events.Error("error_handler"))
+                        .Model(model =>
+                        {
+                            model.Id(x => x.ContactMessageId);
+                        })
+                        .Read(read => read.Action("Grid_Data_Read", "ContactMessage", new { Area = "Admin" })
+                        .Data("getFilterDataParams"))
+                        .PageSize(20)
+                        )
+                        )
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    var getFilterDataParams = function (e) {
+        var result = {
+        }
+        return result;
+    };
+
+    function filterData() {
+        $("#Grid").data("kendoGrid").dataSource.read();
+    }
+
+    function deleteRow(e) {
+            e.preventDefault();
+            var dataItem = this.dataItem(jQuery(e.currentTarget).closest("tr"));
+
+            showConfirmModalMessage(
+                "danger",
+                "عملیات حذف",
+                "آیا از حذف اطمینان دارید؟",
+                "انصراف",
+                "حذف",
+                "danger",
+                "Confirm",
+                dataItem.ContactMessageId,
+                "Cancel",
+                null
+            );
+        }
+
+        function Confirm(contactMessageId) {
+            $.ajax({
+                url: '/Admin/ContactMessage/Delete',
+                type: "GET",
+                data: {
+                    id: contactMessageId
+                }
+            }).done(function (dresult) {
+                if (dresult == true) {
+                    var reqGrid = $("#Grid").data("kendoGrid");
+                    reqGrid.dataSource.read();
+                    showSimpleModalMessage('success', 'عملیات انجام شد', 'اطلاعات موردنظر حذف شد', '');
+                }
+                else {
+                    showSimpleModalMessage('danger', 'خطا', 'امکان حذف این اطلاعات وجود ندارد', '');
+                }
+            }).fail(function (xhr) {
+                showSimpleModalMessage('danger', 'خطا', 'در ارسال درخواست خطا رخ داد: ' + (xhr.responseText || xhr.statusText), '');
+            });
+        }
+
+        function Cancel(x) {
+
+        }
+
+</script>

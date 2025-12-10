@@ -1,0 +1,109 @@
+﻿<script>
+    $("body").on("click", ".jobAnnouncement-filter-grid .k-checkbox", FilterJobAnnouncementGridOnRowClick);
+
+    var selectedJobAnnouncementId = 0;
+    var selectedTitle = "";
+
+
+    var getJobAnnouncementFilterDataParams = function (e) {
+        var result = {
+            filterTitle: $('#FilterTitleDialog').val(),
+        }
+
+        return result;
+    };
+
+    function filterJobAnnouncementData() {
+        $("#JobAnnouncement_Filter_Grid").data("kendoGrid").dataSource.read();
+    }
+
+    function FilterJobAnnouncementGridOnRowClick(e) {
+        selectedJobAnnouncementId = 0;
+        selectedTitle = "";
+        var grid = $("#JobAnnouncement_Filter_Grid").data("kendoGrid");
+        var row = $(e.target).closest("tr");
+
+        if (row.hasClass("k-state-selected")) {
+            grid.clearSelection();
+            grid.select(row);
+            selectedJobAnnouncementId = grid.dataItem(row).JobAnnouncementId;
+
+            if (grid.dataItem(row).Title != null && grid.dataItem(row).Title != '' && grid.dataItem(row).Title != ' ') {
+                selectedTitle = grid.dataItem(row).Title;
+            }
+        }
+    }
+
+    function selectJobAnnouncement() {
+        if (selectedJobAnnouncementId != 0) {
+            $('#' + '@ViewBag.DisplayElementId').val(selectedTitle);
+            $('#clearJobAnnouncementFilterLink').show();
+            $('#' + '@ViewBag.ValueElementId').val(selectedJobAnnouncementId).trigger('change');
+            closeModalDialog();
+        }
+    }
+
+    $(document).ready(function () {
+        $('.k-grid-content').css("height", "271px");
+    });
+</script>
+<div>
+    <div style="text-align:center">
+        <div class="modal-dialog-title">جستجوی آگهی ها</div>
+    </div>
+
+    <div style="padding:20px;">
+        <div class="row">
+            <div class="col-md-6 col-sm-12">
+                <div class="row form-group">
+                    @Html.Label(null, "عنوان آگهی", htmlAttributes: new { @class = "control-label col-md-3 col-sm-12 modal-dialog-label", style = "text-align:right;" })
+                    <div class="col-md-9 col-sm-12">
+                        @Html.Editor("FilterTitleDialog", new { htmlAttributes = new { @class = "modal-dialog-editor" } })
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div style="margin-top:10px;">
+            <a class="btn btn-info" style="float:left;box-shadow:none;" onclick="filterJobAnnouncementData()">فیلتر اطلاعات</a>
+        </div>
+        <div class="k-rtl jobAnnouncement-filter-grid" style="margin-top:48px;">
+            <div id="report-grid" style="height:100%;">
+                @(Html.Kendo().Grid<Web.Model.JobAnnouncementViewModel>().Name("JobAnnouncement_Filter_Grid").Columns(columns =>
+                                {
+                                    columns.Select().Width(50).ClientHeaderTemplate(" ");
+                                    columns.Bound(c => c.Title);
+                                })
+                                .HtmlAttributes(new { style = "height: 370px;" })
+                                .Filterable(ftb => ftb.Mode(GridFilterMode.Menu))
+                                .Scrollable()
+                                .Sortable()
+                                .Pageable(pageable => pageable
+                                .Refresh(true)
+                                .PageSizes(true)
+                                .ButtonCount(5))
+                                .DataSource(dataSource => dataSource
+                                .Ajax()
+                                .Model(model =>
+                                {
+                                    model.Id(p => p.JobAnnouncementId);
+                                })
+                                .Read(read => read.Action("Grid_Data_Read", "JobAnnouncement", new { Area = "Admin" }).Data("getJobAnnouncementFilterDataParams"))
+                                .PageSize(20)
+
+                                ))
+            </div>
+        </div>
+        <div class="row" style="margin-top:20px;">
+            <div class="col-xs-6 col-sm-6 col-md-6">
+                <a onclick="selectJobAnnouncement()" class="btn btn-success form-command-btn">
+                    <span><i class="fa fa-check"></i><span>&nbsp;</span>انتخاب</span>
+                </a>
+            </div>
+            <div class="col-xs-6 col-sm-6 col-md-6 text-left">
+                <button type="button" class="btn btn-danger form-command-btn" style="float:left;" data-bs-dismiss="modal">
+                    <span class="btn-label"><i class="fa fa-reply"></i><span>&nbsp;</span>لغو</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

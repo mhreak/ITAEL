@@ -41,20 +41,34 @@
                 </div>
 
                 <div class="row form-group" style="margin-top:30px;">
+                    @Html.LabelFor(m => m.Grade, htmlAttributes: new { @class = "control-label col-md-2 col-sm-3 form-input-label" })
+
+                    <div class="col-md-3 col-sm-4">
+                        @Html.EditorFor(m => m.Grade, new { htmlAttributes = new { @type = "number", @min = "0", @class = "form-control" } })
+                        @Html.ValidationMessageFor(m => m.Grade, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="col-md-7 col-sm-5">
+                        <span style="color:red;font-size:20px;">*</span>
+                    </div>
+                </div>
+
+                <div class="row form-group" style="margin-top:30px;">
                     @Html.LabelFor(m => m.Type, htmlAttributes: new { @class = "control-label col-md-2 col-sm-3 form-input-label" })
 
                     <div class="col-md-3 col-sm-4">
                         @(Html.Kendo().DropDownList()
-                            .Name("Type")
-                            .DataTextField("Text")
-                            .DataValueField("Value")
-                            .OptionLabel("همه")
-                            .HtmlAttributes(new { style = "width: 100%" })
-                            .Value(Model.Type.ToString())
-                            .BindTo(new List<SelectListItem>() {
-                                new SelectListItem() { Text = "چندگزینه ای", Value = "1" },
-                                new SelectListItem() { Text = "تشریحی", Value = "2" }
-                            })
+                              .Name("Type")
+                              .DataTextField("Text")
+                              .DataValueField("Value")
+                              .OptionLabel("همه")
+                              .HtmlAttributes(new { style = "width: 100%" })
+                              .Value(Model.Type.ToString())
+                              .BindTo(new List<SelectListItem>() {
+                                                                     new SelectListItem() { Text = "چندگزینه ای", Value = "1" },
+                                                                     new SelectListItem() { Text = "تشریحی", Value = "2" }
+                                                                 })
+                              .Events(e => e.Change("onTypeChange"))
                         )
                         @Html.ValidationMessageFor(m => m.Type, "", new { @class = "text-danger" })
                     </div>
@@ -63,6 +77,22 @@
                         <span style="color:red;font-size:20px;">*</span>
                     </div>
                 </div>
+                
+                @if (Model.Type == 2)
+                {
+                    <div id="answer-text-wrapper" style="display:none;">
+                        <div class="row form-group" style="margin-top:30px;">
+                            @Html.LabelFor(model => model.AnswerText, htmlAttributes: new { @class = "control-label col-md-2 col-sm-3 form-input-label" })
+                            <div class="col-md-3 col-sm-4">
+                                @Html.EditorFor(model => model.AnswerText)
+                                @Html.ValidationMessageFor(model => model.AnswerText, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="col-md-7 col-sm-5">
+                                <span style="color:red;font-size:20px;">*</span>
+                            </div>
+                        </div>
+                    </div>
+                }
 
             </div>
         </div>
@@ -79,5 +109,19 @@
 
             </div>
         </div>
-    }
+        }
 </div>
+
+<script>
+    function onTypeChange(e) {
+        const value = this.value();
+
+        if (value === "2") {
+            // تشریحی → AnswerText را نشان بده
+            $("#answer-text-wrapper").show();
+        } else {
+            // چندگزینه ای → AnswerText را مخفی کن
+            $("#answer-text-wrapper").hide();
+        }
+    }
+</script>

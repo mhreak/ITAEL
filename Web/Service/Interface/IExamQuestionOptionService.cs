@@ -15,6 +15,8 @@ namespace Web.Service.Interface
 
         ExamQuestionOptionViewModel Get(int id);
 
+        List<ExamQuestionOptionViewModel> GetAllByExamQuestionId(int examQuestionId);
+
         public IList<ExamQuestionOptionViewModel> GetAllFiltered(string filterTitle,string filterExamQuestionId,
                                                                  string filterOrder, string filterIsCorrectAnswer,
                                                                  int currentPage, int pageSize, out int totalRecord);

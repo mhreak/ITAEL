@@ -25,5 +25,6 @@
 
 
         public virtual ICollection<Applicant> ApplicantList { get; set; }
+        public virtual ICollection<JobAnnouncement> JobAnnouncementList { get; set; }
     }
 }

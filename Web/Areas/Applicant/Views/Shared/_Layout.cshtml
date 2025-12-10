@@ -1,35 +1,285 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using Web.Service.Identity.Interface
+@using Web.Service.Interface
+@inject IApplicantService ApplicantService;
+@inject IApplicationUserManagerService ApplicationUserManagerService;
+@{
+    string currentController = ViewContext.RouteData.Values["controller"]?.ToString();
+    string currentAction = ViewContext.RouteData.Values["action"]?.ToString();
+    bool isExamPage = currentController == "Exam" && (currentAction == "TakeExam" || currentAction == "Details");
+    bool isShoppingCartPage = currentController == "ExamResource" && (currentAction == "ShoppingCart");
+    var applicant = ApplicantService.Get(ApplicationUserManagerService.GetCurrentUser().ApplicantId.Value);
+}
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"]</title>
+    <link rel="shortcut icon" href="~/favicon.ico">
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="~/css/style/styles.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@@majidh1/jalalidatepicker/dist/jalalidatepicker.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/style/styles.css" />
     <link rel="stylesheet" href="~/css/site.css" />
     <link rel="stylesheet" href="~/css/font-farsi.css" />
     <style>
         * {
             font-family: IRANSans, Arial, sans-serif !important;
+
+
         }
     </style>
 </head>
 <body>
     <div class="container">
         <main role="main" class="pb-3">
-            @RenderBody()
+            <div class="container">
+                <nav class="navbar navbar-expand-lg navbar-light bg-transparent border-bottom shadow-sm sticky-top">
+                    <div class="container-fluid">
+                        <a href="/" class="navbar-brand">
+                            <img src="~/image/ITAEL-logo.png" alt="ایتائل" class="site-logo">
+                        </a>
+
+                        <!-- دکمه همبرگری -->
+                        <button class="navbar-toggler" type="button"
+                                data-bs-toggle="collapse" data-bs-target="#mainNavbar"
+                                aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+
+                        <div class="collapse navbar-collapse" id="mainNavbar">
+                            <ul class="navbar-nav flex-row flex-wrap gap-2 ms-lg-3">
+
+                                <li class="nav-item">
+                                    <a asp-area="" asp-controller="Home" asp-action="Index"
+                                       class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" &&
+                                                         ViewContext.RouteData.Values["action"]?.ToString() == "Index"
+                                                             ? "active" : "")">
+                                        خانه
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a asp-area="Applicant" asp-controller="Dashboard" asp-action="Index"
+                                       class="nav-link @(ViewContext.RouteData.Values["area"]?.ToString() == "Applicant" &&
+                                                         ViewContext.RouteData.Values["controller"]?.ToString() == "Dashboard"
+                                                             ? "active" : "")">
+                                        حساب کاربری من
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a asp-area="Applicant" asp-controller="Profile" asp-action="UpdateProfile"
+                                       class="nav-link @(ViewContext.RouteData.Values["area"]?.ToString() == "Applicant" &&
+                                                         ViewContext.RouteData.Values["controller"]?.ToString() == "Profile"
+                                                             ? "active" : "")">
+                                        ویرایش اطلاعات
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a asp-area="Applicant" asp-controller="Account" asp-action="ChangePassword"
+                                       class="nav-link @(ViewContext.RouteData.Values["area"]?.ToString() == "Applicant" &&
+                                                         ViewContext.RouteData.Values["controller"]?.ToString() == "Account" &&
+                                                         ViewContext.RouteData.Values["action"]?.ToString() == "ChangePassword"
+                                                             ? "active" : "")">
+                                        تغییر رمزعبور
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a asp-area="" asp-controller="Home" asp-action="ContactUs"
+                                       class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" &&
+                                                         ViewContext.RouteData.Values["action"]?.ToString() == "ContactUs"
+                                                             ? "active" : "")">
+                                        تماس با ما
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a asp-area="" asp-controller="Home" asp-action="AboutUs"
+                                       class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" &&
+                                                         ViewContext.RouteData.Values["action"]?.ToString() == "AboutUs"
+                                                             ? "active" : "")">
+                                        درباره ما
+                                    </a>
+                                </li>
+
+                            </ul>
+                        </div>
+
+                        <div class="d-flex gap-2 align-items-center">
+                            <a asp-area="Applicant" asp-controller="Account" asp-action="LogOut" class="btn btn-outline-danger" style="border-radius: 3px">خروج</a>
+                        </div>
+                    </div>
+                </nav>
+            </div>
+            
+            @* ---------- Global Alerts (Error + Success) ---------- *@
+            <div class="container mt-3">
+                @* 1) TempData Error (برای Redirect ها) *@
+                @if (TempData["ErrorMessage"] != null)
+                {
+                    <div class="alert alert-danger alert-dismissible fade show global-alert" role="alert" aria-live="assertive" aria-atomic="true">
+                        @TempData["ErrorMessage"]
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="بستن"></button>
+                    </div>
+                }
+
+                @* 2) Model-level errors (AddModelError("", "...")) *@
+                @if (ViewData.ModelState[string.Empty]?.Errors.Count > 0)
+                {
+                    <div class="alert alert-danger alert-dismissible fade show global-alert" role="alert" aria-live="assertive" aria-atomic="true">
+                        @foreach (var err in ViewData.ModelState[string.Empty].Errors)
+                        {
+                            <div>@err.ErrorMessage</div>
+                        }
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="بستن"></button>
+                    </div>
+                }
+
+                @* 3) TempData Success (برای پیام‌های موفقیت بعد از Redirect) *@
+                @if (TempData["SuccessMessage"] != null)
+                {
+                    <div class="alert alert-success alert-dismissible fade show global-alert" role="alert" aria-live="polite" aria-atomic="true">
+                        @TempData["SuccessMessage"]
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="بستن"></button>
+                    </div>
+                }
+            </div>
+            @* ---------- End Global Alerts ---------- *@   
+
+            <main class="container py-4">
+                @if (!isExamPage && !isShoppingCartPage)
+                {
+                    <!--Cart Amar-->
+                    <section aria-label="آمار کلی" class="mb-4">
+                        <div class="row g-3 row-cols-2 row-cols-md-4" id="statsRow">
+                            <div class="col">
+                                <div class="card stat-card h-100">
+                                    <div class="card-body d-flex align-items-center justify-content-between">
+                                        <div>
+                                            <div class="stat-label">درخواست‌های ارسال‌شده</div>
+                                            <div class="stat-value" id="stat-sent">12</div>
+                                        </div>
+                                        <i class="bi bi-send stat-icon"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="card stat-card h-100">
+                                    <div class="card-body d-flex align-items-center justify-content-between">
+                                        <div>
+                                            <div class="stat-label">آزمون های پیش رو</div>
+                                            <div class="stat-value" id="stat-sent">5</div>
+                                        </div>
+                                        <i class="bi bi-calendar-event stat-icon"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="card stat-card h-100">
+                                    <div class="card-body d-flex align-items-center justify-content-between">
+                                        <div>
+                                            <div class="stat-label">نتایج دریافتی</div>
+                                            <div class="stat-value" id="stat-sent">7</div>
+                                        </div>
+                                        <i class="bi bi-clipboard-check stat-icon"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="card stat-card h-100">
+                                    <div class="card-body d-flex align-items-center justify-content-between">
+                                        <div>
+                                            <div class="stat-label">شرکت های پذیرفته شده</div>
+                                            <div class="stat-value" id="stat-sent">7</div>
+                                        </div>
+                                        <i class="bi bi-bookmark-star stat-icon"></i>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </section>
+                    <!--Dashbord Moshkasat-->
+                    <section id="dashboard" class="mb-5">
+                        <div class="section-box card p-3 p-md-4">
+                            <div class="row g-4 align-items-start">
+
+                                <!--پروفایل-->
+                                <div class="col-lg-3">
+                                    <div class="card profile-card mb-3">
+                                        <div class="card-body d-flex flex-column
+                                        align-items-start align-items-center
+                                    text-start text-lg-center">
+                                            <img src="~/Upload/ApplicantDocument/@applicant.ApplicantId/@applicant.PersonalImageFileName"
+                                                 alt="آواتار"
+                                                 class="rounded-circle mb-3 d-block mx-auto"
+                                                 onerror="this.onerror=null;this.src='/image/front-view-smiley-business-man.jpg';" />
+                                            
+                                            <h6 class="fw-bold mb-1">@applicant.FullName</h6>
+                                            <div class="small text-body-secondary mb-3">@applicant.StudyFieldName</div>
+                                            <br>
+                                            <br>
+                                            <hr class="gr-hr">
+                                            <ul class="list-unstyled small m-0">
+                                                <li class="text-cart mb-1">
+                                                    <i class="bi bi-geo-alt text-danger"></i>@applicant.CityName</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                @RenderBody()
+                            </div>
+                        </div>
+                    </section>
+                }
+                else
+                {
+                    @RenderBody()
+                }
+            </main>
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2022 - Shodamad - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>
+<footer class="border-top footer text-muted">
+    <div class="container">
+        &copy; 2022 - ITAEL - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+    </div>
+</footer>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    @RenderSection("Scripts", required: false)
+<script src="~/js/site.js" asp-append-version="true"></script>
+
+<script>
+        // Auto dismiss alerts after 5 seconds, و اسکرول به اولین alert
+        document.addEventListener("DOMContentLoaded", function () {
+            const alerts = document.querySelectorAll(".global-alert");
+            if (alerts.length > 0) {
+                // Scroll to first alert (smooth)
+                alerts[0].scrollIntoView({ behavior: "smooth", block: "center" });
+
+                // Auto hide after 5s (5000ms)
+                setTimeout(() => {
+                    alerts.forEach(a => {
+                        // Bootstrap alert disposal: trigger close by removing 'show' (fade will hide)
+                        a.classList.remove("show");
+                        // fully remove from DOM after animation (300ms)
+                        setTimeout(() => a.remove(), 350);
+                    });
+                }, 5000);
+            }
+
+            // optional: close button already handled by bootstrap data-bs-dismiss
+        });
+    </script>
+@RenderSection("Scripts", required: false)
 </body>
 </html>

@@ -11,8 +11,8 @@
     <title>@ViewData["PageTitle"] | ITAEL</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- App favicon -->
-    <link rel="shortcut icon" href="/img/favicon.png">
-
+    <link rel="shortcut icon" href="~/favicon.ico">
+    <link rel="stylesheet" href="~/css/adminpanel.css"/>
     <!-- third party css -->
     @*<link href="/css/vendor/jquery-jvectormap-1.2.2.css" rel="stylesheet" type="text/css" />*@
     <!-- third party css end -->
@@ -57,9 +57,9 @@
     @*<link rel="stylesheet" href="/lib/MDBootstarpDatetimePicker/css/jquery.Bootstrap-PersianDateTimePicker.css" />*@
     
     <style>
-        /* body{
-                                        overflow-y: hidden;
-                                    } */
+        * {
+            font-family: IRANSans, Arial, sans-serif;
+        }
 
         #top-animated-overlay {
             height: 380px;
@@ -223,29 +223,19 @@
 
 <div class="wrapper">
         <!-- ========== Left Sidebar Start ========== -->
-        <div class="leftside-menu" style="max-width:230px;">
+        <div class="leftside-menu">
 
             <!-- LOGO -->
-            <a href="index.html" class="logo text-center logo-light" style="max-width:230px;">
-                @*<span class="logo-lg">
-                <img src="/image/logo/logo-1.png" alt="" height="60">
-                </span>
-                <span class="logo-sm">
-                <img src="assets/images/logo_sm.png" alt="" height="16">
-                </span>*@
-            </a>
-
-            <!-- LOGO -->
-            <a href="index.html" class="logo text-center logo-dark">
+            <a asp-area="Admin" asp-controller="Dashboard" asp-action="Index" class="logo text-center">
                 <span class="logo-lg">
-                    <img src="assets/images/logo-dark.png" alt="" height="16">
+                <img src="~/image/itael-logo-white.png" alt="" height="60">
                 </span>
                 <span class="logo-sm">
-                    <img src="assets/images/logo_sm_dark.png" alt="" height="16">
+                    <img src="~/image/itael-logo-white.png" alt="" height="16">
                 </span>
             </a>
 
-            <div class="h-100" id="leftside-menu-container" data-simplebar>
+            <div class="h-100 mt-4" id="leftside-menu-container" data-simplebar>
 
                 <!--- Sidemenu -->
                 <ul class="side-nav">
@@ -260,51 +250,43 @@
                     </li> *@
 
                     <li class="side-nav-item">
-                        <a data-bs-toggle="collapse" aria-expanded="false" href="#sidebar-ja"
-                           aria-controls="sidebar-ja" class="side-nav-link">
+                        <a href=@Url.Action("Index", "JobAnnouncement", new { Area = "Admin" })
+                           aria-controls="sidebar-base-information" class="side-nav-link">
                             <i class="uil-user"></i>
                             <span> آگهی ها </span>
                         </a>
-                        <div class="collapse" id="sidebar-ja">
-                            <ul class="side-nav-second-level">
-                                <li>
-                                    <a href=@Url.Action("Index", "JobAnnouncement", new { Area = "Admin" })><i class="uil-circle" style="color: #f39c12;"></i> لیست آگهی ها</a>
-                                </li>
-                            </ul>
-                        </div>
                     </li>
 
                     <li class="side-nav-item">
-                        <a data-bs-toggle="collapse" aria-expanded="false" href="#sidebar-applicants"
-                           aria-controls="sidebar-applicants" class="side-nav-link">
+                        <a href=@Url.Action("Index", "Applicant", new { Area = "Admin" })
+                           aria-controls="sidebar-base-information" class="side-nav-link">
                             <i class="uil-user"></i>
                             <span> داوطلبین </span>
                         </a>
-                        <div class="collapse" id="sidebar-applicants">
-                            <ul class="side-nav-second-level">
-                                <li>
-                                    <a href=@Url.Action("Index", "Applicant", new { Area = "Admin" })><i class="uil-circle" style="color: #f39c12;"></i> لیست داوطلبین</a>
-                                </li>
-                                <li>
-                                    <a href=@Url.Action("Create", "Applicant", new { Area = "Admin" })><i class="uil-circle" style="color: #f39c12;"></i> ثبت جدید</a>
-                                </li>
-                            </ul>
-                        </div>
                     </li>
 
                     <li class="side-nav-item">
-                        <a data-bs-toggle="collapse" aria-expanded="false" href="#sidebar-sms"
-                           aria-controls="sidebar-sms" class="side-nav-link">
+                        <a href=@Url.Action("Index", "Collaborator", new { Area = "Admin" })
+                           aria-controls="sidebar-base-information" class="side-nav-link">
+                            <i class="uil-user"></i>
+                            <span> همکاری در فروش </span>
+                        </a>
+                    </li>
+
+                    <li class="side-nav-item">
+                        <a href=@Url.Action("Index", "SystemSMS", new { Area = "Admin" })
+                           aria-controls="sidebar-base-information" class="side-nav-link">
                             <i class="uil-envelope"></i>
                             <span> پیامک </span>
                         </a>
-                        <div class="collapse" id="sidebar-sms">
-                            <ul class="side-nav-second-level">
-                                <li>
-                                    <a href=@Url.Action("Index", "SystemSMS", new { Area = "Admin" })><i class="uil-circle" style="color: #f39c12;"></i> پیامک های سیستمی</a>
-                                </li>
-                            </ul>
-                        </div>
+                    </li>
+
+                    <li class="side-nav-item">
+                        <a href=@Url.Action("Index", "ContactMessage", new { Area = "Admin" })
+                           aria-controls="sidebar-base-information" class="side-nav-link">
+                            <i class="uil-message"></i>
+                            <span> پیام های فرم تماس </span>
+                        </a>
                     </li>
 
                     <li class="side-nav-item">
@@ -339,6 +321,12 @@
                                 <li>
                                     <a href=@Url.Action("Index", "CommissionRule", new { Area = "Admin" })><i class="uil-circle" style="color: #f39c12;"></i> قوانین محاسبه پورسانت</a>
                                 </li>
+                                <li>
+                                    <a href=@Url.Action("Index", "OnlineTransaction", new { Area = "Admin" })><i class="uil-circle" style="color: #f39c12;"></i> تراکنش ها</a>
+                                </li>
+                                <li>
+                                    <a href=@Url.Action("Index", "BankGateway", new { Area = "Admin" })><i class="uil-circle" style="color: #f39c12;"></i> درگاه پرداخت ها</a>
+                                </li>
                             </ul>
                         </div>
                     </li>
@@ -357,45 +345,25 @@
                                 <li>
                                     <a href=@Url.Action("MessagingSetting", "Setting", new { Area = "Admin" })><i class="uil-circle" style="color: #f39c12;"></i> تنظیمات اطلاع رسانی</a>
                                 </li>
+                                <li>
+                                    <a href=@Url.Action("AboutUsSetting", "Setting", new { Area = "Admin" })><i class="uil-circle" style="color: #f39c12;"></i> تنظیمات صفحه درباره ما</a>
+                                </li>
+                                <li>
+                                    <a href=@Url.Action("ContactUsSetting", "Setting", new { Area = "Admin" })><i class="uil-circle" style="color: #f39c12;"></i> تنظیمات صفحه تماس با ما</a>
+                                </li>
                             </ul>
                         </div>
                     </li>
 
                     <li class="side-nav-item">
-                        <a data-bs-toggle="collapse" aria-expanded="false" href="#sidebar-users"
+                        <a href=@Url.Action("Index", "User", new { Area = "Admin" })
                            aria-controls="sidebar-base-information" class="side-nav-link">
                             <i class="uil-user"></i>
                             <span> کاربران </span>
                         </a>
-                        <div class="collapse" id="sidebar-users">
-                            <ul class="side-nav-second-level">
-                                <li>
-                                    <a href=@Url.Action("Index", "User", new { Area = "Admin" })><i class="uil-circle" style="color: #f39c12;"></i> لیست کاربران</a>
-                                </li>
-                                <li>
-                                    <a href=@Url.Action("Create", "User", new { Area = "Admin" })><i class="uil-circle" style="color: #f39c12;"></i> ثبت کاربر جدید</a>
-                                </li>
-                            </ul>
-                        </div>
                     </li>
                     
-                    <li class="side-nav-item">
-                        <a data-bs-toggle="collapse" aria-expanded="false" href="#sidebar-collaborators"
-                           aria-controls="sidebar-base-information" class="side-nav-link">
-                            <i class="uil-user"></i>
-                            <span> همکاران </span>
-                        </a>
-                        <div class="collapse" id="sidebar-collaborators">
-                            <ul class="side-nav-second-level">
-                                <li>
-                                    <a href=@Url.Action("Index", "Collaborator", new { Area = "Admin" })><i class="uil-circle" style="color: #f39c12;"></i> لیست همکاران</a>
-                                </li>
-                                <li>
-                                    <a href=@Url.Action("Create", "Collaborator", new { Area = "Admin" })><i class="uil-circle" style="color: #f39c12;"></i> ثبت همکار جدید</a>
-                                </li>
-                            </ul>
-                        </div>
-                    </li>
+                    
                 </ul>
 
                 <!-- Help Box -->

@@ -1,18 +1,21 @@
+using Web;
+using Web.Service;
+using Web.Identity;
 using DbConnection;
+using Web.Extensions;
 using DbEntities.Identity;
+using Web.Service.Identity;
+using Web.Service.Interface;
+using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Web.Service.Identity.Interface;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Web;
-using Web.Extensions;
-using Web.Identity;
-using Web.Service;
-using Web.Service.Identity;
-using Web.Service.Identity.Interface;
-using Web.Service.Interface;
+
+using Shodamad.Service;
+
 using static Web.ModelBinder.PersianDateModelBinder;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -46,6 +49,11 @@ builder.Services.AddDbContext<ApplicationDbContext>(item => item.UseSqlServer(bu
 builder.Services.AddIdentity<ApplicationUser, CustomRole>(options =>
                                                           {
                                                               options.Lockout.DefaultLockoutTimeSpan = System.TimeSpan.FromMinutes(15);
+                                                              options.Password.RequireDigit = false;
+                                                              options.Password.RequireLowercase = false;
+                                                              options.Password.RequireUppercase = false;
+                                                              options.Password.RequireNonAlphanumeric = false;
+                                                              options.Password.RequiredLength = 5; 
                                                           })
        .AddEntityFrameworkStores<ApplicationDbContext>()
        .AddDefaultTokenProviders()
@@ -64,22 +72,28 @@ builder.Services.AddScoped<ICompanyService, CompanyService>();
 builder.Services.AddScoped<ISettingService, SettingService>();
 builder.Services.AddScoped<IProvinceService, ProvinceService>();
 builder.Services.AddScoped<IUserRoleService, UserRoleService>();
+builder.Services.AddScoped<IFarazSMSService, FarazSMSService>();
 builder.Services.AddScoped<IApplicantService, ApplicantService>();
 builder.Services.AddScoped<ISystemSMSService, SystemSMSService>();
+builder.Services.AddScoped<ISMSPatternService, SMSPatternService>();
 builder.Services.AddScoped<IStudyFieldService, StudyFieldService>();
 builder.Services.AddScoped<IRoleManagerService, RoleManagerService>();
+builder.Services.AddScoped<IBankGatewayService, BankGatewayService>();
 builder.Services.AddScoped<IPaymentTypeService, PaymentTypeService>();
 builder.Services.AddScoped<ICollaboratorService, CollaboratorService>();
 builder.Services.AddScoped<IExamQuestionService, ExamQuestionService>();
 builder.Services.AddScoped<IExamResourceService, ExamResourceService>();
+builder.Services.AddScoped<IContactMessageService, ContactMessageService>();
 builder.Services.AddScoped<ICommissionRuleService, CommissionRuleService>();
 builder.Services.AddScoped<IJobAnnouncementService, JobAnnouncementService>();
 builder.Services.AddScoped<IWalletCommissionService, WalletCommissionService>();
 builder.Services.AddScoped<IExamResourceOrderService, ExamResourceOrderService>();
+builder.Services.AddScoped<IOnlineTransactionService, OnlineTransactionService>();
 builder.Services.AddScoped<IExamQuestionOptionService, ExamQuestionOptionService>();
 builder.Services.AddScoped<ISkill_ExamResource_Service, Skill_ExamResource_Service>();
 builder.Services.AddScoped<IApplicantExamAttemptService, ApplicantExamAttemptService>();
 builder.Services.AddScoped<IInterviewAppointmentService, InterviewAppointmentService>();
+builder.Services.AddScoped<IExamResourceOrderItemService, ExamResourceOrderItemService>();
 builder.Services.AddScoped<IJobAnnouncement_Exam_Service, JobAnnouncement_Exam_Service>();
 builder.Services.AddScoped<IApplicationUserManagerService, ApplicationUserManagerService>();
 builder.Services.AddScoped<IJobAnnouncement_Skill_Service, JobAnnouncement_Skill_Service>();

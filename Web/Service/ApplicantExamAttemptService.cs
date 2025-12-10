@@ -100,7 +100,7 @@ namespace Web.Service
         {
             if (applicantId == 0 || examId == 0) { return null; }
 
-            var dbModel = _table.FirstOrDefault(x => x.ApplicantId == applicantId && x.ExamId == examId);
+            var dbModel = _table.Include(x => x.Exam).FirstOrDefault(x => x.ApplicantId == applicantId && x.ExamId == examId);
 
             if (dbModel == null)
             {

@@ -25,6 +25,11 @@
         [ForeignKey("ExamQuestionOptionId")]
         public ExamQuestionOption ExamQuestionOption { get; set; }
 
+        public double Grade { get; set; }
+
+        [MaxLength(4000)]
+        public string? AdditionalCorrectionTips { get; set; }
+
         [Required]
         public DateTime InsertDate { get; set; }
     }

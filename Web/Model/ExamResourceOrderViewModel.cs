@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+
+using DbEntities;
 
 namespace Web.Model
 {
@@ -15,13 +18,6 @@ namespace Web.Model
 
         [Display(Name = "نام داوطلب")]
         public string? ApplicantFullName { get; set; }
-
-        [Display(Name = "شناسه منبع آزمون")]
-        [Required(ErrorMessage = "این فیلد الزامی است")]
-        public int ExamResourceId { get; set; }
-
-        [Display(Name = "نام منبع")]
-        public string? ResourceName { get; set; }
 
         [Display(Name = "قیمت کلی")]
         [Column(TypeName = "decimal(18,2)")]
@@ -52,5 +48,7 @@ namespace Web.Model
 
         [Display(Name = "تاریخ ارسال")]
         public string? ShamsiDeliveryDate { get; set; }
+
+        public List<ExamResourceOrderItemViewModel> ExamResourceOrderItemViewModelList { get; set; } = [];
     }
 }

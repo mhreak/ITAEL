@@ -16,13 +16,15 @@ namespace Web.Service
     public class SystemSMSService : ISystemSMSService
     {
         readonly IMapper _mapper;
+        private readonly IFarazSMSService _farazSMSService;
         readonly IUnitOfWork _database;
         readonly DbSet<SystemSMS> _table;
 
-        public SystemSMSService(IUnitOfWork database, IMapper mappingEngine)
+        public SystemSMSService(IUnitOfWork database, IMapper mappingEngine, IFarazSMSService farazSMSService)
         {
             _database = database;
             _mapper = mappingEngine;
+            _farazSMSService = farazSMSService;
             _table = _database.Set<SystemSMS>();
         }
 
@@ -91,6 +93,11 @@ namespace Web.Service
             _mapper.Map(dbModel, uiModel);
 
             return uiModel;
+        }
+
+        public KeyValuePair<bool, string> SendSMS(List<string> receipts, string message)
+        {
+            return new KeyValuePair<bool, string>(_farazSMSService.SendSMS(receipts, message), "");
         }
 
         public IList<SystemSMSViewModel> GetAllFiltered(
@@ -170,7 +177,7 @@ namespace Web.Service
             PersianCalendar pc = new PersianCalendar();
             foreach (var uiModelItem in uiModelList)
             {
-                uiModelItem.ShamsiSendDate =
+                uiModelItem.ShamsiSendDate = 
                     uiModelItem.SendDate.Hour.ToString() + ":" +
                     uiModelItem.SendDate.Minute.ToString() + " " +
                     pc.GetYear(uiModelItem.SendDate) + "/" +

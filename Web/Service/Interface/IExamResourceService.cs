@@ -19,5 +19,7 @@ namespace Web.Service.Interface
                                                            string filterType, string filterPriceFrom, string filterPriceTo,
                                                            string filterInsertDateFrom, string filterInsertDateTo,
                                                            int currentPage, int pageSize, out int totalRecord);
+
+        bool SetImageFileName(int examResourceId, string fileName);
     }
 }

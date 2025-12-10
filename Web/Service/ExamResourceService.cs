@@ -214,5 +214,26 @@ namespace Web.Service
             _mapper.Map(dbModelList, uiModelList);
             return uiModelList;
         }
+
+        public bool SetImageFileName(int examResourceId, string fileName)
+        {
+            var dbModel = _table.SingleOrDefault(x => x.ExamResourceId == examResourceId);
+
+            dbModel.ImageFileName = fileName;
+
+            _table.Attach(dbModel);
+
+            _database.Entry(dbModel).State = EntityState.Modified;
+
+            try
+            {
+                _database.SaveChanges();
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
     }
 }

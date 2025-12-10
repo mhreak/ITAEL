@@ -30,7 +30,7 @@ namespace Web.Areas.Admin.Controllers
         [HttpPost]
         [Route("SMSSetting")]
         [ValidateAntiForgeryToken]
-        public virtual ActionResult SMSSetting(SMSSettingViewModel model)
+        public IActionResult SMSSetting(SMSSettingViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -72,7 +72,7 @@ namespace Web.Areas.Admin.Controllers
         [HttpPost]
         [Route("MessagingSetting")]
         [ValidateAntiForgeryToken]
-        public virtual ActionResult MessagingSetting(MessagingSettingViewModel model)
+        public IActionResult MessagingSetting(MessagingSettingViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -89,6 +89,96 @@ namespace Web.Areas.Admin.Controllers
                 .Where(x => x.Value.Errors.Count > 0)
                 .Select(x => new { x.Key, x.Value.Errors })
                 .ToArray();
+
+                ShowSuccessToast(null, "اطلاعات واردشده دارای خطا می‌باشد");
+            }
+
+            ShowDangerToast(null, "هنگام ذخیره اطلاعات خطایی رخ داد");
+            return View(model);
+        }
+
+        [Route("AboutUsSetting")]
+        public IActionResult AboutUsSetting()
+        {
+            var model = new AboutUsSettingViewModel()
+            {
+                Description = settingService.GetValueByKey("AboutUs_Description")
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [Route("AboutUsSetting")]
+        [ValidateAntiForgeryToken]
+        public IActionResult AboutUsSetting(AboutUsSettingViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                settingService.SetSettingValue("AboutUs_Description", model.Description);
+
+                ShowSuccessToast(null, "تنظیمات ذخیره شد");
+                return View();
+            }
+            else
+            {
+                var errors = ModelState
+                             .Where(x => x.Value.Errors.Count > 0)
+                             .Select(x => new { x.Key, x.Value.Errors })
+                             .ToArray();
+
+                ShowSuccessToast(null, "اطلاعات واردشده دارای خطا می‌باشد");
+            }
+
+            ShowDangerToast(null, "هنگام ذخیره اطلاعات خطایی رخ داد");
+            return View(model);
+        }
+
+        [Route("ContactUsSetting")]
+        public IActionResult ContactUsSetting()
+        {
+            var model = new ContactUsSettingViewModel()
+                        {
+                            PrimaryLandline = settingService.GetValueByKey("ContactUs_PrimaryLandline"),
+                            SecondaryLandline = settingService.GetValueByKey("ContactUs_SecondaryLandline"),
+                            PrimaryMobile = settingService.GetValueByKey("ContactUs_PrimaryMobileNumber"),
+                            SecondaryMobile = settingService.GetValueByKey("ContactUs_SecondaryMobileNumber"),
+                            TelegramID = settingService.GetValueByKey("ContactUs_TelegramID"),
+                            InstagramID = settingService.GetValueByKey("ContactUs_InstagramID"),
+                            WhatsAppNumber = settingService.GetValueByKey("ContactUs_WhatsAppNumber"),
+                            Email = settingService.GetValueByKey("ContactUs_Email"),
+                            Address = settingService.GetValueByKey("ContactUs_Address"),
+                        };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [Route("ContactUsSetting")]
+        [ValidateAntiForgeryToken]
+        public IActionResult ContactUsSetting(ContactUsSettingViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                settingService.SetSettingValue("ContactUs_PrimaryLandline", model.PrimaryLandline);
+                settingService.SetSettingValue("ContactUs_SecondaryLandline", model.SecondaryLandline);
+                settingService.SetSettingValue("ContactUs_PrimaryMobileNumber", model.PrimaryMobile);
+                settingService.SetSettingValue("ContactUs_SecondaryMobileNumber", model.SecondaryMobile);
+                settingService.SetSettingValue("ContactUs_TelegramID", model.TelegramID);
+                settingService.SetSettingValue("ContactUs_InstagramID", model.InstagramID);
+                settingService.SetSettingValue("ContactUs_WhatsAppNumber", model.WhatsAppNumber);
+                settingService.SetSettingValue("ContactUs_Email", model.Email);
+                settingService.SetSettingValue("ContactUs_Address", model.Address);
+
+                ShowSuccessToast(null, "تنظیمات ذخیره شد");
+                return View();
+            }
+            else
+            {
+                var errors = ModelState
+                             .Where(x => x.Value.Errors.Count > 0)
+                             .Select(x => new { x.Key, x.Value.Errors })
+                             .ToArray();
 
                 ShowSuccessToast(null, "اطلاعات واردشده دارای خطا می‌باشد");
             }

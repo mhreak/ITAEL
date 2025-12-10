@@ -1,5 +1,68 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
+﻿@model List<ExamIndexViewModel>
+
+@if (Model == null || Model.Count == 0)
+{
+    <div class="card job-card">
+        <div class="card-body">
+            <div class="d-flex align-items-start gap-3">
+                <div class="flex-grow-1">
+                    <p>آزمونی یافت نشد.</p>
+                </div>
+            </div>
+        </div>
+    </div>
 }
+
+
+<div class="col-lg-8 order-2 order-lg-2">
+    <div class="section-box card border-0 p-4 p-md-5">
+        <div class="text-center mb-4">
+            <div class="page-icon-wrap mb-2">
+                <img src="~/image/activve-exam.png" class="page-icon" alt="آزمون‌های فعال">
+            </div>
+            <h2 class="section-title mb-2">آزمون‌های فعال شما</h2>
+            <p class="section-subtitle mb-0">
+                در حال حاضر این آزمون‌ها برای شما فعال است و می‌توانید در آن‌ها شرکت کنید.
+            </p>
+        </div>
+
+        <div class="row g-4 justify-content-center">
+            @foreach (var item in Model)
+            {
+                @if (item.State == 1)
+                {
+                    <div class="col-12 col-sm-6 col-lg-4">
+                        <article class="exam-card h-100 d-flex flex-column">
+                            <h3 class="exam-title">@item.ExamViewModel.Title</h3>
+                            <p class="exam-desc">@item.ExamViewModel.Description</p>
+                            <button asp-area="Applicant" asp-controller="Exam" asp-action="ExamResult" asp-route-jobAnnouncementId="@ViewBag.JobAnnouncementId" asp-route-examId="@item.ExamViewModel.ExamId" disabled="disabled" type="button" class="btn-exam mt-auto w-100">بررسی نشده</button>
+                        </article>
+                    </div>
+                }
+                @if (item.State == 2)
+                {
+                    <div class="col-12 col-sm-6 col-lg-4">
+                        <article class="exam-card h-100 d-flex flex-column">
+                            <h3 class="exam-title">@item.ExamViewModel.Title</h3>
+                            <p class="exam-desc">@item.ExamViewModel.Description</p>
+                            <a asp-area="Applicant" asp-controller="Exam" asp-action="ExamResult" asp-route-jobAnnouncementId="@ViewBag.JobAnnouncementId" asp-route-examId="@item.ExamViewModel.ExamId" type="button" class="btn-exam mt-auto w-100">نتیجه آزمون</a>
+
+                        </article>
+                    </div>
+                }
+                else
+                {
+                    <div class="col-12 col-sm-6 col-lg-4">
+                        <article class="exam-card h-100 d-flex flex-column">
+                            <h3 class="exam-title">@item.ExamViewModel.Title</h3>
+                            <p class="exam-desc">@item.ExamViewModel.Description</p>
+                            <a asp-area="Applicant" asp-controller="Exam" asp-action="Details" asp-route-jobAnnouncementId="@ViewBag.JobAnnouncementId" asp-route-examId="@item.ExamViewModel.ExamId" type="button" class="btn-exam mt-auto w-100">شروع آزمون</a>
+
+                        </article>
+                    </div>
+                }
+                
+            }
+        </div>
+    </div>
+</div>

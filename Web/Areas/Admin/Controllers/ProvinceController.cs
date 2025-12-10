@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-
 using Web.Controllers;
 using Web.Service.Interface;
 using Microsoft.AspNetCore.Mvc;

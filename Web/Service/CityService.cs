@@ -81,7 +81,7 @@ namespace Web.Service
 
         public CityViewModel Get(int id)
         {
-            var dbModel = _model.Where(x => x.CityId == id).FirstOrDefault();
+            var dbModel = _model.Include(x => x.Province).FirstOrDefault(x => x.CityId == id);
             var uiModel = new CityViewModel();
             _mapper.Map(dbModel, uiModel);
             return uiModel;
