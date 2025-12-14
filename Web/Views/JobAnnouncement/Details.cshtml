@@ -9,10 +9,22 @@
                 <span class="job-detail-badge">فرصت شغلی فعال</span>
                 <h1 class="job-detail-title mb-2">@Model.JobAnnouncementViewModel.Title</h1>
                 <div class="job-detail-meta">
-                    <span><i class="bi bi-building"></i> @Model.JobAnnouncementViewModel.CompanyName</span>
-                    <span><i class="bi bi-geo-alt"></i>  @Model.JobAnnouncementViewModel.ProvinceName، @Model.JobAnnouncementViewModel.CityName</span>
-                    <span><i class="bi bi-clock"></i> @Model.JobAnnouncementViewModel.JobTimeTypeStr</span>
-                    <span><i class="bi bi-laptop"></i> @Model.JobAnnouncementViewModel.JobTypeStr</span>
+                    @if (!string.IsNullOrEmpty(Model.JobAnnouncementViewModel.CompanyName))
+                    {
+                        <span><i class="bi bi-building"></i> @Model.JobAnnouncementViewModel.CompanyName</span>
+                    }
+                    @if (!string.IsNullOrEmpty(Model.JobAnnouncementViewModel.CityName))
+                    {
+                        <span><i class="bi bi-geo-alt"></i> @Model.JobAnnouncementViewModel.ProvinceName، @Model.JobAnnouncementViewModel.CityName</span>
+                    }
+                    @if (!string.IsNullOrEmpty(Model.JobAnnouncementViewModel.JobTimeTypeStr))
+                    {
+                        <span><i class="bi bi-clock"></i> @Model.JobAnnouncementViewModel.JobTimeTypeStr</span>
+                    }
+                    @if (!string.IsNullOrEmpty(Model.JobAnnouncementViewModel.JobTypeStr))
+                    {
+                        <span><i class="bi bi-laptop"></i> @Model.JobAnnouncementViewModel.JobTypeStr</span>
+                    }
                 </div>
             </div>
         </div>
@@ -62,15 +74,25 @@
                                             @String.Format("{0:#,0}", Model.JobAnnouncementViewModel.Salary) تومان
                                         </span>
                                     }
-                                    <span class="ms-3">
-                                        <i class="bi bi-person-workspace ms-1"></i>
-                                        @string.Join(", ", Model.JobAnnouncementJobAnnouncementCategoryViewModelList.Select(x => x.JobAnnouncementCategoryName))
-                                    </span>
-                                    
+                                    @if (Model.JobAnnouncementJobAnnouncementCategoryViewModelList is { Count: > 0 })
+                                    {
+                                        <span class="ms-3">
+                                            <i class="bi bi-person-workspace ms-1"></i>
+                                            @string.Join(", ", Model.JobAnnouncementJobAnnouncementCategoryViewModelList.Select(x => x.JobAnnouncementCategoryName))
+                                        </span>
+                                    }
 
                                 </div>
-                                <span class="job-badge-type">@Model.JobAnnouncementViewModel.JobTimeTypeStr</span>
-                                <span class="job-badge-mode">@Model.JobAnnouncementViewModel.JobTypeStr</span>
+                                
+                                @if (!string.IsNullOrEmpty(Model.JobAnnouncementViewModel.JobTimeTypeStr))
+                                {
+                                    <span class="job-badge-type">@Model.JobAnnouncementViewModel.JobTimeTypeStr</span>
+                                }
+                                @if (!string.IsNullOrEmpty(Model.JobAnnouncementViewModel.JobTypeStr))
+                                {
+                                    <span class="job-badge-mode">@Model.JobAnnouncementViewModel.JobTypeStr</span>
+                                }
+
                             </div>
                         </div>
                     </article>
@@ -120,9 +142,9 @@
                                     }
                                     else
                                     {
-                                        <button asp-area="Applicant" asp-controller="Account" asp-action="Login" type="submit" class="btn btn-primary w-100">
+                                        <a asp-area="Applicant" asp-controller="Account" asp-action="Login" type="submit" class="btn btn-primary w-100">
                                             درخواست
-                                        </button>
+                                        </a>
                                     }
 
                                 }
@@ -231,9 +253,9 @@
                                 }
                                 else
                                 {
-                                    <button asp-area="Applicant" asp-controller="Account" asp-action="Login" type="submit" class="btn btn-primary w-100">
+                                    <a asp-area="Applicant" asp-controller="Account" asp-action="Login" type="submit" class="btn btn-primary w-100">
                                         درخواست
-                                    </button>
+                                    </a>
                                 }
 
                             }

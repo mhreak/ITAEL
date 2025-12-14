@@ -1,4 +1,5 @@
-﻿using Kendo.Mvc.UI;
+﻿using DbEntities;
+using Kendo.Mvc.UI;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -280,7 +281,37 @@ namespace Web.Areas.Admin.Controllers
         [Route("Edit/{id}")]
         public IActionResult Edit(int id)
         {
-            var model = applicantService.Get(id);
+            var applicantViewModel = applicantService.Get(id);
+            
+            if (applicantViewModel == null)
+            {
+                ShowDangerToast("", "داوطلب یافت نشد.");
+                return RedirectToAction("Index", "Applicant", new {Area = "Admin"});
+            }
+
+            var model = new UpdateProfileViewModel();
+
+            model.ApplicantViewModel = applicantViewModel;
+            
+            var baseUrl = $"/Upload/ApplicantDocument/{applicantViewModel.ApplicantId}/";
+
+            model.PersonalImageFileUrl =
+                BuildFileUrl(baseUrl, applicantViewModel.PersonalImageFileName);
+
+            model.EducationalCertificateFileUrl =
+                BuildFileUrl(baseUrl, applicantViewModel.EducationalCertificateFileName);
+
+            model.NationalCardFrontFileUrl =
+                BuildFileUrl(baseUrl, applicantViewModel.NationalCardFrontFileName);
+
+            model.NationalCardBackFileUrl =
+                BuildFileUrl(baseUrl, applicantViewModel.NationalCardBackFileName);
+
+            model.IdentityCertificateFirstPageFileUrl =
+                BuildFileUrl(baseUrl, applicantViewModel.IdentityCertificateFirstPageFileName);
+
+            model.IdentityCertificateSecondPageFileUrl =
+                BuildFileUrl(baseUrl, applicantViewModel.IdentityCertificateSecondPageFileName);
 
             return View(model);
         }
@@ -288,20 +319,20 @@ namespace Web.Areas.Admin.Controllers
         [HttpPost]
         [Route("Edit/{id}")]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(ApplicantViewModel model,
-            IFormFile PersonalImageFile, IFormFile EducationalCertificateFile,
-            IFormFile NationalCardFrontFile, IFormFile NationalCardBackFile,
-            IFormFile IdentityCertificateFirstPageFile, IFormFile IdentityCertificateSecondPageFile)
+        public IActionResult Edit(UpdateProfileViewModel model,
+                                  IFormFile PersonalImageFile, IFormFile EducationalCertificateFile,
+                                  IFormFile NationalCardFrontFile, IFormFile NationalCardBackFile,
+                                  IFormFile IdentityCertificateFirstPageFile, IFormFile IdentityCertificateSecondPageFile)
         {
             if (ModelState.IsValid)
             {
-                if (!applicantService.IsDuplicateByNationalCode(model.ApplicantId, model.NationalCode))
+                if (!applicantService.IsDuplicateByNationalCode(model.ApplicantViewModel.ApplicantId, model.ApplicantViewModel.NationalCode))
                 {
-                    if (!applicantService.IsDuplicateByMobile(model.ApplicantId, model.Mobile))
+                    if (!applicantService.IsDuplicateByMobile(model.ApplicantViewModel.ApplicantId, model.ApplicantViewModel.Mobile))
                     {
-                        if (applicantService.Edit(model))
+                        if (applicantService.Edit(model.ApplicantViewModel))
                         {
-                            string directoryPath = webHostEnvironment.WebRootPath + "\\Upload\\ApplicantDocument\\" + model.ApplicantId.ToString();
+                            string directoryPath = webHostEnvironment.WebRootPath + "\\Upload\\ApplicantDocument\\" + model.ApplicantViewModel.ApplicantId.ToString();
 
                             if (Directory.Exists(directoryPath))
                             {
@@ -329,7 +360,7 @@ namespace Web.Areas.Admin.Controllers
                                 {
                                     PersonalImageFile.CopyTo(stream);
 
-                                    applicantService.SetPersonalImageFileName(model.ApplicantId, generatedFileName);
+                                    applicantService.SetPersonalImageFileName(model.ApplicantViewModel.ApplicantId, generatedFileName);
 
                                     stream.Close();
                                 }
@@ -354,7 +385,7 @@ namespace Web.Areas.Admin.Controllers
                                 {
                                     PersonalImageFile.CopyTo(stream);
 
-                                    applicantService.SetEducationalCertificateFileName(model.ApplicantId, generatedFileName);
+                                    applicantService.SetEducationalCertificateFileName(model.ApplicantViewModel.ApplicantId, generatedFileName);
 
                                     stream.Close();
                                 }
@@ -379,7 +410,7 @@ namespace Web.Areas.Admin.Controllers
                                 {
                                     PersonalImageFile.CopyTo(stream);
 
-                                    applicantService.SetNationalCardFrontFileName(model.ApplicantId, generatedFileName);
+                                    applicantService.SetNationalCardFrontFileName(model.ApplicantViewModel.ApplicantId, generatedFileName);
 
                                     stream.Close();
                                 }
@@ -404,7 +435,7 @@ namespace Web.Areas.Admin.Controllers
                                 {
                                     PersonalImageFile.CopyTo(stream);
 
-                                    applicantService.SetNationalCardBackFileName(model.ApplicantId, generatedFileName);
+                                    applicantService.SetNationalCardBackFileName(model.ApplicantViewModel.ApplicantId, generatedFileName);
 
                                     stream.Close();
                                 }
@@ -429,7 +460,7 @@ namespace Web.Areas.Admin.Controllers
                                 {
                                     PersonalImageFile.CopyTo(stream);
 
-                                    applicantService.SetIdentityCertificateFirstPageFileName(model.ApplicantId, generatedFileName);
+                                    applicantService.SetIdentityCertificateFirstPageFileName(model.ApplicantViewModel.ApplicantId, generatedFileName);
 
                                     stream.Close();
                                 }
@@ -454,7 +485,7 @@ namespace Web.Areas.Admin.Controllers
                                 {
                                     PersonalImageFile.CopyTo(stream);
 
-                                    applicantService.SetIdentityCertificateSecondPageFileName(model.ApplicantId, generatedFileName);
+                                    applicantService.SetIdentityCertificateSecondPageFileName(model.ApplicantViewModel.ApplicantId, generatedFileName);
 
                                     stream.Close();
                                 }
@@ -534,6 +565,13 @@ namespace Web.Areas.Admin.Controllers
             ViewBag.DisplayElementId = displayElementId;
 
             return PartialView("_ApplicantsSearchDialog");
+        }
+
+        private static string BuildFileUrl(string baseUrl, string fileName)
+        {
+            return string.IsNullOrWhiteSpace(fileName)
+                       ? string.Empty
+                       : baseUrl + fileName;
         }
     }
 }

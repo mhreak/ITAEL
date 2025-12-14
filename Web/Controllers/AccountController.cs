@@ -22,7 +22,7 @@ namespace Web.Controllers
 
                 if (roles.Contains("Manager") || roles.Contains("Admin"))
                 {
-                    return RedirectToAction("Index", "Dashboard", new { area = "Admin" });
+                    return RedirectToAction("Index", "JobAnnouncement", new { area = "Admin" });
                 }
                 else if(roles.Contains("Applicant"))
                 {

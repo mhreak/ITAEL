@@ -17,62 +17,34 @@ using Web.Service.Interface;
 [Area("Applicant")]
 [Route("Applicant/[controller]")]
 [Authorize(Roles = "Applicant,Admin")]
-public class ExamController : BaseController
+public class ExamController(
+    IExamService examService,
+    IApplicantService applicantService,
+    IExamQuestionService examQuestionService,
+    IJobAnnouncementService jobAnnouncementService,
+    IJobAnnouncement_Exam_Service jobAnnouncement_Exam_Service,
+    IExamQuestionOptionService examQuestionOptionService,
+    IApplicantExamAttemptService applicantExamAttemptService,
+    IApplicationUserManagerService applicationUserManagerService,
+    IApplicantExamQuestionAnswerService applicantExamQuestionAnswerService)
+    : BaseController
 {
-    private readonly string _storageFolder;
-    private readonly IExamService _examService;
-    private readonly IWebHostEnvironment _environment;
-    private readonly IApplicantService _applicantService;
-    private readonly IExamQuestionService _examQuestionService;
-    private readonly IJobAnnouncementService _jobAnnouncementService;
-    private readonly IExamQuestionOptionService _examQuestionOptionService;
-    private readonly IApplicantExamAttemptService _applicantExamAttemptService;
-    private readonly IApplicationUserManagerService _applicationUserManagerService;
-    private readonly IJobAnnouncement_Exam_Service _jobAnnouncement_Exam_Service;
-    private readonly IApplicantExamQuestionAnswerService _applicantExamQuestionAnswerService;
-
-    public ExamController(
-        IExamService examService,
-        IWebHostEnvironment environment,
-        IApplicantService applicantService,
-        IExamQuestionService examQuestionService,
-        IJobAnnouncementService jobAnnouncementService,
-        IJobAnnouncement_Exam_Service jobAnnouncement_Exam_Service,
-        IExamQuestionOptionService examQuestionOptionService,
-        IApplicantExamAttemptService applicantExamAttemptService,
-        IApplicationUserManagerService applicationUserManagerService,
-        IApplicantExamQuestionAnswerService applicantExamQuestionAnswerService)
-    {
-        _examService = examService;
-        _environment = environment;
-        _applicantService = applicantService;
-        _examQuestionService = examQuestionService;
-        _jobAnnouncementService = jobAnnouncementService;
-        _jobAnnouncement_Exam_Service = jobAnnouncement_Exam_Service;
-        _examQuestionOptionService = examQuestionOptionService;
-        _applicantExamAttemptService = applicantExamAttemptService;
-        _applicationUserManagerService = applicationUserManagerService;
-        _applicantExamQuestionAnswerService = applicantExamQuestionAnswerService;
-
-        _storageFolder = Path.Combine(_environment.ContentRootPath, "Files", "ExamAttempts");
-        Directory.CreateDirectory(_storageFolder);
-    }
 
     [HttpGet]
     [Route("Index/{jobAnnouncementId}")]
     public IActionResult Index(int jobAnnouncementId)
     {
-        var ja_Exam_ViewModelList = _jobAnnouncement_Exam_Service.GetAllByJobAnnouncementId(jobAnnouncementId).Where(x => x.StartTime <= DateTime.Now && x.EndTime >= DateTime.Now);
+        var ja_Exam_ViewModelList = jobAnnouncement_Exam_Service.GetAllByJobAnnouncementId(jobAnnouncementId).Where(x => x.StartTime <= DateTime.Now && x.EndTime >= DateTime.Now);
         var examIndexViewModelList = new List<ExamIndexViewModel>();
-        var user = _applicationUserManagerService.GetCurrentUser();
-        var applicant = _applicantService.Get(user.ApplicantId.Value);
+        var user = applicationUserManagerService.GetCurrentUser();
+        var applicant = applicantService.Get(user.ApplicantId.Value);
         if (ja_Exam_ViewModelList != null && ja_Exam_ViewModelList.Any())
         {
             foreach (var ja_Exam_ViewModel in ja_Exam_ViewModelList)
             {
-                var examViewModel = _examService.Get(ja_Exam_ViewModel.ExamId);
+                var examViewModel = examService.Get(ja_Exam_ViewModel.ExamId);
 
-                var applicantExamAttemptViewModel = _applicantExamAttemptService.GetByApplicantIdAndExamId(applicant.ApplicantId, examViewModel.ExamId);
+                var applicantExamAttemptViewModel = applicantExamAttemptService.GetByApplicantIdAndExamId(applicant.ApplicantId, examViewModel.ExamId);
 
                 var examIndexViewModel = new ExamIndexViewModel() { ExamViewModel = examViewModel };
 
@@ -108,7 +80,7 @@ public class ExamController : BaseController
     [Route("Details/{jobAnnouncementId}/{examId}")]
     public IActionResult Details(int jobAnnouncementId, int examId)
     {
-        var jobExam = _jobAnnouncement_Exam_Service.Get(jobAnnouncementId, examId);
+        var jobExam = jobAnnouncement_Exam_Service.Get(jobAnnouncementId, examId);
         if (jobExam == null)
         {
             TempData["ErrorMessage"] = "اطلاعات موردنیاز یافت نشد.";
@@ -122,7 +94,7 @@ public class ExamController : BaseController
 
         }
 
-        var examQuestionList = _examQuestionService.GetAllByExamId(examId).ToList();
+        var examQuestionList = examQuestionService.GetAllByExamId(examId).ToList();
 
         var examDetailsViewModel = new ExamDetailsViewModel()
         {
@@ -146,23 +118,23 @@ public class ExamController : BaseController
     [Route("ExamResult/{jobAnnouncementId}/{examId}")]
     public IActionResult ExamResult(int jobAnnouncementId, int examId)
     {
-        var user = _applicationUserManagerService.GetCurrentUser();
+        var user = applicationUserManagerService.GetCurrentUser();
 
-        var applicantViewModel = _applicantService.Get(user.ApplicantId.Value);
+        var applicantViewModel = applicantService.Get(user.ApplicantId.Value);
 
-        var examViewModel = _examService.Get(examId);
+        var examViewModel = examService.Get(examId);
 
-        var jobAnnouncementViewModel = _jobAnnouncementService.Get(jobAnnouncementId);
+        var jobAnnouncementViewModel = jobAnnouncementService.Get(jobAnnouncementId);
 
-        var applicantExamAttemptViewModel = _applicantExamAttemptService.GetByApplicantIdAndExamId(applicantViewModel.ApplicantId, examViewModel.ExamId);
+        var applicantExamAttemptViewModel = applicantExamAttemptService.GetByApplicantIdAndExamId(applicantViewModel.ApplicantId, examViewModel.ExamId);
 
-        var examQuestionViewModelList = _examQuestionService.GetAllByExamId(examViewModel.ExamId);
+        var examQuestionViewModelList = examQuestionService.GetAllByExamId(examViewModel.ExamId);
 
         var dataList = new List<ApplicantExamQuestionAndAnswerForApplicantViewModel>();
 
         foreach (var examQuestionViewModel in examQuestionViewModelList)
         {
-            var applicantExamQuestionAnswerViewModel = _applicantExamQuestionAnswerService.Get(applicantExamAttemptViewModel.ApplicantExamAttemptId,
+            var applicantExamQuestionAnswerViewModel = applicantExamQuestionAnswerService.Get(applicantExamAttemptViewModel.ApplicantExamAttemptId,
                                                                                               examQuestionViewModel.ExamQuestionId);
 
             var data = new ApplicantExamQuestionAndAnswerForApplicantViewModel()
@@ -189,10 +161,10 @@ public class ExamController : BaseController
     [Route("TakeExam/{jobAnnouncementId:int}/{examId:int}/{questionId?}")]
     public IActionResult TakeExam(int jobAnnouncementId, int examId, int? questionId)
     {
-        var jobExam = _jobAnnouncement_Exam_Service.Get(jobAnnouncementId, examId);
-        var examQuestionList = _examQuestionService.GetAllByExamId(examId).ToList();
-        var applicantId = _applicationUserManagerService.GetCurrentUser().ApplicantId.Value;
-        var existingAttempt = _applicantExamAttemptService.GetByApplicantIdAndExamId(applicantId, examId);
+        var jobExam = jobAnnouncement_Exam_Service.Get(jobAnnouncementId, examId);
+        var examQuestionList = examQuestionService.GetAllByExamId(examId).ToList();
+        var applicantId = applicationUserManagerService.GetCurrentUser().ApplicantId.Value;
+        var existingAttempt = applicantExamAttemptService.GetByApplicantIdAndExamId(applicantId, examId);
 
         Random random = new();
 
@@ -224,14 +196,14 @@ public class ExamController : BaseController
                 EndTime = DateTime.Now.AddMinutes(jobExam.DurationMinutes)
             };
 
-            int newId = _applicantExamAttemptService.Add(newAttempt);
+            int newId = applicantExamAttemptService.Add(newAttempt);
             if (newId == -1)
             {
                 TempData["ErrorMessage"] = "لطفا دوباره نلاش کنید.";
                 return RedirectToAction("Index", "Exam", new { Area = "Applicant", jobAnnouncementId = jobAnnouncementId });
             }
 
-            existingAttempt = _applicantExamAttemptService.GetByApplicantIdAndExamId(applicantId, examId);
+            existingAttempt = applicantExamAttemptService.GetByApplicantIdAndExamId(applicantId, examId);
         }
         else
         {
@@ -271,16 +243,16 @@ public class ExamController : BaseController
             }
         }
 
-        var examQuestionViewModel = _examQuestionService.Get(currentQuestionId);
+        var examQuestionViewModel = examQuestionService.Get(currentQuestionId);
         if (examQuestionViewModel == null)
         {
             TempData["ErrorMessage"] = "سؤال پیدا نشد.";
             return RedirectToAction("Index", "Exam", new { Area = "Applicant", jobAnnouncementId = jobAnnouncementId });
         }
 
-        var existingAnswer = _applicantExamQuestionAnswerService.Get(existingAttempt.ApplicantExamAttemptId, currentQuestionId);
+        var existingAnswer = applicantExamQuestionAnswerService.Get(existingAttempt.ApplicantExamAttemptId, currentQuestionId);
 
-        var jaExamViewModel = _jobAnnouncement_Exam_Service.Get(jobAnnouncementId, examId);
+        var jaExamViewModel = jobAnnouncement_Exam_Service.Get(jobAnnouncementId, examId);
         if (jaExamViewModel == null)
         {
             TempData["ErrorMessage"] = "اطلاعات آزمون یافت نشد.";
@@ -333,8 +305,8 @@ public class ExamController : BaseController
             return View(model);
         }
 
-        var applicantId = _applicationUserManagerService.GetCurrentUser().ApplicantId ?? 0;
-        var attempt = _applicantExamAttemptService.GetByApplicantIdAndExamId(applicantId, model.ExamId);
+        var applicantId = applicationUserManagerService.GetCurrentUser().ApplicantId ?? 0;
+        var attempt = applicantExamAttemptService.GetByApplicantIdAndExamId(applicantId, model.ExamId);
         if (attempt == null)
         {
             TempData["ErrorMessage"] = "امکان ذخیره پاسخ وجود ندارد.";
@@ -363,7 +335,7 @@ public class ExamController : BaseController
 
             if (attempt.StartTime <= DateTime.Now && attempt.EndTime >= DateTime.Now)
             {
-                var existing = _applicantExamQuestionAnswerService.Get(attempt.ApplicantExamAttemptId, model.ExamQuestionId);
+                var existing = applicantExamQuestionAnswerService.Get(attempt.ApplicantExamAttemptId, model.ExamQuestionId);
                 if (existing == null)
                 {
                     var newAnswer = new ApplicantExamQuestionAnswerViewModel
@@ -375,20 +347,20 @@ public class ExamController : BaseController
                         InsertDate = DateTime.Now
                     };
 
-                    _applicantExamQuestionAnswerService.Add(newAnswer);
+                    applicantExamQuestionAnswerService.Add(newAnswer);
                 }
                 else
                 {
                     existing.AnswerText = model.AnswerText;
                     existing.ExamQuestionOptionId = model.SelectedOptionId;
                     existing.InsertDate = DateTime.Now;
-                    _applicantExamQuestionAnswerService.Edit(existing);
+                    applicantExamQuestionAnswerService.Edit(existing);
                 }
             }
             else
             {
                 TempData["ErrorMessage"] = "زمان آزمون به پایان رسیده است آزمون با موفقیت ثبت شد.";
-                _applicantExamQuestionAnswerService.CalculateGradeAfterExam(model.ExamId, applicantId);
+                applicantExamQuestionAnswerService.CalculateGradeAfterExam(model.ExamId, applicantId);
                 return RedirectToAction("Index", "Dashboard", new { Area = "Applicant" });
             }
         }
@@ -415,7 +387,7 @@ public class ExamController : BaseController
         if (!string.IsNullOrEmpty(NavigationAction) && NavigationAction.Equals("finish", StringComparison.OrdinalIgnoreCase))
         {
             TempData["SuccessMessage"] = "آزمون با موفقیت به پایان رسید.";
-            _applicantExamQuestionAnswerService.CalculateGradeAfterExam(model.ExamId, applicantId);
+            applicantExamQuestionAnswerService.CalculateGradeAfterExam(model.ExamId, applicantId);
             return RedirectToAction("Index", "Dashboard", new { Area = "Applicant" });
         }
 
@@ -426,7 +398,7 @@ public class ExamController : BaseController
         }
 
         TempData["SuccessMessage"] = "آزمون با موفقیت به پایان رسید.";
-        _applicantExamQuestionAnswerService.CalculateGradeAfterExam(model.ExamId, applicantId);
+        applicantExamQuestionAnswerService.CalculateGradeAfterExam(model.ExamId, applicantId);
         return RedirectToAction("Index", "Dashboard", new { Area = "Applicant" });
     }
 
@@ -504,7 +476,7 @@ public class ExamController : BaseController
     [Route("GetQuestionOptions/{examId}/{questionId}")]
     public IActionResult GetQuestionOptions(int examId, int questionId)
     {
-        var options = _examQuestionOptionService.GetAllByExamQuestionId(questionId);
+        var options = examQuestionOptionService.GetAllByExamQuestionId(questionId);
 
         if (options == null)
             return NotFound();

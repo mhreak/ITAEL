@@ -1,4 +1,4 @@
-﻿@model ApplicantViewModel
+﻿@model UpdateProfileViewModel
 
 
 <!DOCTYPE html>
@@ -31,39 +31,39 @@
 
         <div class="card-body pt-3">
             <form asp-area="Applicant" asp-controller="Profile" asp-action="UpdateProfile" method="post" id="profile-form" class="edit-form" enctype="multipart/form-data">
-                <input asp-for="ApplicantId" type="hidden" />
+                <input asp-for="ApplicantViewModel.ApplicantId" type="hidden" />
                 @Html.AntiForgeryToken()
                 <div class="row g-3 g-md-4">
                     <div class="col-md-6">
-                        <label asp-for="FirstName" class="form-label small mb-1">
+                        <label asp-for="ApplicantViewModel.FirstName" class="form-label small mb-1">
                             نام
                             <span class="text-danger">*</span>
                         </label>
-                        <input asp-for="FirstName" value="@Model.FirstName" type="text" id="full_name" data-required="true" data-only-text="true" class="form-control">
+                        <input asp-for="ApplicantViewModel.FirstName" value="@Model.ApplicantViewModel.FirstName" type="text" id="full_name" data-required="true" data-only-text="true" class="form-control">
                     </div>
 
                     <div class="col-md-6">
-                        <label asp-for="LastName" class="form-label small mb-1">
+                        <label asp-for="ApplicantViewModel.LastName" class="form-label small mb-1">
                             نام خانوادگی
                             <span class="text-danger">*</span>
                         </label>
-                        <input asp-for="LastName" value="@Model.LastName" type="text" id="full_name" data-required="true" data-only-text="true" class="form-control">
+                        <input asp-for="ApplicantViewModel.LastName" value="@Model.ApplicantViewModel.LastName" type="text" id="full_name" data-required="true" data-only-text="true" class="form-control">
                     </div>
 
                     <div class="col-md-6">
-                        <label asp-for="NationalCode" class="form-label small mb-1">
+                        <label asp-for="ApplicantViewModel.NationalCode" class="form-label small mb-1">
                             کد ملی
                             <span class="text-danger">*</span>
                         </label>
-                        <input asp-for="NationalCode" value="@Model.NationalCode" type="text" id="national_id" data-required="true" inputmode="numeric" maxlength="10" class="form-control">
+                        <input asp-for="ApplicantViewModel.NationalCode" value="@Model.ApplicantViewModel.NationalCode" type="text" id="national_id" data-required="true" inputmode="numeric" maxlength="10" class="form-control">
                     </div>
 
                     <div class="col-md-6">
-                        <label asp-for="Gender" class="form-label small mb-1">
+                        <label asp-for="ApplicantViewModel.Gender" class="form-label small mb-1">
                             جنسیت
                             <span class="text-danger">*</span>
                         </label>
-                        <select asp-for="Gender" id="sex" class="form-select" data-required="true">
+                        <select asp-for="ApplicantViewModel.Gender" id="sex" class="form-select" data-required="true">
                             <option value="" disabled selected>انتخاب کنید</option>
                             <option value="true">آقا</option>
                             <option value="false">خانم</option>
@@ -71,25 +71,25 @@
                     </div>
 
                     <div class="col-md-6">
-                        <label asp-for="Phone" class="form-label small mb-1">تلفن ثابت</label>
-                        <input asp-for="Phone" value="@Model.Phone" type="text" class="form-control">
+                        <label asp-for="ApplicantViewModel.Phone" class="form-label small mb-1">تلفن ثابت</label>
+                        <input asp-for="ApplicantViewModel.Phone" value="@Model.ApplicantViewModel.Phone" type="text" class="form-control">
                     </div>
 
                     <div class="col-md-6">
-                        <label asp-for="Mobile" class="form-label small mb-1">
+                        <label asp-for="ApplicantViewModel.Mobile" class="form-label small mb-1">
                             تلفن همراه
                             <span class="text-danger">*</span>
                         </label>
-                        <input asp-for="Mobile" value="@Model.Mobile" type="text" id="mobile" data-required="true" inputmode="numeric" maxlength="11" class="form-control">
+                        <input asp-for="ApplicantViewModel.Mobile" value="@Model.ApplicantViewModel.Mobile" type="text" id="mobile" data-required="true" inputmode="numeric" maxlength="11" class="form-control">
                     </div>
 
                     <div class="col-md-6">
-                        <label asp-for="BirthDate" class="form-label small mb-1">
+                        <label asp-for="ApplicantViewModel.BirthDate" class="form-label small mb-1">
                             تاریخ تولد
                             <span class="text-danger">*</span>
                         </label>
                         <div class="position-relative">
-                            <input asp-for="BirthDate" value="@Model.ShamsiBirthDate" type="text" class="form-control" id="birthdate" data-jdp>
+                            <input asp-for="ApplicantViewModel.BirthDate" value="@Model.ApplicantViewModel.ShamsiBirthDate" type="text" class="form-control" id="birthdate" data-jdp>
                             <button type="button" class="btn position-absolute top-50 start-0 translate-middle-y border-0 bg-transparent calendar-btn px-2">
                                 <i class="bi bi-calendar-event text-primary fs-5"></i>
                             </button>
@@ -97,33 +97,33 @@
                     </div>
 
                     <div class="col-md-6">
-                        <label asp-for="StudyFieldId" class="form-label small mb-1">
+                        <label asp-for="ApplicantViewModel.StudyFieldId" class="form-label small mb-1">
                             رشته تحصیلی
                             <span class="text-danger">*</span>
                         </label>
-                        <select asp-for="StudyFieldId" id="StudyFieldMultiSelect" class="form-select" data-required="true"></select>
+                        <select asp-for="ApplicantViewModel.StudyFieldId" id="StudyFieldMultiSelect" class="form-select" data-required="true"></select>
                     </div>
 
                     <div class="col-md-6">
-                        <label asp-for="ProvinceId" class="form-label small mb-1">
+                        <label asp-for="ApplicantViewModel.ProvinceId" class="form-label small mb-1">
                             استان
                             <span class="text-danger">*</span>
                         </label>
-                        <select asp-for="ProvinceId" id="ProvinceMultiSelect" class="form-select" data-required="true"></select>
+                        <select asp-for="ApplicantViewModel.ProvinceId" id="ProvinceMultiSelect" class="form-select" data-required="true"></select>
                     </div>
                     
                     <div class="col-md-6">
-                        <label asp-for="CityId" class="form-label small mb-1">
+                        <label asp-for="ApplicantViewModel.CityId" class="form-label small mb-1">
                             شهر
                             <span class="text-danger">*</span>
                         </label>
-                        <select asp-for="CityId" id="CityMultiSelect" class="form-select" data-required="true">
+                        <select asp-for="ApplicantViewModel.CityId" id="CityMultiSelect" class="form-select" data-required="true">
                         </select>
                     </div>
 
                     <div class="col-md-6">
-                        <label asp-for="EnglishLanguageLevel" class="form-label small mb-1">سطح زبان انگلیسی</label>
-                        <select asp-for="EnglishLanguageLevel" class="form-select">
+                        <label asp-for="ApplicantViewModel.EnglishLanguageLevel" class="form-label small mb-1">سطح زبان انگلیسی</label>
+                        <select asp-for="ApplicantViewModel.EnglishLanguageLevel" class="form-select">
                             <option value="" disabled selected>انتخاب کنید</option>
                             <option value="1">عالی</option>
                             <option value="2">متوسط</option>
@@ -140,39 +140,89 @@
                             <span class="upload-title">اسکن مدرک تحصیلی</span>
                         </div>
                         <div class="upload-card">
-                            <div class="upload-body">
-                                <span class="upload-text">هیچ فایلی انتخاب نشده</span>
-                                <label class="upload-btn">
-                                    انتخاب فایل
-                                    <input type="file" class="upload-input" name="EducationalCertificateFile" />
-                                </label>
+                            <div class="upload-body d-flex align-items-center justify-content-between gap-2">
+
+                                <div>
+                                    <span class="upload-text">هیچ فایلی انتخاب نشده</span>
+                                    <label class="upload-btn">
+                                        انتخاب فایل
+                                        <input type="file" class="upload-input" name="EducationalCertificateFile" />
+                                    </label>
+                                </div>
+
+                                @if (!string.IsNullOrEmpty(Model.EducationalCertificateFileUrl))
+                                {
+                                    <a href="@Model.EducationalCertificateFileUrl"
+                                       target="_blank"
+                                       download
+                                       class="text-success fs-4"
+                                       title="دانلود فایل">
+                                        <i class="bi bi-download"></i>
+                                    </a>
+                                }
+
                             </div>
                         </div>
+
 
                         <div class="upload-header">
                             <span class="upload-title">اسکن کارت ملی (رو)</span>
                         </div>
                         <div class="upload-card">
-                            <div class="upload-body">
-                                <span class="upload-text">هیچ فایلی انتخاب نشده</span>
-                                <label class="upload-btn">
-                                    انتخاب فایل
-                                    <input type="file" class="upload-input" name="NationalCardFrontFile" />
-                                </label>
+                            
+                            <div class="upload-body d-flex align-items-center justify-content-between gap-2">
+
+                                <div>
+                                    <span class="upload-text">هیچ فایلی انتخاب نشده</span>
+                                    <label class="upload-btn">
+                                        انتخاب فایل
+                                        <input type="file" class="upload-input" name="NationalCardFrontFile" />
+                                    </label>
+                                </div>
+
+                                @if (!string.IsNullOrEmpty(Model.NationalCardFrontFileUrl))
+                                {
+                                    <a href="@Model.NationalCardFrontFileUrl"
+                                       target="_blank"
+                                       download
+                                       class="text-success fs-4"
+                                       title="دانلود فایل">
+                                        <i class="bi bi-download"></i>
+                                    </a>
+                                }
+
                             </div>
+
                         </div>
 
                         <div class="upload-header">
                             <span class="upload-title">شناسنامه (صفحه اول)</span>
                         </div>
                         <div class="upload-card">
-                            <div class="upload-body">
-                                <span class="upload-text">هیچ فایلی انتخاب نشده</span>
-                                <label class="upload-btn">
-                                    انتخاب فایل
-                                    <input type="file" class="upload-input" name="IdentityCertificateFirstPageFile" />
-                                </label>
+                            
+                            <div class="upload-body d-flex align-items-center justify-content-between gap-2">
+
+                                <div>
+                                    <span class="upload-text">هیچ فایلی انتخاب نشده</span>
+                                    <label class="upload-btn">
+                                        انتخاب فایل
+                                        <input type="file" class="upload-input" name="IdentityCertificateFirstPageFile" />
+                                    </label>
+                                </div>
+
+                                @if (!string.IsNullOrEmpty(Model.IdentityCertificateFirstPageFileUrl))
+                                {
+                                    <a href="@Model.IdentityCertificateFirstPageFileUrl"
+                                       target="_blank"
+                                       download
+                                       class="text-success fs-4"
+                                       title="دانلود فایل">
+                                        <i class="bi bi-download"></i>
+                                    </a>
+                                }
+
                             </div>
+
                         </div>
                     </div>
 
@@ -181,39 +231,90 @@
                             <span class="upload-title">عکس پرسنلی</span>
                         </div>
                         <div class="upload-card">
-                            <div class="upload-body">
-                                <span class="upload-text">هیچ فایلی انتخاب نشده</span>
-                                <label class="upload-btn">
-                                    انتخاب فایل
-                                    <input type="file" class="upload-input" name="PersonalImageFile" />
-                                </label>
+                            
+                            <div class="upload-body d-flex align-items-center justify-content-between gap-2">
+
+                                <div>
+                                    <span class="upload-text">هیچ فایلی انتخاب نشده</span>
+                                    <label class="upload-btn">
+                                        انتخاب فایل
+                                        <input type="file" class="upload-input" name="PersonalImageFile" />
+                                    </label>
+                                </div>
+
+                                @if (!string.IsNullOrEmpty(Model.PersonalImageFileUrl))
+                                {
+                                    <a href="@Model.PersonalImageFileUrl"
+                                       target="_blank"
+                                       download
+                                       class="text-success fs-4"
+                                       title="دانلود فایل">
+                                        <i class="bi bi-download"></i>
+                                    </a>
+                                }
+
                             </div>
+
                         </div>
 
                         <div class="upload-header">
                             <span class="upload-title">اسکن کارت ملی (پشت)</span>
                         </div>
                         <div class="upload-card">
-                            <div class="upload-body">
-                                <span class="upload-text">هیچ فایلی انتخاب نشده</span>
-                                <label class="upload-btn">
-                                    انتخاب فایل
-                                    <input type="file" class="upload-input" name="NationalCardBackFile" />
-                                </label>
+                            
+                            <div class="upload-body d-flex align-items-center justify-content-between gap-2">
+
+                                <div>
+                                    <span class="upload-text">هیچ فایلی انتخاب نشده</span>
+                                    <label class="upload-btn">
+                                        انتخاب فایل
+                                        <input type="file" class="upload-input" name="NationalCardBackFile" />
+                                    </label>
+                                </div>
+
+                                @if (!string.IsNullOrEmpty(Model.NationalCardBackFileUrl))
+                                {
+                                    <a href="@Model.NationalCardBackFileUrl"
+                                       target="_blank"
+                                       download
+                                       class="text-success fs-4"
+                                       title="دانلود فایل">
+                                        <i class="bi bi-download"></i>
+                                    </a>
+                                }
+
                             </div>
+
                         </div>
 
                         <div class="upload-header">
                             <span class="upload-title">شناسنامه (صفحه دوم)</span>
                         </div>
                         <div class="upload-card">
-                            <div class="upload-body">
-                                <span class="upload-text">هیچ فایلی انتخاب نشده</span>
-                                <label class="upload-btn">
-                                    انتخاب فایل
-                                    <input type="file" class="upload-input" name="IdentityCertificateSecondPageFile" />
-                                </label>
+                            
+                            <div class="upload-body d-flex align-items-center justify-content-between gap-2">
+
+                                <div>
+                                    <span class="upload-text">هیچ فایلی انتخاب نشده</span>
+                                    <label class="upload-btn">
+                                        انتخاب فایل
+                                        <input type="file" class="upload-input" name="IdentityCertificateSecondPageFile" />
+                                    </label>
+                                </div>
+
+                                @if (!string.IsNullOrEmpty(Model.IdentityCertificateSecondPageFileUrl))
+                                {
+                                    <a href="@Model.IdentityCertificateSecondPageFileUrl"
+                                       target="_blank"
+                                       download
+                                       class="text-success fs-4"
+                                       title="دانلود فایل">
+                                        <i class="bi bi-download"></i>
+                                    </a>
+                                }
+
                             </div>
+
                         </div>
                     </div>
                 </div>
@@ -280,7 +381,7 @@
         var options = '';
         data.forEach(function (item) {
             options += '<option value="' + item.Value + '"'
-                     + (item.Value == '@Model.StudyFieldId' ? ' selected' : '')
+                     + (item.Value == '@Model.ApplicantViewModel.StudyFieldId' ? ' selected' : '')
                      + '>' + item.Text + '</option>';
         });
         var $el = $('#StudyFieldMultiSelect');
@@ -294,7 +395,7 @@
             var options = '';
             data.forEach(function (item) {
                 options += '<option value="' + item.Value + '"'
-                         + (item.Value == '@Model.ProvinceId' ? ' selected' : '')
+                         + (item.Value == '@Model.ApplicantViewModel.ProvinceId' ? ' selected' : '')
                          + '>' + item.Text + '</option>';
             });
             var $province = $('#ProvinceMultiSelect');
@@ -314,7 +415,7 @@
                 var options = '';
                 data.forEach(function (item) {
                     options += '<option value="' + item.Value + '"'
-                             + (item.Value == '@Model.CityId' ? ' selected' : '')
+                             + (item.Value == '@Model.ApplicantViewModel.CityId' ? ' selected' : '')
                              + '>' + item.Text + '</option>';
                 });
                 var $city = $('#CityMultiSelect');

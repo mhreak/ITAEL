@@ -12,7 +12,7 @@ namespace Web.Model
 
         public string Name { get; set; }
 
-        [Display(Name = "ایمیل")]
+        [Display(Name = "موبایل")]
         [StringLength(11)]
         [Required(ErrorMessage = "این فیلد الزامی است")]
         public string Mobile { get; set; }
