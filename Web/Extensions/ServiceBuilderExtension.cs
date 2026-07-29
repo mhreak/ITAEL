@@ -4,12 +4,13 @@ using Web.Service.Interface;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
+using System.Threading.Tasks;
 
 namespace Web.Extensions
 {
     public static class ExtensionsMethod
     {
-        public static void UseSeedDatabase(this IApplicationBuilder app)
+        public static async Task UseSeedDatabase(this IApplicationBuilder app)
         {
             using IServiceScope scope = app.ApplicationServices.CreateScope();
 
@@ -24,32 +25,33 @@ namespace Web.Extensions
             var settingService = scope.ServiceProvider.GetService<ISettingService>();
 
 
-            if (roleManager.FindByNameAsync("Admin").Result == null)
+            if (await roleManager.FindByNameAsync("Admin") == null)
             {
                 var managerRole = new CustomRole { Name = "Admin" };
-                roleManager.CreateAsync(managerRole);
+                await roleManager.CreateAsync(managerRole);
             }
 
-            if (roleManager.FindByNameAsync("Manager").Result == null)
+            if (await roleManager.FindByNameAsync("Manager") == null)
             {
                 var managerRole = new CustomRole { Name = "Manager" };
-                roleManager.CreateAsync(managerRole);
+                await roleManager.CreateAsync(managerRole);
             }
 
-            if (roleManager.FindByNameAsync("Applicant").Result == null)
+            if (await roleManager.FindByNameAsync("Applicant") == null)
             {
                 var managerRole = new CustomRole { Name = "Applicant" };
-                roleManager.CreateAsync(managerRole);
+                await roleManager.CreateAsync(managerRole);
             }
 
-            if (userManager.FindByNameAsync("mhreak").Result == null)
+            if (await userManager.FindByNameAsync("mhreak") == null)
             {
                 var user = new ApplicationUser() { PhoneNumber = "09135709239", UserName = "mhreak", Name = "کاربر ادمین" };
-                userManager.CreateAsync(user, "H@ra_8674");
-                userManager.AddToRoleAsync(user, "Admin");
+                await userManager.CreateAsync(user, "H@ra_8674");
+                await userManager.AddToRoleAsync(user, "Admin");
             }
 
             #region Settings
+
             if ((settingService.Get("SMSPanelUsername")) == null)
             {
                 var settingViewModel = new SettingViewModel()

@@ -1,7 +1,108 @@
 {
   "Version": 1,
   "WorkspaceRootPath": "D:\\CSharpSaman\\Itael\\",
-  "Documents": [],
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{DC692104-9395-4274-94D7-5E436AC6CFD0}|Web\\Web.csproj|d:\\csharpsaman\\itael\\web\\areas\\admin\\views\\setting\\aboutussetting.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{DC692104-9395-4274-94D7-5E436AC6CFD0}|Web\\Web.csproj|solutionrelative:web\\areas\\admin\\views\\setting\\aboutussetting.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{DC692104-9395-4274-94D7-5E436AC6CFD0}|Web\\Web.csproj|d:\\csharpsaman\\itael\\web\\areas\\admin\\views\\setting\\smssetting.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{DC692104-9395-4274-94D7-5E436AC6CFD0}|Web\\Web.csproj|solutionrelative:web\\areas\\admin\\views\\setting\\smssetting.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{DC692104-9395-4274-94D7-5E436AC6CFD0}|Web\\Web.csproj|d:\\csharpsaman\\itael\\web\\areas\\admin\\controllers\\settingcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{DC692104-9395-4274-94D7-5E436AC6CFD0}|Web\\Web.csproj|solutionrelative:web\\areas\\admin\\controllers\\settingcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{DC692104-9395-4274-94D7-5E436AC6CFD0}|Web\\Web.csproj|d:\\csharpsaman\\itael\\web\\model\\smssettingviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{DC692104-9395-4274-94D7-5E436AC6CFD0}|Web\\Web.csproj|solutionrelative:web\\model\\smssettingviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2000A687-7012-4352-8D3D-1FDA226FDEAC}|DbEntities\\DbEntities.csproj|d:\\csharpsaman\\itael\\dbentities\\bankgateway.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2000A687-7012-4352-8D3D-1FDA226FDEAC}|DbEntities\\DbEntities.csproj|solutionrelative:dbentities\\bankgateway.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{DC692104-9395-4274-94D7-5E436AC6CFD0}|Web\\Web.csproj|d:\\csharpsaman\\itael\\web\\controllers\\jobannouncementcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{DC692104-9395-4274-94D7-5E436AC6CFD0}|Web\\Web.csproj|solutionrelative:web\\controllers\\jobannouncementcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{DC692104-9395-4274-94D7-5E436AC6CFD0}|Web\\Web.csproj|d:\\csharpsaman\\itael\\web\\service\\identity\\applicationusermanagerservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{DC692104-9395-4274-94D7-5E436AC6CFD0}|Web\\Web.csproj|solutionrelative:web\\service\\identity\\applicationusermanagerservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{DC692104-9395-4274-94D7-5E436AC6CFD0}|Web\\Web.csproj|d:\\csharpsaman\\itael\\web\\areas\\applicant\\controllers\\accountcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{DC692104-9395-4274-94D7-5E436AC6CFD0}|Web\\Web.csproj|solutionrelative:web\\areas\\applicant\\controllers\\accountcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{DC692104-9395-4274-94D7-5E436AC6CFD0}|Web\\Web.csproj|d:\\csharpsaman\\itael\\web\\controllers\\accountcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{DC692104-9395-4274-94D7-5E436AC6CFD0}|Web\\Web.csproj|solutionrelative:web\\controllers\\accountcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{DC692104-9395-4274-94D7-5E436AC6CFD0}|Web\\Web.csproj|d:\\csharpsaman\\itael\\web\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{DC692104-9395-4274-94D7-5E436AC6CFD0}|Web\\Web.csproj|solutionrelative:web\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{DC692104-9395-4274-94D7-5E436AC6CFD0}|Web\\Web.csproj|d:\\csharpsaman\\itael\\web\\web.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{DC692104-9395-4274-94D7-5E436AC6CFD0}|Web\\Web.csproj|solutionrelative:web\\web.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{DC692104-9395-4274-94D7-5E436AC6CFD0}|Web\\Web.csproj|d:\\csharpsaman\\itael\\web\\areas\\admin\\views\\user\\edit.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{DC692104-9395-4274-94D7-5E436AC6CFD0}|Web\\Web.csproj|solutionrelative:web\\areas\\admin\\views\\user\\edit.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2000A687-7012-4352-8D3D-1FDA226FDEAC}|DbEntities\\DbEntities.csproj|d:\\csharpsaman\\itael\\dbentities\\applicant_jobannouncement.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2000A687-7012-4352-8D3D-1FDA226FDEAC}|DbEntities\\DbEntities.csproj|solutionrelative:dbentities\\applicant_jobannouncement.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2000A687-7012-4352-8D3D-1FDA226FDEAC}|DbEntities\\DbEntities.csproj|d:\\csharpsaman\\itael\\dbentities\\wallet_collaborator_commissionrule.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2000A687-7012-4352-8D3D-1FDA226FDEAC}|DbEntities\\DbEntities.csproj|solutionrelative:dbentities\\wallet_collaborator_commissionrule.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2000A687-7012-4352-8D3D-1FDA226FDEAC}|DbEntities\\DbEntities.csproj|d:\\csharpsaman\\itael\\dbentities\\studyfield_examresource.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2000A687-7012-4352-8D3D-1FDA226FDEAC}|DbEntities\\DbEntities.csproj|solutionrelative:dbentities\\studyfield_examresource.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2000A687-7012-4352-8D3D-1FDA226FDEAC}|DbEntities\\DbEntities.csproj|d:\\csharpsaman\\itael\\dbentities\\skill_examresource.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2000A687-7012-4352-8D3D-1FDA226FDEAC}|DbEntities\\DbEntities.csproj|solutionrelative:dbentities\\skill_examresource.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2000A687-7012-4352-8D3D-1FDA226FDEAC}|DbEntities\\DbEntities.csproj|d:\\csharpsaman\\itael\\dbentities\\jobannouncement_exam.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2000A687-7012-4352-8D3D-1FDA226FDEAC}|DbEntities\\DbEntities.csproj|solutionrelative:dbentities\\jobannouncement_exam.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2000A687-7012-4352-8D3D-1FDA226FDEAC}|DbEntities\\DbEntities.csproj|d:\\csharpsaman\\itael\\dbentities\\jobannouncement_examresource.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2000A687-7012-4352-8D3D-1FDA226FDEAC}|DbEntities\\DbEntities.csproj|solutionrelative:dbentities\\jobannouncement_examresource.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2000A687-7012-4352-8D3D-1FDA226FDEAC}|DbEntities\\DbEntities.csproj|d:\\csharpsaman\\itael\\dbentities\\jobannouncement_jobannouncementcategory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2000A687-7012-4352-8D3D-1FDA226FDEAC}|DbEntities\\DbEntities.csproj|solutionrelative:dbentities\\jobannouncement_jobannouncementcategory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2000A687-7012-4352-8D3D-1FDA226FDEAC}|DbEntities\\DbEntities.csproj|d:\\csharpsaman\\itael\\dbentities\\jobannouncement_skill.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2000A687-7012-4352-8D3D-1FDA226FDEAC}|DbEntities\\DbEntities.csproj|solutionrelative:dbentities\\jobannouncement_skill.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2000A687-7012-4352-8D3D-1FDA226FDEAC}|DbEntities\\DbEntities.csproj|d:\\csharpsaman\\itael\\dbentities\\jobannouncement_studyfield.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2000A687-7012-4352-8D3D-1FDA226FDEAC}|DbEntities\\DbEntities.csproj|solutionrelative:dbentities\\jobannouncement_studyfield.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2000A687-7012-4352-8D3D-1FDA226FDEAC}|DbEntities\\DbEntities.csproj|d:\\csharpsaman\\itael\\dbentities\\jobannouncementcategory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2000A687-7012-4352-8D3D-1FDA226FDEAC}|DbEntities\\DbEntities.csproj|solutionrelative:dbentities\\jobannouncementcategory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2000A687-7012-4352-8D3D-1FDA226FDEAC}|DbEntities\\DbEntities.csproj|d:\\csharpsaman\\itael\\dbentities\\examresourceorderitem.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2000A687-7012-4352-8D3D-1FDA226FDEAC}|DbEntities\\DbEntities.csproj|solutionrelative:dbentities\\examresourceorderitem.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{DC692104-9395-4274-94D7-5E436AC6CFD0}|Web\\Web.csproj|d:\\csharpsaman\\itael\\web\\areas\\applicant\\views\\profile\\updateprofile.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{DC692104-9395-4274-94D7-5E436AC6CFD0}|Web\\Web.csproj|solutionrelative:web\\areas\\applicant\\views\\profile\\updateprofile.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{DC692104-9395-4274-94D7-5E436AC6CFD0}|Web\\Web.csproj|d:\\csharpsaman\\itael\\web\\areas\\applicant\\views\\account\\login.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{DC692104-9395-4274-94D7-5E436AC6CFD0}|Web\\Web.csproj|solutionrelative:web\\areas\\applicant\\views\\account\\login.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    }
+  ],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
@@ -9,7 +110,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 210,
-          "SelectedChildIndex": -1,
+          "SelectedChildIndex": 8,
           "Children": [
             {
               "$type": "Bookmark",
@@ -41,7 +142,314 @@
             },
             {
               "$type": "Bookmark",
-              "Name": "ST:0:0:{a80febb4-e7e0-4147-b476-21aaf2453969}"
+              "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "AboutUsSetting.cshtml",
+              "DocumentMoniker": "D:\\CSharpSaman\\Itael\\Web\\Areas\\Admin\\Views\\Setting\\AboutUsSetting.cshtml",
+              "RelativeDocumentMoniker": "Web\\Areas\\Admin\\Views\\Setting\\AboutUsSetting.cshtml",
+              "ToolTip": "D:\\CSharpSaman\\Itael\\Web\\Areas\\Admin\\Views\\Setting\\AboutUsSetting.cshtml",
+              "RelativeToolTip": "Web\\Areas\\Admin\\Views\\Setting\\AboutUsSetting.cshtml",
+              "ViewState": "AgIAABYAAAAAAAAAAAAYwCAAAAAYAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-03-14T10:24:08.348Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "SMSSetting.cshtml",
+              "DocumentMoniker": "D:\\CSharpSaman\\Itael\\Web\\Areas\\Admin\\Views\\Setting\\SMSSetting.cshtml",
+              "RelativeDocumentMoniker": "Web\\Areas\\Admin\\Views\\Setting\\SMSSetting.cshtml",
+              "ToolTip": "D:\\CSharpSaman\\Itael\\Web\\Areas\\Admin\\Views\\Setting\\SMSSetting.cshtml",
+              "RelativeToolTip": "Web\\Areas\\Admin\\Views\\Setting\\SMSSetting.cshtml",
+              "ViewState": "AgIAACgAAAAAAAAAAAAYwDMAAAAaAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-03-14T10:23:02.116Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "SMSSettingViewModel.cs",
+              "DocumentMoniker": "D:\\CSharpSaman\\Itael\\Web\\Model\\SMSSettingViewModel.cs",
+              "RelativeDocumentMoniker": "Web\\Model\\SMSSettingViewModel.cs",
+              "ToolTip": "D:\\CSharpSaman\\Itael\\Web\\Model\\SMSSettingViewModel.cs",
+              "RelativeToolTip": "Web\\Model\\SMSSettingViewModel.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAaAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-14T10:19:42.712Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "SettingController.cs",
+              "DocumentMoniker": "D:\\CSharpSaman\\Itael\\Web\\Areas\\Admin\\Controllers\\SettingController.cs",
+              "RelativeDocumentMoniker": "Web\\Areas\\Admin\\Controllers\\SettingController.cs",
+              "ToolTip": "D:\\CSharpSaman\\Itael\\Web\\Areas\\Admin\\Controllers\\SettingController.cs",
+              "RelativeToolTip": "Web\\Areas\\Admin\\Controllers\\SettingController.cs",
+              "ViewState": "AgIAAAUAAAAAAAAAAAAqwBAAAAAiAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-14T10:18:09.024Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "BankGateway.cs",
+              "DocumentMoniker": "D:\\CSharpSaman\\Itael\\DbEntities\\BankGateway.cs",
+              "RelativeDocumentMoniker": "DbEntities\\BankGateway.cs",
+              "ToolTip": "D:\\CSharpSaman\\Itael\\DbEntities\\BankGateway.cs",
+              "RelativeToolTip": "DbEntities\\BankGateway.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-14T09:01:45.521Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "JobAnnouncementController.cs",
+              "DocumentMoniker": "D:\\CSharpSaman\\Itael\\Web\\Controllers\\JobAnnouncementController.cs",
+              "RelativeDocumentMoniker": "Web\\Controllers\\JobAnnouncementController.cs",
+              "ToolTip": "D:\\CSharpSaman\\Itael\\Web\\Controllers\\JobAnnouncementController.cs",
+              "RelativeToolTip": "Web\\Controllers\\JobAnnouncementController.cs",
+              "ViewState": "AgIAAGwAAAAAAAAAAAAYwGsBAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-14T08:54:59.932Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "ApplicationUserManagerService.cs",
+              "DocumentMoniker": "D:\\CSharpSaman\\Itael\\Web\\Service\\Identity\\ApplicationUserManagerService.cs",
+              "RelativeDocumentMoniker": "Web\\Service\\Identity\\ApplicationUserManagerService.cs",
+              "ToolTip": "D:\\CSharpSaman\\Itael\\Web\\Service\\Identity\\ApplicationUserManagerService.cs",
+              "RelativeToolTip": "Web\\Service\\Identity\\ApplicationUserManagerService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAMBAAAVAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-11T11:32:18.196Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "AccountController.cs",
+              "DocumentMoniker": "D:\\CSharpSaman\\Itael\\Web\\Areas\\Applicant\\Controllers\\AccountController.cs",
+              "RelativeDocumentMoniker": "Web\\Areas\\Applicant\\Controllers\\AccountController.cs",
+              "ToolTip": "D:\\CSharpSaman\\Itael\\Web\\Areas\\Applicant\\Controllers\\AccountController.cs",
+              "RelativeToolTip": "Web\\Areas\\Applicant\\Controllers\\AccountController.cs",
+              "ViewState": "AgIAAI4AAAAAAAAAAAAewAwBAAA3AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-11T11:31:30.287Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "AccountController.cs",
+              "DocumentMoniker": "D:\\CSharpSaman\\Itael\\Web\\Controllers\\AccountController.cs",
+              "RelativeDocumentMoniker": "Web\\Controllers\\AccountController.cs",
+              "ToolTip": "D:\\CSharpSaman\\Itael\\Web\\Controllers\\AccountController.cs",
+              "RelativeToolTip": "Web\\Controllers\\AccountController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABQAAAAwAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-11T11:30:59.45Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "D:\\CSharpSaman\\Itael\\Web\\appsettings.json",
+              "RelativeDocumentMoniker": "Web\\appsettings.json",
+              "ToolTip": "D:\\CSharpSaman\\Itael\\Web\\appsettings.json",
+              "RelativeToolTip": "Web\\appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-02-09T13:02:49.903Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "Web.csproj",
+              "DocumentMoniker": "D:\\CSharpSaman\\Itael\\Web\\Web.csproj",
+              "RelativeDocumentMoniker": "Web\\Web.csproj",
+              "ToolTip": "D:\\CSharpSaman\\Itael\\Web\\Web.csproj",
+              "RelativeToolTip": "Web\\Web.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAMAAAAtAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2026-02-09T12:54:32.685Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "Edit.cshtml",
+              "DocumentMoniker": "D:\\CSharpSaman\\Itael\\Web\\Areas\\Admin\\Views\\User\\Edit.cshtml",
+              "RelativeDocumentMoniker": "Web\\Areas\\Admin\\Views\\User\\Edit.cshtml",
+              "ToolTip": "D:\\CSharpSaman\\Itael\\Web\\Areas\\Admin\\Views\\User\\Edit.cshtml",
+              "RelativeToolTip": "Web\\Areas\\Admin\\Views\\User\\Edit.cshtml",
+              "ViewState": "AgIAADIAAAAAAAAAAAAswEcAAABDAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-01-28T08:25:47.525Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
+              "Title": "Skill_ExamResource.cs",
+              "DocumentMoniker": "D:\\CSharpSaman\\Itael\\DbEntities\\Skill_ExamResource.cs",
+              "RelativeDocumentMoniker": "DbEntities\\Skill_ExamResource.cs",
+              "ToolTip": "D:\\CSharpSaman\\Itael\\DbEntities\\Skill_ExamResource.cs",
+              "RelativeToolTip": "DbEntities\\Skill_ExamResource.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-24T09:53:03.192Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 19,
+              "Title": "JobAnnouncement_Skill.cs",
+              "DocumentMoniker": "D:\\CSharpSaman\\Itael\\DbEntities\\JobAnnouncement_Skill.cs",
+              "RelativeDocumentMoniker": "DbEntities\\JobAnnouncement_Skill.cs",
+              "ToolTip": "D:\\CSharpSaman\\Itael\\DbEntities\\JobAnnouncement_Skill.cs",
+              "RelativeToolTip": "DbEntities\\JobAnnouncement_Skill.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-24T09:52:30.478Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 20,
+              "Title": "JobAnnouncement_StudyField.cs",
+              "DocumentMoniker": "D:\\CSharpSaman\\Itael\\DbEntities\\JobAnnouncement_StudyField.cs",
+              "RelativeDocumentMoniker": "DbEntities\\JobAnnouncement_StudyField.cs",
+              "ToolTip": "D:\\CSharpSaman\\Itael\\DbEntities\\JobAnnouncement_StudyField.cs",
+              "RelativeToolTip": "DbEntities\\JobAnnouncement_StudyField.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-24T09:52:28.539Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 16,
+              "Title": "JobAnnouncement_Exam.cs",
+              "DocumentMoniker": "D:\\CSharpSaman\\Itael\\DbEntities\\JobAnnouncement_Exam.cs",
+              "RelativeDocumentMoniker": "DbEntities\\JobAnnouncement_Exam.cs",
+              "ToolTip": "D:\\CSharpSaman\\Itael\\DbEntities\\JobAnnouncement_Exam.cs",
+              "RelativeToolTip": "DbEntities\\JobAnnouncement_Exam.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-24T09:52:26.105Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 18,
+              "Title": "JobAnnouncement_JobAnnouncementCategory.cs",
+              "DocumentMoniker": "D:\\CSharpSaman\\Itael\\DbEntities\\JobAnnouncement_JobAnnouncementCategory.cs",
+              "RelativeDocumentMoniker": "DbEntities\\JobAnnouncement_JobAnnouncementCategory.cs",
+              "ToolTip": "D:\\CSharpSaman\\Itael\\DbEntities\\JobAnnouncement_JobAnnouncementCategory.cs",
+              "RelativeToolTip": "DbEntities\\JobAnnouncement_JobAnnouncementCategory.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-24T09:52:19.494Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 17,
+              "Title": "JobAnnouncement_ExamResource.cs",
+              "DocumentMoniker": "D:\\CSharpSaman\\Itael\\DbEntities\\JobAnnouncement_ExamResource.cs",
+              "RelativeDocumentMoniker": "DbEntities\\JobAnnouncement_ExamResource.cs",
+              "ToolTip": "D:\\CSharpSaman\\Itael\\DbEntities\\JobAnnouncement_ExamResource.cs",
+              "RelativeToolTip": "DbEntities\\JobAnnouncement_ExamResource.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-24T09:52:24.142Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "StudyField_ExamResource.cs",
+              "DocumentMoniker": "D:\\CSharpSaman\\Itael\\DbEntities\\StudyField_ExamResource.cs",
+              "RelativeDocumentMoniker": "DbEntities\\StudyField_ExamResource.cs",
+              "ToolTip": "D:\\CSharpSaman\\Itael\\DbEntities\\StudyField_ExamResource.cs",
+              "RelativeToolTip": "DbEntities\\StudyField_ExamResource.cs",
+              "ViewState": "AgIAABcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-24T09:52:34.678Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "Wallet_Collaborator_CommissionRule.cs",
+              "DocumentMoniker": "D:\\CSharpSaman\\Itael\\DbEntities\\Wallet_Collaborator_CommissionRule.cs",
+              "RelativeDocumentMoniker": "DbEntities\\Wallet_Collaborator_CommissionRule.cs",
+              "ToolTip": "D:\\CSharpSaman\\Itael\\DbEntities\\Wallet_Collaborator_CommissionRule.cs",
+              "RelativeToolTip": "DbEntities\\Wallet_Collaborator_CommissionRule.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-24T09:52:36.495Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "Applicant_JobAnnouncement.cs",
+              "DocumentMoniker": "D:\\CSharpSaman\\Itael\\DbEntities\\Applicant_JobAnnouncement.cs",
+              "RelativeDocumentMoniker": "DbEntities\\Applicant_JobAnnouncement.cs",
+              "ToolTip": "D:\\CSharpSaman\\Itael\\DbEntities\\Applicant_JobAnnouncement.cs",
+              "RelativeToolTip": "DbEntities\\Applicant_JobAnnouncement.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-24T09:52:48.963Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 21,
+              "Title": "JobAnnouncementCategory.cs",
+              "DocumentMoniker": "D:\\CSharpSaman\\Itael\\DbEntities\\JobAnnouncementCategory.cs",
+              "RelativeDocumentMoniker": "DbEntities\\JobAnnouncementCategory.cs",
+              "ToolTip": "D:\\CSharpSaman\\Itael\\DbEntities\\JobAnnouncementCategory.cs",
+              "RelativeToolTip": "DbEntities\\JobAnnouncementCategory.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-24T09:52:54.599Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 22,
+              "Title": "ExamResourceOrderItem.cs",
+              "DocumentMoniker": "D:\\CSharpSaman\\Itael\\DbEntities\\ExamResourceOrderItem.cs",
+              "RelativeDocumentMoniker": "DbEntities\\ExamResourceOrderItem.cs",
+              "ToolTip": "D:\\CSharpSaman\\Itael\\DbEntities\\ExamResourceOrderItem.cs",
+              "RelativeToolTip": "DbEntities\\ExamResourceOrderItem.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-24T09:52:43.071Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 24,
+              "Title": "Login.cshtml",
+              "DocumentMoniker": "D:\\CSharpSaman\\Itael\\Web\\Areas\\Applicant\\Views\\Account\\Login.cshtml",
+              "RelativeDocumentMoniker": "Web\\Areas\\Applicant\\Views\\Account\\Login.cshtml",
+              "ToolTip": "D:\\CSharpSaman\\Itael\\Web\\Areas\\Applicant\\Views\\Account\\Login.cshtml",
+              "RelativeToolTip": "Web\\Areas\\Applicant\\Views\\Account\\Login.cshtml",
+              "ViewState": "AgIAAIoAAAAAAAAAAAAAAJcAAAAIAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-01-24T06:44:31.977Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 23,
+              "Title": "UpdateProfile.cshtml",
+              "DocumentMoniker": "D:\\CSharpSaman\\Itael\\Web\\Areas\\Applicant\\Views\\Profile\\UpdateProfile.cshtml",
+              "RelativeDocumentMoniker": "Web\\Areas\\Applicant\\Views\\Profile\\UpdateProfile.cshtml",
+              "ToolTip": "D:\\CSharpSaman\\Itael\\Web\\Areas\\Applicant\\Views\\Profile\\UpdateProfile.cshtml",
+              "RelativeToolTip": "Web\\Areas\\Applicant\\Views\\Profile\\UpdateProfile.cshtml",
+              "ViewState": "AgIAAGIBAAAAAAAAAAAAAHEBAAAUAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-01-24T06:41:50.356Z"
             }
           ]
         },
@@ -49,10 +457,6 @@
           "DockedWidth": 57,
           "SelectedChildIndex": -1,
           "Children": [
-            {
-              "$type": "Bookmark",
-              "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
-            },
             {
               "$type": "Bookmark",
               "Name": "ST:128:0:{1fc202d4-d401-403c-9834-5b218574bb67}"

@@ -304,3 +304,17 @@ D:\CSharpSaman\Itael\DbConnection\obj\Debug\net9.0\refint\DbConnection.dll
 D:\CSharpSaman\Itael\DbConnection\obj\Debug\net9.0\DbConnection.pdb
 D:\CSharpSaman\Itael\DbConnection\obj\Debug\net9.0\DbConnection.genruntimeconfig.cache
 D:\CSharpSaman\Itael\DbConnection\obj\Debug\net9.0\ref\DbConnection.dll
+D:\CSharpSaman\Itael\DbConnection\bin\Debug\net9.0\refs\Microsoft.AspNetCore.Cryptography.Internal.dll
+D:\CSharpSaman\Itael\DbConnection\bin\Debug\net9.0\refs\Microsoft.AspNetCore.Cryptography.KeyDerivation.dll
+D:\CSharpSaman\Itael\DbConnection\bin\Debug\net9.0\refs\Microsoft.Extensions.Caching.Abstractions.dll
+D:\CSharpSaman\Itael\DbConnection\bin\Debug\net9.0\refs\Microsoft.Extensions.Caching.Memory.dll
+D:\CSharpSaman\Itael\DbConnection\bin\Debug\net9.0\refs\Microsoft.Extensions.Configuration.Abstractions.dll
+D:\CSharpSaman\Itael\DbConnection\bin\Debug\net9.0\refs\Microsoft.Extensions.DependencyInjection.Abstractions.dll
+D:\CSharpSaman\Itael\DbConnection\bin\Debug\net9.0\refs\Microsoft.Extensions.DependencyInjection.dll
+D:\CSharpSaman\Itael\DbConnection\bin\Debug\net9.0\refs\Microsoft.Extensions.Identity.Core.dll
+D:\CSharpSaman\Itael\DbConnection\bin\Debug\net9.0\refs\Microsoft.Extensions.Identity.Stores.dll
+D:\CSharpSaman\Itael\DbConnection\bin\Debug\net9.0\refs\Microsoft.Extensions.Logging.Abstractions.dll
+D:\CSharpSaman\Itael\DbConnection\bin\Debug\net9.0\refs\Microsoft.Extensions.Logging.dll
+D:\CSharpSaman\Itael\DbConnection\bin\Debug\net9.0\refs\Microsoft.Extensions.Options.dll
+D:\CSharpSaman\Itael\DbConnection\bin\Debug\net9.0\refs\Microsoft.Extensions.Primitives.dll
+D:\CSharpSaman\Itael\DbConnection\bin\Debug\net9.0\refs\System.Text.Json.dll

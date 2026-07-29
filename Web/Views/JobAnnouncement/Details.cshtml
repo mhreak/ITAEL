@@ -83,7 +83,7 @@
                                     }
 
                                 </div>
-                                
+
                                 @if (!string.IsNullOrEmpty(Model.JobAnnouncementViewModel.JobTimeTypeStr))
                                 {
                                     <span class="job-badge-type">@Model.JobAnnouncementViewModel.JobTimeTypeStr</span>
@@ -101,7 +101,7 @@
                         <div class="card-body job-detail-content">
 
                             @Html.Raw(Model.JobAnnouncementViewModel.Description)
-                            
+
                             @if (Model.JobAnnouncementSkillViewModelList is { Count: > 0 })
                             {
                                 <h3>مهارت ها</h3>
@@ -112,7 +112,7 @@
                                     }
                                 </div>
                             }
-                            
+
 
                             @if (Model.JobAnnouncementStudyFieldViewModelList is { Count: > 0 })
                             {
@@ -124,7 +124,7 @@
                                     }
                                 </div>
                             }
-                            
+
 
                             <div class="text-start mt-4">
                                 @if (@Model.IsAllowToSubmitRequest)

@@ -109,7 +109,7 @@ namespace DbConnection.Migrations
 
                     b.HasIndex("StudyFieldId");
 
-                    b.ToTable("Applicant");
+                    b.ToTable("Applicant", (string)null);
                 });
 
             modelBuilder.Entity("DbEntities.ApplicantExamAttempt", b =>
@@ -148,7 +148,7 @@ namespace DbConnection.Migrations
 
                     b.HasIndex("ExamId");
 
-                    b.ToTable("ApplicantExamAttempt");
+                    b.ToTable("ApplicantExamAttempt", (string)null);
                 });
 
             modelBuilder.Entity("DbEntities.ApplicantExamQuestionAnswer", b =>
@@ -184,7 +184,7 @@ namespace DbConnection.Migrations
 
                     b.HasIndex("ExamQuestionOptionId");
 
-                    b.ToTable("ApplicantExamQuestionAnswer");
+                    b.ToTable("ApplicantExamQuestionAnswer", (string)null);
                 });
 
             modelBuilder.Entity("DbEntities.Applicant_JobAnnouncement", b =>
@@ -207,7 +207,7 @@ namespace DbConnection.Migrations
 
                     b.HasIndex("JobAnnouncementId");
 
-                    b.ToTable("Applicant_JobAnnouncement");
+                    b.ToTable("Applicant_JobAnnouncement", (string)null);
                 });
 
             modelBuilder.Entity("DbEntities.BankGateway", b =>
@@ -251,7 +251,7 @@ namespace DbConnection.Migrations
 
                     b.HasKey("BankGatewayId");
 
-                    b.ToTable("BankGateway");
+                    b.ToTable("BankGateway", (string)null);
                 });
 
             modelBuilder.Entity("DbEntities.City", b =>
@@ -277,7 +277,7 @@ namespace DbConnection.Migrations
 
                     b.HasIndex("ProvinceId");
 
-                    b.ToTable("City");
+                    b.ToTable("City", (string)null);
                 });
 
             modelBuilder.Entity("DbEntities.Collaborator", b =>
@@ -317,7 +317,7 @@ namespace DbConnection.Migrations
 
                     b.HasKey("CollaboratorId");
 
-                    b.ToTable("Collaborator");
+                    b.ToTable("Collaborator", (string)null);
                 });
 
             modelBuilder.Entity("DbEntities.CommissionRule", b =>
@@ -360,7 +360,7 @@ namespace DbConnection.Migrations
 
                     b.HasKey("CommissionRuleId");
 
-                    b.ToTable("CommissionRule");
+                    b.ToTable("CommissionRule", (string)null);
                 });
 
             modelBuilder.Entity("DbEntities.Company", b =>
@@ -396,7 +396,7 @@ namespace DbConnection.Migrations
 
                     b.HasKey("CompanyId");
 
-                    b.ToTable("Company");
+                    b.ToTable("Company", (string)null);
                 });
 
             modelBuilder.Entity("DbEntities.ContactMessage", b =>
@@ -423,7 +423,7 @@ namespace DbConnection.Migrations
 
                     b.HasKey("ContactMessageId");
 
-                    b.ToTable("ContactMessage");
+                    b.ToTable("ContactMessage", (string)null);
                 });
 
             modelBuilder.Entity("DbEntities.Exam", b =>
@@ -445,7 +445,7 @@ namespace DbConnection.Migrations
 
                     b.HasKey("ExamId");
 
-                    b.ToTable("Exam");
+                    b.ToTable("Exam", (string)null);
                 });
 
             modelBuilder.Entity("DbEntities.ExamQuestion", b =>
@@ -480,7 +480,7 @@ namespace DbConnection.Migrations
 
                     b.HasIndex("ExamId");
 
-                    b.ToTable("ExamQuestion");
+                    b.ToTable("ExamQuestion", (string)null);
                 });
 
             modelBuilder.Entity("DbEntities.ExamQuestionOption", b =>
@@ -509,7 +509,7 @@ namespace DbConnection.Migrations
 
                     b.HasIndex("ExamQuestionId");
 
-                    b.ToTable("ExamQuestionOption");
+                    b.ToTable("ExamQuestionOption", (string)null);
                 });
 
             modelBuilder.Entity("DbEntities.ExamResource", b =>
@@ -548,7 +548,7 @@ namespace DbConnection.Migrations
 
                     b.HasKey("ExamResourceId");
 
-                    b.ToTable("ExamResource");
+                    b.ToTable("ExamResource", (string)null);
                 });
 
             modelBuilder.Entity("DbEntities.ExamResourceOrder", b =>
@@ -583,7 +583,7 @@ namespace DbConnection.Migrations
 
                     b.HasIndex("BankGatewayId");
 
-                    b.ToTable("ExamResourceOrder");
+                    b.ToTable("ExamResourceOrder", (string)null);
                 });
 
             modelBuilder.Entity("DbEntities.ExamResourceOrderItem", b =>
@@ -612,7 +612,7 @@ namespace DbConnection.Migrations
 
                     b.HasIndex("ExamResourceOrderId");
 
-                    b.ToTable("ExamResourceOrderItem");
+                    b.ToTable("ExamResourceOrderItem", (string)null);
                 });
 
             modelBuilder.Entity("DbEntities.Identity.ApplicationUser", b =>
@@ -855,7 +855,7 @@ namespace DbConnection.Migrations
 
                     b.HasIndex("JobAnnouncementId");
 
-                    b.ToTable("InterviewAppointment");
+                    b.ToTable("InterviewAppointment", (string)null);
                 });
 
             modelBuilder.Entity("DbEntities.JobAnnouncement", b =>
@@ -940,7 +940,7 @@ namespace DbConnection.Migrations
 
                     b.HasIndex("CompanyId");
 
-                    b.ToTable("JobAnnouncement");
+                    b.ToTable("JobAnnouncement", (string)null);
                 });
 
             modelBuilder.Entity("DbEntities.JobAnnouncementCategory", b =>
@@ -960,7 +960,7 @@ namespace DbConnection.Migrations
 
                     b.HasKey("JobAnnouncementCategoryId");
 
-                    b.ToTable("JobAnnouncementCategory");
+                    b.ToTable("JobAnnouncementCategory", (string)null);
                 });
 
             modelBuilder.Entity("DbEntities.JobAnnouncement_Exam", b =>
@@ -998,7 +998,7 @@ namespace DbConnection.Migrations
 
                     b.HasIndex("JobAnnouncementId");
 
-                    b.ToTable("JobAnnouncement_Exam");
+                    b.ToTable("JobAnnouncement_Exam", (string)null);
                 });
 
             modelBuilder.Entity("DbEntities.JobAnnouncement_ExamResource", b =>
@@ -1018,7 +1018,7 @@ namespace DbConnection.Migrations
 
                     b.HasIndex("JobAnnouncementId");
 
-                    b.ToTable("JobAnnouncement_ExamResource");
+                    b.ToTable("JobAnnouncement_ExamResource", (string)null);
                 });
 
             modelBuilder.Entity("DbEntities.JobAnnouncement_JobAnnouncementCategory", b =>
@@ -1038,7 +1038,7 @@ namespace DbConnection.Migrations
 
                     b.HasIndex("JobAnnouncementCategoryId");
 
-                    b.ToTable("JobAnnouncement_JobAnnouncementCategory");
+                    b.ToTable("JobAnnouncement_JobAnnouncementCategory", (string)null);
                 });
 
             modelBuilder.Entity("DbEntities.JobAnnouncement_Skill", b =>
@@ -1061,7 +1061,7 @@ namespace DbConnection.Migrations
 
                     b.HasIndex("JobAnnouncementId");
 
-                    b.ToTable("JobAnnouncement_Skill");
+                    b.ToTable("JobAnnouncement_Skill", (string)null);
                 });
 
             modelBuilder.Entity("DbEntities.JobAnnouncement_StudyField", b =>
@@ -1081,7 +1081,7 @@ namespace DbConnection.Migrations
 
                     b.HasIndex("JobAnnouncementId");
 
-                    b.ToTable("JobAnnouncement_StudyField");
+                    b.ToTable("JobAnnouncement_StudyField", (string)null);
                 });
 
             modelBuilder.Entity("DbEntities.OnlineTransaction", b =>
@@ -1132,7 +1132,7 @@ namespace DbConnection.Migrations
 
                     b.HasIndex("ApplicantId", "JobAnnouncementId");
 
-                    b.ToTable("OnlineTransaction");
+                    b.ToTable("OnlineTransaction", (string)null);
                 });
 
             modelBuilder.Entity("DbEntities.PaymentType", b =>
@@ -1147,7 +1147,7 @@ namespace DbConnection.Migrations
 
                     b.HasKey("PaymentTypeId");
 
-                    b.ToTable("PaymentType");
+                    b.ToTable("PaymentType", (string)null);
 
                     b.HasData(
                         new
@@ -1185,7 +1185,7 @@ namespace DbConnection.Migrations
 
                     b.HasKey("ProvinceId");
 
-                    b.ToTable("Province");
+                    b.ToTable("Province", (string)null);
                 });
 
             modelBuilder.Entity("DbEntities.SMSPattern", b =>
@@ -1209,7 +1209,7 @@ namespace DbConnection.Migrations
 
                     b.HasKey("SMSPatternId");
 
-                    b.ToTable("SMSPattern");
+                    b.ToTable("SMSPattern", (string)null);
                 });
 
             modelBuilder.Entity("DbEntities.Setting", b =>
@@ -1233,7 +1233,7 @@ namespace DbConnection.Migrations
 
                     b.HasKey("SettingId");
 
-                    b.ToTable("Setting");
+                    b.ToTable("Setting", (string)null);
                 });
 
             modelBuilder.Entity("DbEntities.Skill", b =>
@@ -1254,7 +1254,7 @@ namespace DbConnection.Migrations
 
                     b.HasKey("SkillId");
 
-                    b.ToTable("Skill");
+                    b.ToTable("Skill", (string)null);
                 });
 
             modelBuilder.Entity("DbEntities.Skill_ExamResource", b =>
@@ -1274,7 +1274,7 @@ namespace DbConnection.Migrations
 
                     b.HasIndex("ExamResourceId");
 
-                    b.ToTable("Skill_ExamResource");
+                    b.ToTable("Skill_ExamResource", (string)null);
                 });
 
             modelBuilder.Entity("DbEntities.StudyField", b =>
@@ -1295,7 +1295,7 @@ namespace DbConnection.Migrations
 
                     b.HasKey("StudyFieldId");
 
-                    b.ToTable("StudyField");
+                    b.ToTable("StudyField", (string)null);
                 });
 
             modelBuilder.Entity("DbEntities.StudyField_ExamResource", b =>
@@ -1315,7 +1315,7 @@ namespace DbConnection.Migrations
 
                     b.HasIndex("ExamResourceId");
 
-                    b.ToTable("StudyField_ExamResource");
+                    b.ToTable("StudyField_ExamResource", (string)null);
                 });
 
             modelBuilder.Entity("DbEntities.SystemSMS", b =>
@@ -1339,7 +1339,7 @@ namespace DbConnection.Migrations
 
                     b.HasKey("SystemSMSId");
 
-                    b.ToTable("SystemSMS");
+                    b.ToTable("SystemSMS", (string)null);
                 });
 
             modelBuilder.Entity("DbEntities.Wallet", b =>
@@ -1363,7 +1363,7 @@ namespace DbConnection.Migrations
 
                     b.HasKey("WalletId");
 
-                    b.ToTable("Wallet");
+                    b.ToTable("Wallet", (string)null);
                 });
 
             modelBuilder.Entity("DbEntities.WalletCommission", b =>
@@ -1387,7 +1387,7 @@ namespace DbConnection.Migrations
 
                     b.HasIndex("WalletId");
 
-                    b.ToTable("WalletCommission");
+                    b.ToTable("WalletCommission", (string)null);
                 });
 
             modelBuilder.Entity("DbEntities.Wallet_Collaborator_CommissionRule", b =>
@@ -1413,7 +1413,7 @@ namespace DbConnection.Migrations
 
                     b.HasIndex("CommissionRuleId");
 
-                    b.ToTable("Wallet_Collaborator_CommissionRule");
+                    b.ToTable("Wallet_Collaborator_CommissionRule", (string)null);
                 });
 
             modelBuilder.Entity("DbEntities.Applicant", b =>
